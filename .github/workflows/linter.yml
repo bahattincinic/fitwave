@@ -1,0 +1,44 @@
+name: linter
+
+on:
+  workflow_call:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+permissions: read-all
+
+jobs:
+  linter:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-go@v1
+        with:
+          go-version: '1.19'
+      - name: Clone repository
+        uses: actions/checkout@v2
+      - name: Cache dependencies
+        id: cache
+        uses: actions/cache@v2
+        with:
+          path: ~/go/pkg/mod
+          key: go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            go-
+      - name: Download dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          go mod download
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v3
+        with:
+          args: --timeout=10m --issues-exit-code=0
+      - name: Run Gosec Security Scanner
+        run: |
+          wget -O - -q https://raw.githubusercontent.com/securego/gosec/master/install.sh | sh -s v2.18.2
+          ./bin/gosec ./...
+      - name: Run tests
+        run: go test -race -v ./...

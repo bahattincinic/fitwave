@@ -17,9 +17,9 @@ import (
 type ConnectionType string
 
 const (
-	Mysql    ConnectionType = "mysql"
+	MySQL    ConnectionType = "mysql"
 	Postgres ConnectionType = "postgresql"
-	SQLITE   ConnectionType = "sqlite"
+	SQLite   ConnectionType = "sqlite"
 )
 
 type Database struct {
@@ -32,11 +32,11 @@ type Database struct {
 func NewDatabase(ctx context.Context, log *zap.Logger, cfg *config.Config) (*Database, error) {
 	var conn gorm.Dialector
 	switch ConnectionType(cfg.Database.Type) {
-	case SQLITE:
+	case SQLite:
 		conn = sqlite.Open(cfg.Database.DSN)
 	case Postgres:
 		conn = postgres.Open(cfg.Database.DSN)
-	case Mysql:
+	case MySQL:
 		conn = mysql.Open(cfg.Database.DSN)
 	default:
 		return nil, fmt.Errorf("invalid connection type: %s", cfg.Database.Type)
@@ -47,25 +47,29 @@ func NewDatabase(ctx context.Context, log *zap.Logger, cfg *config.Config) (*Dat
 		return nil, pkgerrors.Wrap(err, "Open")
 	}
 
-	{
-		if cfg.Database.AutoMigrate {
-			m := []interface{}{
-				&models.Activity{},
-				&models.Athlete{},
-				&models.Gear{},
-			}
-			if err := db.AutoMigrate(m...); err != nil {
-				return nil, pkgerrors.Wrap(err, "AutoMigrate")
-			}
-		}
-	}
-
-	return &Database{
+	d := &Database{
 		db:  db,
 		ctx: ctx,
 		log: log,
 		cfg: cfg,
-	}, nil
+	}
+
+	if cfg.Database.AutoMigrate {
+		if err := d.Migrate(); err != nil {
+			return nil, pkgerrors.Wrap(err, "Migrate")
+		}
+	}
+
+	return d, nil
+}
+
+func (d *Database) Migrate() error {
+	m := []interface{}{
+		&models.Activity{},
+		&models.Athlete{},
+		&models.Gear{},
+	}
+	return d.db.AutoMigrate(m...)
 }
 
 func (d *Database) BeginTransaction() *gorm.DB {
