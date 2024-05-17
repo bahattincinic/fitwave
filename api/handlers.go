@@ -13,6 +13,10 @@ func (a *API) setupHandlers() {
 	a.ec.GET("/", a.serveOK)
 	a.ec.GET("/status", a.serveOK)
 	a.ec.GET("/docs/*", echoSwagger.WrapHandler)
+
+	// Config
+	a.ec.GET("/config", a.getConfig)
+	a.ec.PUT("/config", a.upsertConfig)
 }
 
 func (a *API) serveOK(c echo.Context) error {

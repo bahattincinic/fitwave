@@ -23,3 +23,20 @@ func (d *Database) GetCurrentConfig() (*models.Config, error) {
 
 	return &cfg, err
 }
+
+func (d *Database) UpsertConfig(in models.ConfigInput) (*models.Config, error) {
+	cfg, err := d.GetCurrentConfig()
+	if err != nil {
+		return nil, err
+	}
+
+	cfg.AccessToken = in.AccessToken
+	cfg.AthleteId = in.AthleteId
+	cfg.ClientId = in.ClientId
+	cfg.ClientSecret = in.ClientSecret
+
+	if err := d.db.Save(&cfg).Error; err != nil {
+		return nil, err
+	}
+	return cfg, nil
+}
