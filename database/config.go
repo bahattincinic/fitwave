@@ -24,7 +24,7 @@ func (d *Database) GetCurrentConfig() (*models.Config, error) {
 	return &cfg, err
 }
 
-func (d *Database) UpsertConfig(in models.ConfigInput) (*models.Config, error) {
+func (d *Database) UpsertConfig(in models.Config) (*models.Config, error) {
 	cfg, err := d.GetCurrentConfig()
 	if err != nil {
 		return nil, err

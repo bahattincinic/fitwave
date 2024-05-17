@@ -14,9 +14,29 @@ func (a *API) setupHandlers() {
 	a.ec.GET("/status", a.serveOK)
 	a.ec.GET("/docs/*", echoSwagger.WrapHandler)
 
-	// Config
-	a.ec.GET("/config", a.getConfig)
-	a.ec.PUT("/config", a.upsertConfig)
+	{
+		cfg := a.ec.Group("/config")
+		cfg.GET("/", a.getConfig)
+		cfg.PUT("/", a.upsertConfig)
+	}
+
+	{
+		gr := a.ec.Group("/gears")
+		gr.GET("/", a.listGears)
+		gr.GET("/:id", a.getGear)
+	}
+
+	{
+		act := a.ec.Group("/activities")
+		act.GET("/", a.listActivities)
+		act.GET("/:id", a.getActivity)
+	}
+
+	{
+		ath := a.ec.Group("/athletes")
+		ath.GET("/", a.listAthletes)
+		ath.GET("/:id", a.getAthlete)
+	}
 }
 
 func (a *API) serveOK(c echo.Context) error {

@@ -1,4 +1,149 @@
 definitions:
+  api.PaginatedResponse:
+    properties:
+      count:
+        type: integer
+      results: {}
+    type: object
+  models.Activity:
+    properties:
+      achievement_count:
+        type: integer
+      athlete:
+        $ref: '#/definitions/models.Athlete'
+      athlete_count:
+        type: integer
+      athleteID:
+        type: integer
+      average_cadence:
+        type: number
+      average_heart_rate:
+        type: number
+      average_speed:
+        type: number
+      average_temp:
+        type: number
+      average_watts:
+        type: number
+      comment_count:
+        type: integer
+      commute:
+        type: boolean
+      device_watts:
+        type: boolean
+      distance:
+        type: number
+      elapsed_time:
+        type: integer
+      end_lat_lng:
+        type: string
+      external_id:
+        type: string
+      flagged:
+        type: boolean
+      gear_id:
+        description: bike or pair of shoes
+        type: string
+      has_kudos:
+        type: boolean
+      id:
+        type: integer
+      kilojoules:
+        type: number
+      kudos_count:
+        type: integer
+      location_city:
+        type: string
+      location_country:
+        type: string
+      location_state:
+        type: string
+      manual:
+        type: boolean
+      map:
+        items:
+          type: integer
+        type: array
+      max_heart_rate:
+        type: number
+      max_speed:
+        type: number
+      moving_time:
+        type: integer
+      name:
+        type: string
+      photo_count:
+        type: integer
+      private:
+        type: boolean
+      start_date:
+        type: string
+      start_date_local:
+        type: string
+      start_lat_lng:
+        type: string
+      time_zone:
+        type: string
+      total_elevation_gain:
+        type: number
+      trainer:
+        type: boolean
+      truncated:
+        description: only present if activity is owned by authenticated athlete, returns
+          0 if not truncated by privacy zones
+        type: integer
+      type:
+        type: string
+      upload_id:
+        type: integer
+      weighted_average_watts:
+        type: integer
+    type: object
+  models.Athlete:
+    properties:
+      approve_followers:
+        description: if has enhanced privacy enabled
+        type: boolean
+      badge_type_id:
+        type: integer
+      city:
+        type: string
+      country:
+        type: string
+      created_at:
+        type: string
+      firstname:
+        type: string
+      follower:
+        description: this athlete’s following status of the authenticated athlete
+        type: string
+      friend:
+        description: ‘pending’, ‘accepted’, ‘blocked’ or ‘null’, the authenticated
+          athlete’s following status of this athlete
+        type: string
+      id:
+        type: integer
+      lastname:
+        type: string
+      premium:
+        type: boolean
+      profile:
+        description: URL to a 124x124 pixel profile picture
+        type: string
+      profile_medium:
+        description: URL to a 62x62 pixel profile picture
+        type: string
+      sex:
+        type: string
+      state:
+        type: string
+      tx:
+        items:
+          type: integer
+        type: array
+      updated_at:
+        type: string
+    type: object
   models.Config:
     properties:
       access_token:
@@ -9,28 +154,134 @@ definitions:
         type: string
       client_secret:
         type: string
-      created_at:
+    type: object
+  models.Gear:
+    properties:
+      athlete:
+        $ref: '#/definitions/models.Athlete'
+      athleteID:
+        type: integer
+      brand_name:
+        type: string
+      description:
+        type: string
+      distance:
+        type: number
+      frame_type:
         type: string
       id:
-        type: integer
-      updated_at:
         type: string
-    type: object
-  models.ConfigInput:
-    properties:
-      access_token:
+      model_name:
         type: string
-      athlete_id:
-        type: integer
-      client_id:
+      name:
         type: string
-      client_secret:
-        type: string
+      primary:
+        type: boolean
     type: object
 info:
   contact: {}
 paths:
-  /config:
+  /activities/:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: pagination limit
+        in: query
+        name: limit
+        type: string
+      - description: active page
+        in: query
+        name: page
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/api.PaginatedResponse'
+            - properties:
+                ' count':
+                  type: integer
+                Results:
+                  items:
+                    $ref: '#/definitions/models.Activity'
+                  type: array
+              type: object
+      summary: List Activities
+      tags:
+      - activity
+  /activities/{id}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Activity ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Activity'
+      summary: Get Activity
+      tags:
+      - activity
+  /athletes/:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: pagination limit
+        in: query
+        name: limit
+        type: string
+      - description: active page
+        in: query
+        name: page
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/api.PaginatedResponse'
+            - properties:
+                ' count':
+                  type: integer
+                Results:
+                  items:
+                    $ref: '#/definitions/models.Athlete'
+                  type: array
+              type: object
+      summary: List Athletes
+      tags:
+      - athlete
+  /athletes/{id}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Athlete ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Athlete'
+      summary: Get Athlete
+      tags:
+      - athlete
+  /config/:
     get:
       consumes:
       - application/json
@@ -51,13 +302,63 @@ paths:
         name: config
         required: true
         schema:
-          $ref: '#/definitions/models.ConfigInput'
+          $ref: '#/definitions/models.Config'
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.ConfigInput'
+            $ref: '#/definitions/models.Config'
       summary: Upsert Application Config
       tags:
       - config
+  /gears/:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: pagination limit
+        in: query
+        name: limit
+        type: string
+      - description: active page
+        in: query
+        name: page
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/api.PaginatedResponse'
+            - properties:
+                ' count':
+                  type: integer
+                Results:
+                  items:
+                    $ref: '#/definitions/models.Gear'
+                  type: array
+              type: object
+      summary: List Gears
+      tags:
+      - gear
+  /gears/{id}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Gear ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Gear'
+      summary: Get Gear
+      tags:
+      - gear
 swagger: "2.0"
