@@ -1,9 +1,8 @@
 package config
 
 import (
-	"encoding/json"
-	"os"
-	"path/filepath"
+	"github.com/caarlos0/env/v10"
+	_ "github.com/joho/godotenv/autoload"
 )
 
 var (
@@ -18,24 +17,26 @@ const (
 )
 
 type Config struct {
-	Env      string       `json:"env"`
-	Database Database     `json:"database"`
-	Log      LogConfig    `json:"log"`
-	Strava   StravaConfig `json:"strava"`
+	Env      string `env:"ENV,notEmpty"`
+	Database Database
+	Log      LogConfig
+	Strava   StravaConfig
 }
 
 type LogConfig struct {
-	Output string `json:"output"`
+	Level  string `env:"LOG_LEVEL" envDefault:"debug"`
+	Output string `env:"OUTPUT" envDefault:"stdout"`
 }
 
 type StravaConfig struct {
-	AccessToken string `json:"access_token"`
-	AthleteId   int64  `json:"athlete_id"`
+	AccessToken string `env:"STRAVA_ACCESS_TOKEN"`
+	AthleteId   int64  `env:"STRAVA_ATHLETE_ID"`
 }
 
 type Database struct {
-	DSN         string `json:"dsn"`
-	AutoMigrate bool   `json:"auto_migrate"`
+	DSN         string `env:"DATABASE_DSB"`
+	Type        string `env:"DATABASE_TYPE"`
+	AutoMigrate bool   `env:"DATABASE_AUTO_MIGRATE"`
 }
 
 func Production() bool {
@@ -50,19 +51,14 @@ func Local() bool {
 	return Env == EnvLocal
 }
 
-func Parse(path string) (*Config, error) {
-	c := Config{}
+func Parse() (*Config, error) {
+	var cfg Config
 
-	b, err := os.ReadFile(filepath.Clean(path))
-	if err != nil {
+	if err := env.Parse(&cfg); err != nil {
 		return nil, err
 	}
 
-	if err := json.Unmarshal(b, &c); err != nil {
-		return nil, err
-	}
+	Env = cfg.Env
 
-	Env = c.Env
-
-	return &c, nil
+	return &cfg, nil
 }

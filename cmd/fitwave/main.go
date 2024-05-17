@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"flag"
 	"os"
 	"os/signal"
 	"sync"
@@ -12,6 +11,7 @@ import (
 	"github.com/bahattincinic/fitwave/database"
 	"github.com/bahattincinic/fitwave/importer"
 	"github.com/bahattincinic/fitwave/strava"
+	pkgerrors "github.com/pkg/errors"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
@@ -21,15 +21,6 @@ var (
 )
 
 func main() {
-	var (
-		flagConfigPath string
-	)
-	{
-		flag.StringVar(&flagConfigPath, "config-path", "", "Configuration path")
-	}
-	flagLogLevel := zap.LevelFlag("l", zapcore.DebugLevel, "Log level")
-	flag.Parse()
-
 	// More setup
 	ctx, cancelFunc := context.WithCancel(context.Background())
 	defer cancelFunc()
@@ -55,34 +46,19 @@ func main() {
 		}
 	}()
 
-	c, err := config.Parse(flagConfigPath)
+	c, err := config.Parse()
 	if err != nil {
 		log.Fatal("init config failed", zap.Error(err))
 		os.Exit(1)
 	}
 
-	if !config.Local() {
-		{
-			c := zap.NewProductionConfig()
-			c.Level = zap.NewAtomicLevelAt(*flagLogLevel)
-			zlog, err := c.Build()
-			if err != nil {
-				panic(err)
-			}
-			log = zlog
+	{
+		zlog, err := getLogger(c.Log)
+		if err != nil {
+			log.Fatal("init log failed", zap.Error(err))
+			os.Exit(1)
 		}
-	} else {
-		{
-			zc := zap.NewDevelopmentConfig()
-			zc.Level = zap.NewAtomicLevelAt(*flagLogLevel)
-			zc.OutputPaths = []string{c.Log.Output}
-
-			zlog, err := zc.Build()
-			if err != nil {
-				panic(err)
-			}
-			log = zlog
-		}
+		log = zlog
 	}
 
 	// WorkGroup to coordinate start and shutdown all long running services
@@ -107,4 +83,22 @@ func main() {
 	if err := im.Import(); err != nil {
 		log.Fatal("import failed", zap.Error(err))
 	}
+}
+
+func getLogger(log config.LogConfig) (*zap.Logger, error) {
+	l, err := zapcore.ParseLevel(log.Level)
+	if err != nil {
+		return nil, pkgerrors.Wrap(err, "ParseLevel")
+	}
+
+	var zc zap.Config
+	if !config.Local() {
+		zc = zap.NewProductionConfig()
+		zc.Level = zap.NewAtomicLevelAt(l)
+	} else {
+		zc = zap.NewDevelopmentConfig()
+		zc.Level = zap.NewAtomicLevelAt(l)
+		zc.OutputPaths = []string{log.Output}
+	}
+	return zc.Build()
 }

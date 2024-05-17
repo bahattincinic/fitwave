@@ -3,6 +3,8 @@ module github.com/bahattincinic/fitwave
 go 1.19
 
 require (
+	github.com/caarlos0/env/v10 v10.0.0
+	github.com/joho/godotenv v1.5.1
 	github.com/pkg/errors v0.8.1
 	github.com/strava/go.strava v0.0.0-20180612235916-99ebe972ba16
 	go.uber.org/zap v1.24.0
