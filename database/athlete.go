@@ -2,6 +2,7 @@ package database
 
 import (
 	"github.com/bahattincinic/fitwave/models"
+	"go.uber.org/zap"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
@@ -14,6 +15,8 @@ func (d *Database) UpsertAthletes(tx *gorm.DB, athletes []models.Athlete) error 
 			UpdateAll: true,
 		}).Create(&currentRow).Error
 		if err != nil {
+			d.log.Error("could not upsert athletes",
+				zap.Any("athlete", currentRow))
 			return err
 		}
 	}

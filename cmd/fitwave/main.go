@@ -7,6 +7,7 @@ import (
 	"sync"
 	"syscall"
 
+	"github.com/bahattincinic/fitwave/api"
 	"github.com/bahattincinic/fitwave/config"
 	"github.com/bahattincinic/fitwave/database"
 	"github.com/bahattincinic/fitwave/importer"
@@ -71,8 +72,16 @@ func main() {
 		os.Exit(1)
 	}
 
-	st := strava.NewStrava(ctx, c, log.With(zap.String("module", "strava")))
+	appCfg, err := db.GetCurrentConfig()
+	if err != nil {
+		log.Fatal("fetching current app config failed", zap.Error(err))
+		os.Exit(1)
+	}
+
+	st := strava.NewStrava(ctx, appCfg, log.With(zap.String("module", "strava")))
 	im := importer.NewImporter(ctx, c, log.With(zap.String("module", "importer")), st, db)
+
+	go api.RunAPI(ctx, wg, log.With(zap.String("module", "api")), db, c, st, im)
 
 	go func() {
 		// Wait for all tasks to finish
@@ -80,9 +89,7 @@ func main() {
 		wg.Done() // for main
 	}()
 
-	if err := im.Import(); err != nil {
-		log.Fatal("import failed", zap.Error(err))
-	}
+	wg.Wait()
 }
 
 func getLogger(log config.LogConfig) (*zap.Logger, error) {

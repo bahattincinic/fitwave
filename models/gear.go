@@ -9,6 +9,6 @@ type Gear struct {
 	ModelName   string  `json:"model_name"`
 	FrameType   string  `json:"frame_type"`
 	Description string  `json:"description"`
-	AthleteID   uint
+	AthleteID   int64
 	Athlete     Athlete `gorm:"foreignkey:AthleteID" json:"athlete"`
 }

@@ -10,6 +10,9 @@ fmt:
 test:
 	go test -race -v ./...
 
+swaggen:
+	swag fmt && swag init --parseDependency -g ./cmd/fitwave/main.go -o ./api/docs
+
 testci: test
 
 vet:

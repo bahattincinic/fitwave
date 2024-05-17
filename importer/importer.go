@@ -32,7 +32,7 @@ func NewImporter(ctx context.Context, cfg *config.Config, log *zap.Logger, st *s
 	}
 }
 
-func (im *Importer) updateGears(tx *gorm.DB, gears []client.GearDetailed) error {
+func (im *Importer) updateGears(tx *gorm.DB, gears []client.GearDetailed, gearAthletes map[string]int64) error {
 	var rows []models.Gear
 
 	for _, gear := range gears {
@@ -45,7 +45,7 @@ func (im *Importer) updateGears(tx *gorm.DB, gears []client.GearDetailed) error 
 			ModelName:   gear.ModelName,
 			FrameType:   gear.FrameType.String(),
 			Description: gear.Description,
-			AthleteID:   uint(im.cfg.Strava.AthleteId),
+			AthleteID:   gearAthletes[gear.Id],
 		})
 	}
 	return im.db.UpsertGears(tx, rows)
@@ -154,6 +154,7 @@ func (im *Importer) Import() error {
 
 	athleteIds := make(map[int64]bool)
 	gearIds := make(map[string]bool)
+	gearAthletes := make(map[string]int64)
 
 	var athletes []strava.Athlete
 	var gears []client.GearDetailed
@@ -185,6 +186,7 @@ func (im *Importer) Import() error {
 
 				return pkgerrors.Wrap(err, "GetGear")
 			}
+			gearAthletes[gearId] = athleteId
 			gears = append(gears, *gear)
 		}
 	}
@@ -199,7 +201,7 @@ func (im *Importer) Import() error {
 	defer tx.Rollback()
 
 	if len(gears) > 0 {
-		if err := im.updateGears(tx, gears); err != nil {
+		if err := im.updateGears(tx, gears, gearAthletes); err != nil {
 			return pkgerrors.Wrap(err, "updateGears")
 		}
 	}

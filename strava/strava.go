@@ -3,7 +3,7 @@ package strava
 import (
 	"context"
 
-	"github.com/bahattincinic/fitwave/config"
+	"github.com/bahattincinic/fitwave/models"
 	pkgerrors "github.com/pkg/errors"
 	client "github.com/strava/go.strava"
 	"go.uber.org/zap"
@@ -11,7 +11,7 @@ import (
 
 type Strava struct {
 	ctx context.Context
-	cfg *config.Config
+	cfg *models.Config
 	log *zap.Logger
 	st  *client.Client
 }
@@ -20,8 +20,8 @@ const (
 	defaultListLimit = 200
 )
 
-func NewStrava(ctx context.Context, cfg *config.Config, log *zap.Logger) *Strava {
-	st := client.NewClient(cfg.Strava.AccessToken)
+func NewStrava(ctx context.Context, cfg *models.Config, log *zap.Logger) *Strava {
+	st := client.NewClient(cfg.AccessToken)
 
 	return &Strava{
 		ctx: ctx,
@@ -29,6 +29,11 @@ func NewStrava(ctx context.Context, cfg *config.Config, log *zap.Logger) *Strava
 		log: log,
 		st:  st,
 	}
+}
+
+func (s *Strava) UpdateConfig(cfg *models.Config) {
+	s.cfg = cfg
+	s.st = client.NewClient(cfg.AccessToken)
 }
 
 func (s *Strava) GetAllActivities() ([]*client.ActivitySummary, error) {
@@ -67,7 +72,7 @@ func (s *Strava) GetActivityDetail(activityId int64) (*client.ActivityDetailed, 
 func (s *Strava) GetPageOfActivities(page int) ([]*client.ActivitySummary, error) {
 	service := client.NewAthletesService(s.st)
 
-	activities, err := service.ListActivities(s.cfg.Strava.AthleteId).
+	activities, err := service.ListActivities(s.cfg.AthleteId).
 		Page(page).
 		PerPage(defaultListLimit).
 		Do()
@@ -82,7 +87,7 @@ func (s *Strava) GetPageOfActivities(page int) ([]*client.ActivitySummary, error
 func (s *Strava) GetBeforeOfActivities(before int64) ([]*client.ActivitySummary, error) {
 	service := client.NewAthletesService(s.st)
 
-	activities, err := service.ListActivities(s.cfg.Strava.AthleteId).
+	activities, err := service.ListActivities(s.cfg.AthleteId).
 		Before(before).
 		PerPage(defaultListLimit).
 		Do()

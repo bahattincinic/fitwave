@@ -68,6 +68,7 @@ func (d *Database) Migrate() error {
 		&models.Activity{},
 		&models.Athlete{},
 		&models.Gear{},
+		&models.Config{},
 	}
 	return d.db.AutoMigrate(m...)
 }

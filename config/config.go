@@ -20,7 +20,7 @@ type Config struct {
 	Env      string `env:"ENV,notEmpty"`
 	Database Database
 	Log      LogConfig
-	Strava   StravaConfig
+	API      API
 }
 
 type LogConfig struct {
@@ -28,15 +28,14 @@ type LogConfig struct {
 	Output string `env:"OUTPUT" envDefault:"stdout"`
 }
 
-type StravaConfig struct {
-	AccessToken string `env:"STRAVA_ACCESS_TOKEN"`
-	AthleteId   int64  `env:"STRAVA_ATHLETE_ID"`
-}
-
 type Database struct {
 	DSN         string `env:"DATABASE_DSB"`
 	Type        string `env:"DATABASE_TYPE"`
 	AutoMigrate bool   `env:"DATABASE_AUTO_MIGRATE"`
+}
+
+type API struct {
+	PORT int `env:"API_PORT" envDefault:"9000"`
 }
 
 func Production() bool {
