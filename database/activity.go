@@ -8,15 +8,15 @@ import (
 
 func (d *Database) UpsertActivities(tx *gorm.DB, activities []models.Activity) error {
 	for _, row := range activities {
+		currentRow := row
 		err := tx.Clauses(clause.OnConflict{
 			Columns:   []clause.Column{{Name: "id"}},
 			UpdateAll: true,
-		}).Create(&row).Error
+		}).Create(&currentRow).Error
 		if err != nil {
 			return err
 		}
 	}
-
 	return nil
 }
 

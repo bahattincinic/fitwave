@@ -8,14 +8,14 @@ import (
 
 func (d *Database) UpsertAthletes(tx *gorm.DB, athletes []models.Athlete) error {
 	for _, row := range athletes {
+		currentRow := row
 		err := tx.Clauses(clause.OnConflict{
 			Columns:   []clause.Column{{Name: "id"}},
 			UpdateAll: true,
-		}).Create(&row).Error
+		}).Create(&currentRow).Error
 		if err != nil {
 			return err
 		}
 	}
-
 	return nil
 }
