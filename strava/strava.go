@@ -59,10 +59,22 @@ func (s *Strava) GetActivityDetail(user *User, activityId int64) (*client.Activi
 	return activity, nil
 }
 
-func (s *Strava) GetPageOfActivities(user *User, page int) ([]*client.ActivitySummary, error) {
-	service := client.NewAthletesService(user.st)
+func (s *Strava) GetActivityLaps(user *User, activityId int64) ([]*client.LapEffortSummary, error) {
+	service := client.NewActivitiesService(user.st)
+	laps, err := service.ListLaps(activityId).Do()
 
-	activities, err := service.ListActivities(user.Athlete.Id).
+	if err != nil {
+		return nil, pkgerrors.Wrap(err, "Get")
+	}
+
+	return laps, nil
+}
+
+func (s *Strava) GetPageOfActivities(user *User, page int) ([]*client.ActivitySummary, error) {
+	service := client.NewCurrentAthleteService(user.st)
+
+	activities, err := service.
+		ListActivities().
 		Page(page).
 		PerPage(defaultListLimit).
 		Do()
@@ -75,10 +87,11 @@ func (s *Strava) GetPageOfActivities(user *User, page int) ([]*client.ActivitySu
 }
 
 func (s *Strava) GetBeforeOfActivities(user *User, before int64) ([]*client.ActivitySummary, error) {
-	service := client.NewAthletesService(user.st)
+	service := client.NewCurrentAthleteService(user.st)
 
-	activities, err := service.ListActivities(user.Athlete.Id).
-		Before(before).
+	activities, err := service.
+		ListActivities().
+		Before(int(before)).
 		PerPage(defaultListLimit).
 		Do()
 
