@@ -30,8 +30,6 @@ func (d *Database) UpsertConfig(in models.Config) (*models.Config, error) {
 		return nil, err
 	}
 
-	cfg.AccessToken = in.AccessToken
-	cfg.AthleteId = in.AthleteId
 	cfg.ClientId = in.ClientId
 	cfg.ClientSecret = in.ClientSecret
 

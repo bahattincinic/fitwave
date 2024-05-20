@@ -14,14 +14,6 @@ import (
 	"gorm.io/gorm"
 )
 
-type ConnectionType string
-
-const (
-	MySQL    ConnectionType = "mysql"
-	Postgres ConnectionType = "postgresql"
-	SQLite   ConnectionType = "sqlite"
-)
-
 type Database struct {
 	ctx context.Context
 	db  *gorm.DB
@@ -31,12 +23,12 @@ type Database struct {
 
 func NewDatabase(ctx context.Context, log *zap.Logger, cfg *config.Config) (*Database, error) {
 	var conn gorm.Dialector
-	switch ConnectionType(cfg.Database.Type) {
-	case SQLite:
+	switch cfg.Database.Type {
+	case config.SQLite:
 		conn = sqlite.Open(cfg.Database.DSN)
-	case Postgres:
+	case config.Postgres:
 		conn = postgres.Open(cfg.Database.DSN)
-	case MySQL:
+	case config.MySQL:
 		conn = mysql.Open(cfg.Database.DSN)
 	default:
 		return nil, fmt.Errorf("invalid connection type: %s", cfg.Database.Type)

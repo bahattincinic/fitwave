@@ -10,6 +10,8 @@ import (
 )
 
 func (a *API) setupHandlers() {
+	requireAuth := a.requireAuthMiddleware()
+
 	a.ec.GET("/", a.serveOK)
 	a.ec.GET("/status", a.serveOK)
 	a.ec.GET("/docs/*", echoSwagger.WrapHandler)
@@ -36,6 +38,12 @@ func (a *API) setupHandlers() {
 		ath := a.ec.Group("/athletes")
 		ath.GET("/", a.listAthletes)
 		ath.GET("/:id", a.getAthlete)
+	}
+
+	{
+		dt := a.ec.Group("/data")
+		dt.POST("/sync", a.syncData, requireAuth)
+		dt.GET("/task/:id", a.getTask)
 	}
 }
 

@@ -17,7 +17,7 @@ const (
 )
 
 type Config struct {
-	Env      string `env:"ENV,notEmpty"`
+	Env      string `env:"ENV" envDefault:"local"`
 	Database Database
 	Log      LogConfig
 	API      API
@@ -25,13 +25,21 @@ type Config struct {
 
 type LogConfig struct {
 	Level  string `env:"LOG_LEVEL" envDefault:"debug"`
-	Output string `env:"OUTPUT" envDefault:"stdout"`
+	Output string `env:"LOG_OUTPUT" envDefault:"stdout"`
 }
 
+type ConnectionType string
+
+const (
+	MySQL    ConnectionType = "mysql"
+	Postgres ConnectionType = "postgresql"
+	SQLite   ConnectionType = "sqlite"
+)
+
 type Database struct {
-	DSN         string `env:"DATABASE_DSB"`
-	Type        string `env:"DATABASE_TYPE"`
-	AutoMigrate bool   `env:"DATABASE_AUTO_MIGRATE"`
+	DSN         string         `env:"DATABASE_DSN" envDefault:"fitWave.db"`
+	Type        ConnectionType `env:"DATABASE_TYPE" envDefault:"sqlite"`
+	AutoMigrate bool           `env:"DATABASE_AUTO_MIGRATE" envDefault:"true"`
 }
 
 type API struct {

@@ -146,10 +146,6 @@ definitions:
     type: object
   models.Config:
     properties:
-      access_token:
-        type: string
-      athlete_id:
-        type: integer
       client_id:
         type: string
       client_secret:
@@ -178,6 +174,29 @@ definitions:
       primary:
         type: boolean
     type: object
+  queue.TaskResult:
+    properties:
+      completionTime:
+        type: string
+      error: {}
+      id:
+        type: string
+      result: {}
+      status:
+        $ref: '#/definitions/queue.TaskStatus'
+    type: object
+  queue.TaskStatus:
+    enum:
+    - pending
+    - success
+    - error
+    - archived
+    type: string
+    x-enum-varnames:
+    - Pending
+    - Success
+    - Error
+    - Archived
 info:
   contact: {}
 paths:
@@ -311,6 +330,42 @@ paths:
       summary: Upsert Application Config
       tags:
       - config
+  /data/sync:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Strava Access Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/queue.TaskResult'
+      summary: Sync Strava data
+      tags:
+      - data
+  /data/task/{id}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Task ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/queue.TaskResult'
+      summary: Get Task Detail
+      tags:
+      - data
   /gears/:
     get:
       consumes:

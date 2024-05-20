@@ -3,7 +3,6 @@ package strava
 import (
 	"context"
 
-	"github.com/bahattincinic/fitwave/models"
 	pkgerrors "github.com/pkg/errors"
 	client "github.com/strava/go.strava"
 	"go.uber.org/zap"
@@ -11,37 +10,26 @@ import (
 
 type Strava struct {
 	ctx context.Context
-	cfg *models.Config
 	log *zap.Logger
-	st  *client.Client
 }
 
 const (
 	defaultListLimit = 200
 )
 
-func NewStrava(ctx context.Context, cfg *models.Config, log *zap.Logger) *Strava {
-	st := client.NewClient(cfg.AccessToken)
-
+func NewStrava(ctx context.Context, log *zap.Logger) *Strava {
 	return &Strava{
 		ctx: ctx,
-		cfg: cfg,
 		log: log,
-		st:  st,
 	}
 }
 
-func (s *Strava) UpdateConfig(cfg *models.Config) {
-	s.cfg = cfg
-	s.st = client.NewClient(cfg.AccessToken)
-}
-
-func (s *Strava) GetAllActivities() ([]*client.ActivitySummary, error) {
+func (s *Strava) GetAllActivities(user *User) ([]*client.ActivitySummary, error) {
 	var allActivities []*client.ActivitySummary
 	page := 1
 
 	for {
-		activities, err := s.GetPageOfActivities(page)
+		activities, err := s.GetPageOfActivities(user, page)
 		if err != nil {
 			return nil, err
 		}
@@ -58,8 +46,8 @@ func (s *Strava) GetAllActivities() ([]*client.ActivitySummary, error) {
 	return allActivities, nil
 }
 
-func (s *Strava) GetActivityDetail(activityId int64) (*client.ActivityDetailed, error) {
-	service := client.NewActivitiesService(s.st)
+func (s *Strava) GetActivityDetail(user *User, activityId int64) (*client.ActivityDetailed, error) {
+	service := client.NewActivitiesService(user.st)
 	activity, err := service.Get(activityId).Do()
 
 	if err != nil {
@@ -69,10 +57,10 @@ func (s *Strava) GetActivityDetail(activityId int64) (*client.ActivityDetailed, 
 	return activity, nil
 }
 
-func (s *Strava) GetPageOfActivities(page int) ([]*client.ActivitySummary, error) {
-	service := client.NewAthletesService(s.st)
+func (s *Strava) GetPageOfActivities(user *User, page int) ([]*client.ActivitySummary, error) {
+	service := client.NewAthletesService(user.st)
 
-	activities, err := service.ListActivities(s.cfg.AthleteId).
+	activities, err := service.ListActivities(user.Athlete.Id).
 		Page(page).
 		PerPage(defaultListLimit).
 		Do()
@@ -84,10 +72,10 @@ func (s *Strava) GetPageOfActivities(page int) ([]*client.ActivitySummary, error
 	return activities, nil
 }
 
-func (s *Strava) GetBeforeOfActivities(before int64) ([]*client.ActivitySummary, error) {
-	service := client.NewAthletesService(s.st)
+func (s *Strava) GetBeforeOfActivities(user *User, before int64) ([]*client.ActivitySummary, error) {
+	service := client.NewAthletesService(user.st)
 
-	activities, err := service.ListActivities(s.cfg.AthleteId).
+	activities, err := service.ListActivities(user.Athlete.Id).
 		Before(before).
 		PerPage(defaultListLimit).
 		Do()
@@ -99,8 +87,8 @@ func (s *Strava) GetBeforeOfActivities(before int64) ([]*client.ActivitySummary,
 	return activities, nil
 }
 
-func (s *Strava) GetGear(gearId string) (*client.GearDetailed, error) {
-	service := client.NewGearService(s.st)
+func (s *Strava) GetGear(user *User, gearId string) (*client.GearDetailed, error) {
+	service := client.NewGearService(user.st)
 	gear, err := service.Get(gearId).Do()
 
 	if err != nil {
@@ -110,8 +98,8 @@ func (s *Strava) GetGear(gearId string) (*client.GearDetailed, error) {
 	return gear, nil
 }
 
-func (s *Strava) GetAthlete(athleteId int64) (*Athlete, error) {
-	service := client.NewAthletesService(s.st)
+func (s *Strava) GetAthlete(user *User, athleteId int64) (*Athlete, error) {
+	service := client.NewAthletesService(user.st)
 	athlete, err := service.Get(athleteId).Do()
 
 	if err != nil {

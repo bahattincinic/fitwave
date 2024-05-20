@@ -143,8 +143,8 @@ func (im *Importer) updateActivities(tx *gorm.DB, activities []*client.ActivityS
 	return im.db.UpsertActivities(tx, rows)
 }
 
-func (im *Importer) Import() error {
-	activities, err := im.st.GetAllActivities()
+func (im *Importer) Import(user *strava.User) error {
+	activities, err := im.st.GetAllActivities(user)
 	if err != nil {
 		return pkgerrors.Wrap(err, "GetAllActivities")
 	}
@@ -165,7 +165,7 @@ func (im *Importer) Import() error {
 
 		if _, ok := athleteIds[athleteId]; !ok {
 			athleteIds[athleteId] = true
-			athlete, err := im.st.GetAthlete(athleteId)
+			athlete, err := im.st.GetAthlete(user, athleteId)
 			if err != nil {
 				im.log.Info("could not fetch athlete",
 					zap.Int64("id", athleteId),
@@ -178,7 +178,7 @@ func (im *Importer) Import() error {
 
 		if _, ok := gearIds[gearId]; !ok && gearId != "" {
 			gearIds[gearId] = true
-			gear, err := im.st.GetGear(gearId)
+			gear, err := im.st.GetGear(user, gearId)
 			if err != nil {
 				im.log.Info("could not fetch gear",
 					zap.String("id", gearId),

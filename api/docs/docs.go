@@ -226,6 +226,62 @@ const docTemplate = `{
                 }
             }
         },
+        "/data/sync": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "data"
+                ],
+                "summary": "Sync Strava data",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Strava Access Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/queue.TaskResult"
+                        }
+                    }
+                }
+            }
+        },
+        "/data/task/{id}": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "data"
+                ],
+                "summary": "Get Task Detail",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Task ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/queue.TaskResult"
+                        }
+                    }
+                }
+            }
+        },
         "/gears/": {
             "get": {
                 "consumes": [
@@ -525,12 +581,6 @@ const docTemplate = `{
         "models.Config": {
             "type": "object",
             "properties": {
-                "access_token": {
-                    "type": "string"
-                },
-                "athlete_id": {
-                    "type": "integer"
-                },
                 "client_id": {
                     "type": "string"
                 },
@@ -573,6 +623,37 @@ const docTemplate = `{
                     "type": "boolean"
                 }
             }
+        },
+        "queue.TaskResult": {
+            "type": "object",
+            "properties": {
+                "completionTime": {
+                    "type": "string"
+                },
+                "error": {},
+                "id": {
+                    "type": "string"
+                },
+                "result": {},
+                "status": {
+                    "$ref": "#/definitions/queue.TaskStatus"
+                }
+            }
+        },
+        "queue.TaskStatus": {
+            "type": "string",
+            "enum": [
+                "pending",
+                "success",
+                "error",
+                "archived"
+            ],
+            "x-enum-varnames": [
+                "Pending",
+                "Success",
+                "Error",
+                "Archived"
+            ]
         }
     }
 }`

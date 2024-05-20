@@ -11,6 +11,7 @@ import (
 	"github.com/bahattincinic/fitwave/config"
 	"github.com/bahattincinic/fitwave/database"
 	"github.com/bahattincinic/fitwave/importer"
+	"github.com/bahattincinic/fitwave/queue"
 	"github.com/bahattincinic/fitwave/strava"
 	pkgerrors "github.com/pkg/errors"
 	"go.uber.org/zap"
@@ -72,16 +73,11 @@ func main() {
 		os.Exit(1)
 	}
 
-	appCfg, err := db.GetCurrentConfig()
-	if err != nil {
-		log.Fatal("fetching current app config failed", zap.Error(err))
-		os.Exit(1)
-	}
-
-	st := strava.NewStrava(ctx, appCfg, log.With(zap.String("module", "strava")))
+	st := strava.NewStrava(ctx, log.With(zap.String("module", "strava")))
 	im := importer.NewImporter(ctx, c, log.With(zap.String("module", "importer")), st, db)
+	q := queue.NewQueue(ctx, log.With(zap.String("module", "queue")))
 
-	go api.RunAPI(ctx, wg, log.With(zap.String("module", "api")), db, c, st, im)
+	go api.RunAPI(ctx, wg, log.With(zap.String("module", "api")), db, c, st, im, q)
 
 	go func() {
 		// Wait for all tasks to finish
