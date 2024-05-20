@@ -15,7 +15,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/activities/": {
+        "/activities": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -97,7 +97,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/athletes/": {
+        "/athletes": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -240,7 +240,355 @@ const docTemplate = `{
                 }
             }
         },
-        "/gears/": {
+        "/dashboard/{id}": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "dashboard"
+                ],
+                "summary": "Get Dashboard",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Dashboard ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Dashboard"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "dashboard"
+                ],
+                "summary": "Update Dashboard",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Dashboard ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Dashboard Input",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.updateDashboard.dashboardInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Dashboard"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "dashboard"
+                ],
+                "summary": "Delete Dashboard",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Dashboard ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    }
+                }
+            }
+        },
+        "/dashboard/{id}/run": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "dashboard"
+                ],
+                "summary": "Run Dashboard",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Dashboard ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/queue.TaskResult"
+                        }
+                    }
+                }
+            }
+        },
+        "/dashboards": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "dashboard"
+                ],
+                "summary": "List Dashboards",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "pagination limit",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "active page",
+                        "name": "page",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/api.PaginatedResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        " count": {
+                                            "type": "integer"
+                                        },
+                                        "Results": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/models.Dashboard"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "dashboard"
+                ],
+                "summary": "Create Dashboard",
+                "parameters": [
+                    {
+                        "description": "Dashboard Input",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.createDashboard.dashboardInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/models.Dashboard"
+                        }
+                    }
+                }
+            }
+        },
+        "/dashboards/{id}/components": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "dashboard"
+                ],
+                "summary": "List Dashboard Components",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Dashboard ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/api.PaginatedResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        " count": {
+                                            "type": "integer"
+                                        },
+                                        "Results": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/models.Component"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "dashboard"
+                ],
+                "summary": "Create Dashboard Components",
+                "parameters": [
+                    {
+                        "description": "Component Input",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.createComponent.componentInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/models.Component"
+                        }
+                    }
+                }
+            }
+        },
+        "/dashboards/{id}/components/{cpid}": {
+            "put": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "dashboard"
+                ],
+                "summary": "Update Dashboard Component",
+                "parameters": [
+                    {
+                        "description": "Component Input",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.updateComponent.componentInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Component"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "dashboard"
+                ],
+                "summary": "Delete Dashboard Component",
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    }
+                }
+            }
+        },
+        "/dashboards/{id}/components/{cpid}/run": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "dashboard"
+                ],
+                "summary": "Run Dashboard Component",
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    }
+                }
+            }
+        },
+        "/gears": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -388,6 +736,36 @@ const docTemplate = `{
                 }
             }
         },
+        "/user/query": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Run Query",
+                "parameters": [
+                    {
+                        "description": "Query Input",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.runQuery.queryInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/queue.TaskResult"
+                        }
+                    }
+                }
+            }
+        },
         "/user/sync": {
             "post": {
                 "consumes": [
@@ -455,10 +833,64 @@ const docTemplate = `{
                 "results": {}
             }
         },
+        "api.createComponent.componentInput": {
+            "type": "object",
+            "properties": {
+                "configs": {},
+                "name": {
+                    "type": "string"
+                },
+                "query": {
+                    "type": "string"
+                },
+                "type": {
+                    "$ref": "#/definitions/models.ComponentType"
+                }
+            }
+        },
+        "api.createDashboard.dashboardInput": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
         "api.getAccessToken.tokenRequestInput": {
             "type": "object",
             "properties": {
                 "code": {
+                    "type": "string"
+                }
+            }
+        },
+        "api.runQuery.queryInput": {
+            "type": "object",
+            "properties": {
+                "query": {
+                    "type": "string"
+                }
+            }
+        },
+        "api.updateComponent.componentInput": {
+            "type": "object",
+            "properties": {
+                "configs": {},
+                "name": {
+                    "type": "string"
+                },
+                "query": {
+                    "type": "string"
+                },
+                "type": {
+                    "$ref": "#/definitions/models.ComponentType"
+                }
+            }
+        },
+        "api.updateDashboard.dashboardInput": {
+            "type": "object",
+            "properties": {
+                "name": {
                     "type": "string"
                 }
             }
@@ -666,6 +1098,58 @@ const docTemplate = `{
                 }
             }
         },
+        "models.Component": {
+            "type": "object",
+            "properties": {
+                "configs": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "dashboard": {
+                    "$ref": "#/definitions/models.Dashboard"
+                },
+                "dashboardID": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "query": {
+                    "type": "string"
+                },
+                "type": {
+                    "$ref": "#/definitions/models.ComponentType"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.ComponentType": {
+            "type": "string",
+            "enum": [
+                "table",
+                "text",
+                "pie_chart",
+                "bar_chart",
+                "line_chart"
+            ],
+            "x-enum-varnames": [
+                "TableComponent",
+                "TextComponent",
+                "PieChartComponent",
+                "BarChartComponent",
+                "LineChartComponent"
+            ]
+        },
         "models.Config": {
             "type": "object",
             "properties": {
@@ -673,6 +1157,23 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "client_secret": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.Dashboard": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "updated_at": {
                     "type": "string"
                 }
             }

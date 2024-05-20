@@ -56,3 +56,28 @@ func (a *API) getMe(c echo.Context) error {
 	user := c.Get(userContextKey).(*strava.User)
 	return c.JSON(http.StatusOK, user)
 }
+
+// runQuery godoc
+//
+//	@Summary	Run Query
+//	@Tags		user
+//	@Accept		json
+//	@Param		input	body		api.runQuery.queryInput	true	"Query Input"
+//	@Success	200		{object}	queue.TaskResult
+//	@Router		/user/query [post]
+func (a *API) runQuery(c echo.Context) error {
+	type queryInput struct {
+		Query string `json:"query"`
+	}
+
+	var in queryInput
+	if err := c.Bind(&in); err != nil {
+		return err
+	}
+
+	task := a.q.AddTask(func() (interface{}, error) {
+		return a.db.RunQuery(in.Query)
+	})
+
+	return c.JSON(http.StatusOK, task)
+}

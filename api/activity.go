@@ -15,7 +15,7 @@ import (
 //	@Param		limit	query		string	false	"pagination limit"
 //	@Param		page	query		string	false	"active page"
 //	@Success	200		{object}	PaginatedResponse{Results=[]models.Activity, count=int}
-//	@Router		/activities/ [get]
+//	@Router		/activities [get]
 func (a *API) listActivities(c echo.Context) error {
 	offset, limit, err := a.GetPageAndSize(c, 20)
 	if err != nil {

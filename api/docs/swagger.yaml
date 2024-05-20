@@ -5,9 +5,44 @@ definitions:
         type: integer
       results: {}
     type: object
+  api.createComponent.componentInput:
+    properties:
+      configs: {}
+      name:
+        type: string
+      query:
+        type: string
+      type:
+        $ref: '#/definitions/models.ComponentType'
+    type: object
+  api.createDashboard.dashboardInput:
+    properties:
+      name:
+        type: string
+    type: object
   api.getAccessToken.tokenRequestInput:
     properties:
       code:
+        type: string
+    type: object
+  api.runQuery.queryInput:
+    properties:
+      query:
+        type: string
+    type: object
+  api.updateComponent.componentInput:
+    properties:
+      configs: {}
+      name:
+        type: string
+      query:
+        type: string
+      type:
+        $ref: '#/definitions/models.ComponentType'
+    type: object
+  api.updateDashboard.dashboardInput:
+    properties:
+      name:
         type: string
     type: object
   models.Activity:
@@ -149,11 +184,59 @@ definitions:
       updated_at:
         type: string
     type: object
+  models.Component:
+    properties:
+      configs:
+        items:
+          type: integer
+        type: array
+      created_at:
+        type: string
+      dashboard:
+        $ref: '#/definitions/models.Dashboard'
+      dashboardID:
+        type: integer
+      id:
+        type: integer
+      name:
+        type: string
+      query:
+        type: string
+      type:
+        $ref: '#/definitions/models.ComponentType'
+      updated_at:
+        type: string
+    type: object
+  models.ComponentType:
+    enum:
+    - table
+    - text
+    - pie_chart
+    - bar_chart
+    - line_chart
+    type: string
+    x-enum-varnames:
+    - TableComponent
+    - TextComponent
+    - PieChartComponent
+    - BarChartComponent
+    - LineChartComponent
   models.Config:
     properties:
       client_id:
         type: integer
       client_secret:
+        type: string
+    type: object
+  models.Dashboard:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      updated_at:
         type: string
     type: object
   models.Gear:
@@ -315,7 +398,7 @@ definitions:
 info:
   contact: {}
 paths:
-  /activities/:
+  /activities:
     get:
       consumes:
       - application/json
@@ -365,7 +448,7 @@ paths:
       summary: Get Activity
       tags:
       - activity
-  /athletes/:
+  /athletes:
     get:
       consumes:
       - application/json
@@ -454,7 +537,226 @@ paths:
       summary: Get Access Token from Auth Code
       tags:
       - auth
-  /gears/:
+  /dashboard/{id}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: Dashboard ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "204":
+          description: No Content
+      summary: Delete Dashboard
+      tags:
+      - dashboard
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Dashboard ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Dashboard'
+      summary: Get Dashboard
+      tags:
+      - dashboard
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Dashboard ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Dashboard Input
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/api.updateDashboard.dashboardInput'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Dashboard'
+      summary: Update Dashboard
+      tags:
+      - dashboard
+  /dashboard/{id}/run:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Dashboard ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/queue.TaskResult'
+      summary: Run Dashboard
+      tags:
+      - dashboard
+  /dashboards:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: pagination limit
+        in: query
+        name: limit
+        type: string
+      - description: active page
+        in: query
+        name: page
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/api.PaginatedResponse'
+            - properties:
+                ' count':
+                  type: integer
+                Results:
+                  items:
+                    $ref: '#/definitions/models.Dashboard'
+                  type: array
+              type: object
+      summary: List Dashboards
+      tags:
+      - dashboard
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Dashboard Input
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/api.createDashboard.dashboardInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Dashboard'
+      summary: Create Dashboard
+      tags:
+      - dashboard
+  /dashboards/{id}/components:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Dashboard ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/api.PaginatedResponse'
+            - properties:
+                ' count':
+                  type: integer
+                Results:
+                  items:
+                    $ref: '#/definitions/models.Component'
+                  type: array
+              type: object
+      summary: List Dashboard Components
+      tags:
+      - dashboard
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Component Input
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/api.createComponent.componentInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Component'
+      summary: Create Dashboard Components
+      tags:
+      - dashboard
+  /dashboards/{id}/components/{cpid}:
+    delete:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+      summary: Delete Dashboard Component
+      tags:
+      - dashboard
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Component Input
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/api.updateComponent.componentInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Component'
+      summary: Update Dashboard Component
+      tags:
+      - dashboard
+  /dashboards/{id}/components/{cpid}/run:
+    post:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+      summary: Run Dashboard Component
+      tags:
+      - dashboard
+  /gears:
     get:
       consumes:
       - application/json
@@ -544,6 +846,25 @@ paths:
           schema:
             $ref: '#/definitions/strava.User'
       summary: Get Current User Details
+      tags:
+      - user
+  /user/query:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Query Input
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/api.runQuery.queryInput'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/queue.TaskResult'
+      summary: Run Query
       tags:
       - user
   /user/sync:

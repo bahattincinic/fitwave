@@ -1,14 +1,18 @@
 package api
 
 import (
+	"fmt"
 	"net/http"
+	"strconv"
 	"strings"
 
 	"github.com/labstack/echo/v4"
 )
 
 const (
-	userContextKey = "usr"
+	userContextKey      = "usr"
+	dashboardContextKey = "dsb"
+	componentContextKey = "cp"
 )
 
 func (a *API) requireAuthMiddleware() func(next echo.HandlerFunc) echo.HandlerFunc {
@@ -31,6 +35,57 @@ func (a *API) requireAuthMiddleware() func(next echo.HandlerFunc) echo.HandlerFu
 			}
 
 			c.Set(userContextKey, input)
+			return next(c)
+		}
+	}
+}
+
+func (a *API) setDashboardMiddleware() func(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			id, err := strconv.ParseUint(c.Param("id"), 10, 32)
+			if err != nil {
+				return echo.NewHTTPError(http.StatusNotFound, fmt.Sprint("invalid dashboard id"))
+			}
+
+			dashboard, err := a.db.GetDashboard(uint(id))
+			if err != nil {
+				return err
+			}
+
+			if dashboard == nil {
+				return echo.NewHTTPError(http.StatusNotFound, fmt.Sprint("invalid dashboard id"))
+			}
+
+			c.Set(dashboardContextKey, dashboard)
+			return next(c)
+		}
+	}
+}
+
+func (a *API) setComponentMiddleware() func(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			dshId, err := strconv.ParseUint(c.Param("id"), 10, 32)
+			if err != nil {
+				return echo.NewHTTPError(http.StatusNotFound, fmt.Sprint("invalid dashboard id"))
+			}
+
+			cpId, err := strconv.ParseUint(c.Param("cpid"), 10, 32)
+			if err != nil {
+				return echo.NewHTTPError(http.StatusNotFound, fmt.Sprint("invalid component id"))
+			}
+
+			component, err := a.db.GetComponent(uint(dshId), uint(cpId))
+			if err != nil {
+				return err
+			}
+
+			if component == nil {
+				return echo.NewHTTPError(http.StatusNotFound, fmt.Sprint("invalid component id"))
+			}
+
+			c.Set(componentContextKey, component)
 			return next(c)
 		}
 	}

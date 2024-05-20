@@ -15,7 +15,7 @@ import (
 //	@Param		limit	query		string	false	"pagination limit"
 //	@Param		page	query		string	false	"active page"
 //	@Success	200		{object}	PaginatedResponse{Results=[]models.Athlete, count=int}
-//	@Router		/athletes/ [get]
+//	@Router		/athletes [get]
 func (a *API) listAthletes(c echo.Context) error {
 	offset, limit, err := a.GetPageAndSize(c, 20)
 	if err != nil {
