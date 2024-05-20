@@ -17,12 +17,6 @@ func (a *API) setupHandlers() {
 	a.ec.GET("/docs/*", echoSwagger.WrapHandler)
 
 	{
-		cfg := a.ec.Group("/config")
-		cfg.GET("/", a.getConfig)
-		cfg.PUT("/", a.upsertConfig)
-	}
-
-	{
 		gr := a.ec.Group("/gears")
 		gr.GET("/", a.listGears)
 		gr.GET("/:id", a.getGear)
@@ -41,9 +35,12 @@ func (a *API) setupHandlers() {
 	}
 
 	{
-		dt := a.ec.Group("/data")
-		dt.POST("/sync", a.syncData, requireAuth)
-		dt.GET("/task/:id", a.getTask)
+		usr := a.ec.Group("/user")
+		usr.POST("/sync", a.syncData, requireAuth)
+		usr.GET("/me", a.getMe, requireAuth)
+		usr.GET("/task/:id", a.getTask)
+		usr.GET("/config", a.getConfig)
+		usr.PUT("/config", a.upsertConfig)
 	}
 }
 

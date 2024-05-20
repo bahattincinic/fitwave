@@ -10,11 +10,11 @@ import (
 // syncData godoc
 //
 //	@Summary	Sync Strava data
-//	@Tags		data
+//	@Tags		user
 //	@Accept		json
 //	@Param		Authorization	header		string	true	"Strava Access Token"
 //	@Success	200				{object}	queue.TaskResult
-//	@Router		/data/sync [post]
+//	@Router		/user/sync [post]
 func (a *API) syncData(c echo.Context) error {
 	user := c.Get(userContextKey).(*strava.User)
 
@@ -31,11 +31,11 @@ func (a *API) syncData(c echo.Context) error {
 // getTask godoc
 //
 //	@Summary	Get Task Detail
-//	@Tags		data
+//	@Tags		user
 //	@Accept		json
 //	@Param		id	path		string	true	"Task ID"
 //	@Success	200	{object}	queue.TaskResult
-//	@Router		/data/task/{id} [get]
+//	@Router		/user/task/{id} [get]
 func (a *API) getTask(c echo.Context) error {
 	task, err := a.q.GetResult(c.Param("id"))
 
@@ -43,4 +43,16 @@ func (a *API) getTask(c echo.Context) error {
 		return c.JSON(http.StatusNotFound, err)
 	}
 	return c.JSON(http.StatusOK, task)
+}
+
+// getMe godoc
+//
+//	@Summary	Get Current User Details
+//	@Tags		user
+//	@Accept		json
+//	@Success	200	{object}	strava.User
+//	@Router		/user/me [get]
+func (a *API) getMe(c echo.Context) error {
+	user := c.Get(userContextKey).(*strava.User)
+	return c.JSON(http.StatusOK, user)
 }

@@ -179,109 +179,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/config/": {
-            "get": {
-                "consumes": [
-                    "application/json"
-                ],
-                "tags": [
-                    "config"
-                ],
-                "summary": "Get Application Config",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.Config"
-                        }
-                    }
-                }
-            },
-            "put": {
-                "consumes": [
-                    "application/json"
-                ],
-                "tags": [
-                    "config"
-                ],
-                "summary": "Upsert Application Config",
-                "parameters": [
-                    {
-                        "description": "Config Input",
-                        "name": "config",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.Config"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.Config"
-                        }
-                    }
-                }
-            }
-        },
-        "/data/sync": {
-            "post": {
-                "consumes": [
-                    "application/json"
-                ],
-                "tags": [
-                    "data"
-                ],
-                "summary": "Sync Strava data",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Strava Access Token",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/queue.TaskResult"
-                        }
-                    }
-                }
-            }
-        },
-        "/data/task/{id}": {
-            "get": {
-                "consumes": [
-                    "application/json"
-                ],
-                "tags": [
-                    "data"
-                ],
-                "summary": "Get Task Detail",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Task ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/queue.TaskResult"
-                        }
-                    }
-                }
-            }
-        },
         "/gears/": {
             "get": {
                 "consumes": [
@@ -359,6 +256,128 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/models.Gear"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/config": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Get Application Config",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Config"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Upsert Application Config",
+                "parameters": [
+                    {
+                        "description": "Config Input",
+                        "name": "config",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Config"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Config"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/me": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Get Current User Details",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/strava.User"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/sync": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Sync Strava data",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Strava Access Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/queue.TaskResult"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/task/{id}": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Get Task Detail",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Task ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/queue.TaskResult"
                         }
                     }
                 }
@@ -654,6 +673,154 @@ const docTemplate = `{
                 "Error",
                 "Archived"
             ]
+        },
+        "strava.AthleteDetailed": {
+            "type": "object",
+            "properties": {
+                "approve_followers": {
+                    "description": "if has enhanced privacy enabled",
+                    "type": "boolean"
+                },
+                "badge_type_id": {
+                    "type": "integer"
+                },
+                "bikes": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/strava.GearSummary"
+                    }
+                },
+                "city": {
+                    "type": "string"
+                },
+                "clubs": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/strava.ClubSummary"
+                    }
+                },
+                "country": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "date_preference": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "firstname": {
+                    "type": "string"
+                },
+                "follower": {
+                    "description": "this athlete’s following status of the authenticated athlete",
+                    "type": "string"
+                },
+                "follower_count": {
+                    "type": "integer"
+                },
+                "friend": {
+                    "description": "‘pending’, ‘accepted’, ‘blocked’ or ‘null’, the authenticated athlete’s following status of this athlete",
+                    "type": "string"
+                },
+                "friend_count": {
+                    "type": "integer"
+                },
+                "ftp": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "lastname": {
+                    "type": "string"
+                },
+                "measurement_preference": {
+                    "type": "string"
+                },
+                "mutual_friend_count": {
+                    "type": "integer"
+                },
+                "premium": {
+                    "type": "boolean"
+                },
+                "profile": {
+                    "description": "URL to a 124x124 pixel profile picture",
+                    "type": "string"
+                },
+                "profile_medium": {
+                    "description": "URL to a 62x62 pixel profile picture",
+                    "type": "string"
+                },
+                "sex": {
+                    "type": "string"
+                },
+                "shoes": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/strava.GearSummary"
+                    }
+                },
+                "state": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "weight": {
+                    "description": "kilograms",
+                    "type": "number"
+                }
+            }
+        },
+        "strava.ClubSummary": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "profile": {
+                    "description": "URL to a 124x124 pixel profile picture",
+                    "type": "string"
+                },
+                "profile_medium": {
+                    "description": "URL to a 62x62 pixel profile picture",
+                    "type": "string"
+                }
+            }
+        },
+        "strava.GearSummary": {
+            "type": "object",
+            "properties": {
+                "distance": {
+                    "type": "number"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "primary": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "strava.User": {
+            "type": "object",
+            "properties": {
+                "accessToken": {
+                    "type": "string"
+                },
+                "athlete": {
+                    "$ref": "#/definitions/strava.AthleteDetailed"
+                }
+            }
         }
     }
 }`

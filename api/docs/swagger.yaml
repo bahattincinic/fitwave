@@ -197,6 +197,107 @@ definitions:
     - Success
     - Error
     - Archived
+  strava.AthleteDetailed:
+    properties:
+      approve_followers:
+        description: if has enhanced privacy enabled
+        type: boolean
+      badge_type_id:
+        type: integer
+      bikes:
+        items:
+          $ref: '#/definitions/strava.GearSummary'
+        type: array
+      city:
+        type: string
+      clubs:
+        items:
+          $ref: '#/definitions/strava.ClubSummary'
+        type: array
+      country:
+        type: string
+      created_at:
+        type: string
+      date_preference:
+        type: string
+      email:
+        type: string
+      firstname:
+        type: string
+      follower:
+        description: this athlete’s following status of the authenticated athlete
+        type: string
+      follower_count:
+        type: integer
+      friend:
+        description: ‘pending’, ‘accepted’, ‘blocked’ or ‘null’, the authenticated
+          athlete’s following status of this athlete
+        type: string
+      friend_count:
+        type: integer
+      ftp:
+        type: integer
+      id:
+        type: integer
+      lastname:
+        type: string
+      measurement_preference:
+        type: string
+      mutual_friend_count:
+        type: integer
+      premium:
+        type: boolean
+      profile:
+        description: URL to a 124x124 pixel profile picture
+        type: string
+      profile_medium:
+        description: URL to a 62x62 pixel profile picture
+        type: string
+      sex:
+        type: string
+      shoes:
+        items:
+          $ref: '#/definitions/strava.GearSummary'
+        type: array
+      state:
+        type: string
+      updated_at:
+        type: string
+      weight:
+        description: kilograms
+        type: number
+    type: object
+  strava.ClubSummary:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      profile:
+        description: URL to a 124x124 pixel profile picture
+        type: string
+      profile_medium:
+        description: URL to a 62x62 pixel profile picture
+        type: string
+    type: object
+  strava.GearSummary:
+    properties:
+      distance:
+        type: number
+      id:
+        type: string
+      name:
+        type: string
+      primary:
+        type: boolean
+    type: object
+  strava.User:
+    properties:
+      accessToken:
+        type: string
+      athlete:
+        $ref: '#/definitions/strava.AthleteDetailed'
+    type: object
 info:
   contact: {}
 paths:
@@ -300,72 +401,6 @@ paths:
       summary: Get Athlete
       tags:
       - athlete
-  /config/:
-    get:
-      consumes:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.Config'
-      summary: Get Application Config
-      tags:
-      - config
-    put:
-      consumes:
-      - application/json
-      parameters:
-      - description: Config Input
-        in: body
-        name: config
-        required: true
-        schema:
-          $ref: '#/definitions/models.Config'
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.Config'
-      summary: Upsert Application Config
-      tags:
-      - config
-  /data/sync:
-    post:
-      consumes:
-      - application/json
-      parameters:
-      - description: Strava Access Token
-        in: header
-        name: Authorization
-        required: true
-        type: string
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/queue.TaskResult'
-      summary: Sync Strava data
-      tags:
-      - data
-  /data/task/{id}:
-    get:
-      consumes:
-      - application/json
-      parameters:
-      - description: Task ID
-        in: path
-        name: id
-        required: true
-        type: string
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/queue.TaskResult'
-      summary: Get Task Detail
-      tags:
-      - data
   /gears/:
     get:
       consumes:
@@ -416,4 +451,82 @@ paths:
       summary: Get Gear
       tags:
       - gear
+  /user/config:
+    get:
+      consumes:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Config'
+      summary: Get Application Config
+      tags:
+      - user
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Config Input
+        in: body
+        name: config
+        required: true
+        schema:
+          $ref: '#/definitions/models.Config'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Config'
+      summary: Upsert Application Config
+      tags:
+      - user
+  /user/me:
+    get:
+      consumes:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/strava.User'
+      summary: Get Current User Details
+      tags:
+      - user
+  /user/sync:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Strava Access Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/queue.TaskResult'
+      summary: Sync Strava data
+      tags:
+      - user
+  /user/task/{id}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Task ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/queue.TaskResult'
+      summary: Get Task Detail
+      tags:
+      - user
 swagger: "2.0"
