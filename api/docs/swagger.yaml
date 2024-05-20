@@ -696,6 +696,11 @@ paths:
       consumes:
       - application/json
       parameters:
+      - description: Dashboard ID
+        in: path
+        name: id
+        required: true
+        type: string
       - description: Component Input
         in: body
         name: input
@@ -716,6 +721,17 @@ paths:
     delete:
       consumes:
       - application/json
+      parameters:
+      - description: Dashboard ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Component ID
+        in: path
+        name: cpid
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -728,6 +744,16 @@ paths:
       consumes:
       - application/json
       parameters:
+      - description: Dashboard ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Component ID
+        in: path
+        name: cpid
+        required: true
+        type: string
       - description: Component Input
         in: body
         name: input
@@ -748,6 +774,17 @@ paths:
     post:
       consumes:
       - application/json
+      parameters:
+      - description: Dashboard ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Component ID
+        in: path
+        name: cpid
+        required: true
+        type: string
       produces:
       - application/json
       responses:

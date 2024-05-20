@@ -500,6 +500,13 @@ const docTemplate = `{
                 "summary": "Create Dashboard Components",
                 "parameters": [
                     {
+                        "type": "string",
+                        "description": "Dashboard ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
                         "description": "Component Input",
                         "name": "input",
                         "in": "body",
@@ -533,6 +540,20 @@ const docTemplate = `{
                 "summary": "Update Dashboard Component",
                 "parameters": [
                     {
+                        "type": "string",
+                        "description": "Dashboard ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Component ID",
+                        "name": "cpid",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
                         "description": "Component Input",
                         "name": "input",
                         "in": "body",
@@ -562,6 +583,22 @@ const docTemplate = `{
                     "dashboard"
                 ],
                 "summary": "Delete Dashboard Component",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Dashboard ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Component ID",
+                        "name": "cpid",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "204": {
                         "description": "No Content"
@@ -581,6 +618,22 @@ const docTemplate = `{
                     "dashboard"
                 ],
                 "summary": "Run Dashboard Component",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Dashboard ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Component ID",
+                        "name": "cpid",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
