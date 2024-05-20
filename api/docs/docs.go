@@ -582,8 +582,11 @@ const docTemplate = `{
                 ],
                 "summary": "Run Dashboard Component",
                 "responses": {
-                    "204": {
-                        "description": "No Content"
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/queue.TaskResult"
+                        }
                     }
                 }
             }

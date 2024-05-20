@@ -288,7 +288,7 @@ func (a *API) deleteComponent(c echo.Context) error {
 //	@Tags		dashboard
 //	@Accept		json
 //	@Produce	json
-//	@Success	204
+//	@Success	200	{object}	queue.TaskResult
 //	@Router		/dashboards/{id}/components/{cpid}/run [post]
 func (a *API) runComponent(c echo.Context) error {
 	component := c.Get(componentContextKey).(*models.Component)
