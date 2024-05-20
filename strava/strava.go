@@ -2,6 +2,7 @@ package strava
 
 import (
 	"context"
+	"sync"
 
 	pkgerrors "github.com/pkg/errors"
 	client "github.com/strava/go.strava"
@@ -11,6 +12,7 @@ import (
 type Strava struct {
 	ctx context.Context
 	log *zap.Logger
+	mu  sync.Mutex
 }
 
 const (

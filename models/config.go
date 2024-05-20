@@ -9,6 +9,6 @@ type Config struct {
 	CreatedAt time.Time `json:"-"`
 	UpdatedAt time.Time `json:"-"`
 
-	ClientId     string `json:"client_id"`
+	ClientId     int    `json:"client_id"`
 	ClientSecret string `json:"client_secret"`
 }

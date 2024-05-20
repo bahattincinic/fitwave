@@ -179,6 +179,67 @@ const docTemplate = `{
                 }
             }
         },
+        "/auth/authorization-url": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Get Access Token from Auth Code",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Callback URL",
+                        "name": "callback_url",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/token": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Get Access Token from Auth Code",
+                "parameters": [
+                    {
+                        "description": "Access Token Input",
+                        "name": "auth",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.getAccessToken.tokenRequestInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/strava.AuthorizationResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/gears/": {
             "get": {
                 "consumes": [
@@ -394,6 +455,14 @@ const docTemplate = `{
                 "results": {}
             }
         },
+        "api.getAccessToken.tokenRequestInput": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string"
+                }
+            }
+        },
         "models.Activity": {
             "type": "object",
             "properties": {
@@ -601,7 +670,7 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "client_id": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "client_secret": {
                     "type": "string"
@@ -772,6 +841,20 @@ const docTemplate = `{
                 "weight": {
                     "description": "kilograms",
                     "type": "number"
+                }
+            }
+        },
+        "strava.AuthorizationResponse": {
+            "type": "object",
+            "properties": {
+                "State": {
+                    "type": "string"
+                },
+                "access_token": {
+                    "type": "string"
+                },
+                "athlete": {
+                    "$ref": "#/definitions/strava.AthleteDetailed"
                 }
             }
         },

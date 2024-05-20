@@ -35,6 +35,12 @@ func (a *API) setupHandlers() {
 	}
 
 	{
+		auth := a.ec.Group("/auth")
+		auth.POST("/token", a.getAccessToken)
+		auth.GET("/authorization-url", a.getAuthorizationURL)
+	}
+
+	{
 		usr := a.ec.Group("/user")
 		usr.POST("/sync", a.syncData, requireAuth)
 		usr.GET("/me", a.getMe, requireAuth)

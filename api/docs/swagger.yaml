@@ -5,6 +5,11 @@ definitions:
         type: integer
       results: {}
     type: object
+  api.getAccessToken.tokenRequestInput:
+    properties:
+      code:
+        type: string
+    type: object
   models.Activity:
     properties:
       achievement_count:
@@ -147,7 +152,7 @@ definitions:
   models.Config:
     properties:
       client_id:
-        type: string
+        type: integer
       client_secret:
         type: string
     type: object
@@ -266,6 +271,15 @@ definitions:
       weight:
         description: kilograms
         type: number
+    type: object
+  strava.AuthorizationResponse:
+    properties:
+      State:
+        type: string
+      access_token:
+        type: string
+      athlete:
+        $ref: '#/definitions/strava.AthleteDetailed'
     type: object
   strava.ClubSummary:
     properties:
@@ -401,6 +415,45 @@ paths:
       summary: Get Athlete
       tags:
       - athlete
+  /auth/authorization-url:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Callback URL
+        in: query
+        name: callback_url
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get Access Token from Auth Code
+      tags:
+      - auth
+  /auth/token:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Access Token Input
+        in: body
+        name: auth
+        required: true
+        schema:
+          $ref: '#/definitions/api.getAccessToken.tokenRequestInput'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/strava.AuthorizationResponse'
+      summary: Get Access Token from Auth Code
+      tags:
+      - auth
   /gears/:
     get:
       consumes:

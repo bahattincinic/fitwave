@@ -38,3 +38,30 @@ func (s *Strava) GetCurrentAthlete(accessToken string) (*client.AthleteDetailed,
 
 	return athlete, nil
 }
+
+func (s *Strava) GetAccessToken(cfg *models.Config, code string) (*client.AuthorizationResponse, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	client.ClientId = cfg.ClientId
+	client.ClientSecret = cfg.ClientSecret
+
+	auth := client.OAuthAuthenticator{}
+	resp, err := auth.Authorize(code, nil)
+
+	return resp, err
+}
+
+func (s *Strava) GetAuthorizationURL(cfg *models.Config, callbackURL string) string {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	client.ClientId = cfg.ClientId
+	client.ClientSecret = cfg.ClientSecret
+
+	auth := client.OAuthAuthenticator{
+		CallbackURL: callbackURL,
+	}
+	scope := client.Permission("read,activity:read")
+	return auth.AuthorizationURL("", scope, true)
+}
