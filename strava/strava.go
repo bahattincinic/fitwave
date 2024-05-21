@@ -2,6 +2,7 @@ package strava
 
 import (
 	"context"
+	"encoding/json"
 	"sync"
 
 	pkgerrors "github.com/pkg/errors"
@@ -130,4 +131,12 @@ func (s *Strava) GetAthlete(user *User, athleteId int64) (*Athlete, error) {
 		Athlete: athlete,
 		Stats:   stats,
 	}, nil
+}
+
+func (s *Strava) ParseError(err error) *client.Error {
+	var resp client.Error
+	if err := json.Unmarshal([]byte(err.Error()), &resp); err != nil {
+		return nil
+	}
+	return &resp
 }

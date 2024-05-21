@@ -26,6 +26,7 @@ func (a *API) setupHandlers() {
 		act := a.ec.Group("/activities")
 		act.GET("", a.listActivities)
 		act.GET("/:id", a.getActivity)
+		act.GET("/:id/gpx", a.exportActivityGPS, requireAuth)
 	}
 
 	{

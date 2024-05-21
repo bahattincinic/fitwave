@@ -35,7 +35,6 @@ type Activity struct {
 	Manual               bool           `json:"manual"`
 	Private              bool           `json:"private"`
 	Flagged              bool           `json:"flagged"`
-	GearId               string         `json:"gear_id"` // bike or pair of shoes
 	AverageSpeed         float64        `json:"average_speed"`
 	MaximumSpeed         float64        `json:"max_speed"`
 	AverageCadence       float64        `json:"average_cadence"`
@@ -48,6 +47,8 @@ type Activity struct {
 	MaximumHeartRate     float64        `json:"max_heart_rate"`
 	Truncated            int            `json:"truncated"` // only present if activity is owned by authenticated athlete, returns 0 if not truncated by privacy zones
 	HasKudos             bool           `json:"has_kudos"`
-	AthleteID            uint
-	Athlete              Athlete `gorm:"foreignkey:AthleteID" json:"athlete"`
+	AthleteID            uint           `json:"athlete_id"`
+	Athlete              Athlete        `gorm:"foreignkey:AthleteID" json:"athlete"`
+	GearID               string         `json:"gear_id"`
+	Gear                 Gear           `gorm:"foreignkey:GearID" json:"gear"`
 }

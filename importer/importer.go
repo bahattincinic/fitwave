@@ -51,41 +51,37 @@ func (im *Importer) updateGears(tx *gorm.DB, gears []client.GearDetailed, user *
 	return im.db.UpsertGears(tx, rows)
 }
 
-func (im *Importer) updateAthletes(tx *gorm.DB, athletes []strava.Athlete) error {
-	var rows []models.Athlete
-
-	for _, athlete := range athletes {
-		sum := athlete.Athlete
-		stats, err := json.Marshal(athlete.Stats)
-		if err != nil {
-			return pkgerrors.Wrap(err, "Marshal")
-		}
-
-		rows = append(rows, models.Athlete{
-			Id:               sum.Id,
-			FirstName:        sum.FirstName,
-			LastName:         sum.LastName,
-			ProfileMedium:    sum.ProfileMedium,
-			Profile:          sum.Profile,
-			City:             sum.City,
-			State:            sum.State,
-			Country:          sum.Country,
-			Gender:           string(sum.Gender),
-			Friend:           sum.Friend,
-			Follower:         sum.Follower,
-			Premium:          sum.Premium,
-			CreatedAt:        sum.CreatedAt,
-			UpdatedAt:        sum.UpdatedAt,
-			ApproveFollowers: sum.ApproveFollowers,
-			BadgeTypeId:      sum.BadgeTypeId,
-			Stats:            stats,
-		})
+func (im *Importer) updateAthlete(tx *gorm.DB, athlete strava.Athlete) error {
+	sum := athlete.Athlete
+	stats, err := json.Marshal(athlete.Stats)
+	if err != nil {
+		return pkgerrors.Wrap(err, "Marshal")
 	}
 
-	return im.db.UpsertAthletes(tx, rows)
+	row := models.Athlete{
+		Id:               sum.Id,
+		FirstName:        sum.FirstName,
+		LastName:         sum.LastName,
+		ProfileMedium:    sum.ProfileMedium,
+		Profile:          sum.Profile,
+		City:             sum.City,
+		State:            sum.State,
+		Country:          sum.Country,
+		Gender:           string(sum.Gender),
+		Friend:           sum.Friend,
+		Follower:         sum.Follower,
+		Premium:          sum.Premium,
+		CreatedAt:        sum.CreatedAt,
+		UpdatedAt:        sum.UpdatedAt,
+		ApproveFollowers: sum.ApproveFollowers,
+		BadgeTypeId:      sum.BadgeTypeId,
+		Stats:            stats,
+	}
+
+	return im.db.UpsertAthlete(tx, &row)
 }
 
-func (im *Importer) updateActivities(tx *gorm.DB, activities []*client.ActivitySummary) error {
+func (im *Importer) updateActivities(tx *gorm.DB, activities []*client.ActivitySummary, user *strava.User) error {
 	var rows []models.Activity
 
 	for _, activity := range activities {
@@ -124,7 +120,7 @@ func (im *Importer) updateActivities(tx *gorm.DB, activities []*client.ActivityS
 			Manual:               activity.Manual,
 			Private:              activity.Private,
 			Flagged:              activity.Flagged,
-			GearId:               activity.GearId,
+			GearID:               activity.GearId,
 			AverageSpeed:         activity.AverageSpeed,
 			MaximumSpeed:         activity.MaximunSpeed,
 			AverageCadence:       activity.AverageCadence,
@@ -152,28 +148,21 @@ func (im *Importer) Import(user *strava.User) error {
 	im.log.Info("activities have been fetched",
 		zap.Int("count", len(activities)))
 
-	athleteIds := make(map[int64]bool)
 	gearIds := make(map[string]bool)
 
 	var athletes []strava.Athlete
 	var gears []client.GearDetailed
 
+	athlete, err := im.st.GetAthlete(user, user.Athlete.Id)
+	if err != nil {
+		im.log.Info("could not fetch athlete",
+			zap.Int64("id", user.Athlete.Id),
+			zap.Error(err))
+		return pkgerrors.Wrap(err, "GetAthlete")
+	}
+
 	for _, act := range activities {
-		athleteId := act.Athlete.Id
 		gearId := act.GearId
-
-		if _, ok := athleteIds[athleteId]; !ok {
-			athleteIds[athleteId] = true
-			athlete, err := im.st.GetAthlete(user, athleteId)
-			if err != nil {
-				im.log.Info("could not fetch athlete",
-					zap.Int64("id", athleteId),
-					zap.Error(err))
-
-				return pkgerrors.Wrap(err, "GetAthlete")
-			}
-			athletes = append(athletes, *athlete)
-		}
 
 		if _, ok := gearIds[gearId]; !ok && gearId != "" {
 			gearIds[gearId] = true
@@ -198,20 +187,18 @@ func (im *Importer) Import(user *strava.User) error {
 	tx := im.db.BeginTransaction()
 	defer tx.Rollback()
 
+	if err := im.updateAthlete(tx, *athlete); err != nil {
+		return pkgerrors.Wrap(err, "updateAthlete")
+	}
+
 	if len(gears) > 0 {
 		if err := im.updateGears(tx, gears, user); err != nil {
 			return pkgerrors.Wrap(err, "updateGears")
 		}
 	}
 
-	if len(athletes) > 0 {
-		if err := im.updateAthletes(tx, athletes); err != nil {
-			return pkgerrors.Wrap(err, "updateAthletes")
-		}
-	}
-
 	if len(activities) > 0 {
-		if err := im.updateActivities(tx, activities); err != nil {
+		if err := im.updateActivities(tx, activities, user); err != nil {
 			return pkgerrors.Wrap(err, "updateActivities")
 		}
 	}

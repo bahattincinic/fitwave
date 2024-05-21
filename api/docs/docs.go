@@ -97,6 +97,38 @@ const docTemplate = `{
                 }
             }
         },
+        "/activities/{id}/gpx": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "activity"
+                ],
+                "summary": "Export Activity GPX",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Activity ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Strava Access Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
         "/athletes": {
             "get": {
                 "consumes": [
@@ -960,10 +992,10 @@ const docTemplate = `{
                 "athlete": {
                     "$ref": "#/definitions/models.Athlete"
                 },
-                "athleteID": {
+                "athlete_count": {
                     "type": "integer"
                 },
-                "athlete_count": {
+                "athlete_id": {
                     "type": "integer"
                 },
                 "average_cadence": {
@@ -1005,8 +1037,10 @@ const docTemplate = `{
                 "flagged": {
                     "type": "boolean"
                 },
+                "gear": {
+                    "$ref": "#/definitions/models.Gear"
+                },
                 "gear_id": {
-                    "description": "bike or pair of shoes",
                     "type": "string"
                 },
                 "has_kudos": {

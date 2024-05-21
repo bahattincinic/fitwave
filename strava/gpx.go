@@ -55,6 +55,10 @@ func (s *Strava) GetActivityStream(user *User, activityId int64) (*client.Stream
 	streams, err := service.Get(activityId, types).Do()
 
 	if err != nil {
+		parsedErr := s.ParseError(err)
+		if parsedErr != nil && parsedErr.Message == "Resource Not Found" {
+			return nil, nil
+		}
 		return nil, pkgerrors.Wrap(err, "Get")
 	}
 
@@ -64,6 +68,10 @@ func (s *Strava) ExportGPX(user *User, activityId int64) (string, error) {
 	streams, err := s.GetActivityStream(user, activityId)
 	if err != nil {
 		return "", err
+	}
+
+	if streams == nil {
+		return "", nil
 	}
 
 	var trkpts []Trkpt

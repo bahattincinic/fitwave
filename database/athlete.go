@@ -8,18 +8,15 @@ import (
 	"gorm.io/gorm/clause"
 )
 
-func (d *Database) UpsertAthletes(tx *gorm.DB, athletes []models.Athlete) error {
-	for _, row := range athletes {
-		currentRow := row
-		err := tx.Clauses(clause.OnConflict{
-			Columns:   []clause.Column{{Name: "id"}},
-			UpdateAll: true,
-		}).Create(&currentRow).Error
-		if err != nil {
-			d.log.Error("could not upsert athletes",
-				zap.Any("athlete", currentRow))
-			return err
-		}
+func (d *Database) UpsertAthlete(tx *gorm.DB, athlete *models.Athlete) error {
+	err := tx.Clauses(clause.OnConflict{
+		Columns:   []clause.Column{{Name: "id"}},
+		UpdateAll: true,
+	}).Create(&athlete).Error
+	if err != nil {
+		d.log.Error("could not upsert athletes",
+			zap.Any("athlete", athlete))
+		return err
 	}
 	return nil
 }

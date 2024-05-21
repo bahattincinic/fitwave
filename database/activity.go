@@ -52,6 +52,7 @@ func (d *Database) ListActivities(offset, limit int) (int64, []models.Activity, 
 		Offset(offset).
 		Order("id desc").
 		Preload("Athlete").
+		Preload("Gear").
 		Find(&activities).
 		Count(&count).
 		Error
@@ -65,7 +66,14 @@ func (d *Database) ListActivities(offset, limit int) (int64, []models.Activity, 
 
 func (d *Database) GetActivity(id string) (*models.Activity, error) {
 	var act models.Activity
-	if err := d.db.Preload("Athlete").First(&act, id).Error; err != nil {
+
+	err := d.db.
+		Preload("Athlete").
+		Preload("Gear").
+		First(&act, id).
+		Error
+
+	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return nil, nil
 		}

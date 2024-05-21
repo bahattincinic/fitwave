@@ -53,7 +53,7 @@ definitions:
         $ref: '#/definitions/models.Athlete'
       athlete_count:
         type: integer
-      athleteID:
+      athlete_id:
         type: integer
       average_cadence:
         type: number
@@ -81,8 +81,9 @@ definitions:
         type: string
       flagged:
         type: boolean
+      gear:
+        $ref: '#/definitions/models.Gear'
       gear_id:
-        description: bike or pair of shoes
         type: string
       has_kudos:
         type: boolean
@@ -446,6 +447,27 @@ paths:
           schema:
             $ref: '#/definitions/models.Activity'
       summary: Get Activity
+      tags:
+      - activity
+  /activities/{id}/gpx:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Activity ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Strava Access Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: Export Activity GPX
       tags:
       - activity
   /athletes:
