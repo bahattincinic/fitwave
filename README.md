@@ -15,5 +15,5 @@ Step2:
 curl -X POST https://www.strava.com/oauth/token \
 -F client_id=30980 \
 -F client_secret=d8d5256cc59c20e49d984d412377604e8dfb6052 \
--F code=e80825b36f668a777f4ce9e9960f6c2b6351dd6f \
+-F code=fe297327dc6a6ddd5e81705e25dc248f7dda2a88 \
 -F grant_type=authorization_code
