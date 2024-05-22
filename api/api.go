@@ -42,6 +42,7 @@ func RunAPI(ctx context.Context, wg *sync.WaitGroup, log *zap.Logger, db *databa
 
 	srv.setupHandlers()
 	srv.setupSwagger()
+	srv.setupCors()
 
 	// Start server
 	wg.Add(1)

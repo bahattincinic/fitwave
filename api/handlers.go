@@ -6,6 +6,7 @@ import (
 
 	"github.com/bahattincinic/fitwave/api/docs"
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 	echoSwagger "github.com/swaggo/echo-swagger"
 )
 
@@ -81,4 +82,13 @@ func (a *API) setupSwagger() {
 	docs.SwaggerInfo.Title = "FitWave API"
 	docs.SwaggerInfo.Version = "1.0"
 	docs.SwaggerInfo.Host = fmt.Sprintf("localhost:%d", a.cfg.API.PORT)
+}
+
+func (a *API) setupCors() {
+	a.ec.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{
+			"http://localhost:8080",
+			"http://127.0.0.1:8080",
+		},
+	}))
 }
