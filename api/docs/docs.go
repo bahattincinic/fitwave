@@ -129,6 +129,59 @@ const docTemplate = `{
                 }
             }
         },
+        "/activities/{id}/laps": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "activity"
+                ],
+                "summary": "Get Activity Laps",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Activity ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Strava Access Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/api.PaginatedResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        " count": {
+                                            "type": "integer"
+                                        },
+                                        "Results": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/strava.LapEffortSummary"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
         "/athletes": {
             "get": {
                 "consumes": [
@@ -1482,6 +1535,78 @@ const docTemplate = `{
                 },
                 "primary": {
                     "type": "boolean"
+                }
+            }
+        },
+        "strava.LapEffortSummary": {
+            "type": "object",
+            "properties": {
+                "activity": {
+                    "type": "object",
+                    "properties": {
+                        "id": {
+                            "type": "integer"
+                        }
+                    }
+                },
+                "athlete": {
+                    "type": "object",
+                    "properties": {
+                        "id": {
+                            "type": "integer"
+                        }
+                    }
+                },
+                "average_cadence": {
+                    "type": "number"
+                },
+                "average_heartrate": {
+                    "type": "number"
+                },
+                "average_speed": {
+                    "type": "number"
+                },
+                "average_watts": {
+                    "type": "number"
+                },
+                "distance": {
+                    "type": "number"
+                },
+                "elapsed_time": {
+                    "type": "integer"
+                },
+                "end_index": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "lap_index": {
+                    "type": "integer"
+                },
+                "max_heartrate": {
+                    "type": "number"
+                },
+                "max_speed": {
+                    "type": "number"
+                },
+                "moving_time": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "start_date": {
+                    "type": "string"
+                },
+                "start_date_local": {
+                    "type": "string"
+                },
+                "start_index": {
+                    "type": "integer"
+                },
+                "total_elevation_gain": {
+                    "type": "number"
                 }
             }
         },

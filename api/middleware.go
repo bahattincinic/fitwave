@@ -13,6 +13,7 @@ const (
 	userContextKey      = "usr"
 	dashboardContextKey = "dsb"
 	componentContextKey = "cp"
+	activityContextKey  = "act"
 )
 
 func (a *API) requireAuthMiddleware() func(next echo.HandlerFunc) echo.HandlerFunc {
@@ -86,6 +87,23 @@ func (a *API) setComponentMiddleware() func(next echo.HandlerFunc) echo.HandlerF
 			}
 
 			c.Set(componentContextKey, component)
+			return next(c)
+		}
+	}
+}
+
+func (a *API) setActivityMiddleware() func(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			activity, err := a.db.GetActivity(c.Param("id"))
+			if err != nil {
+				return err
+			}
+			if activity == nil {
+				return echo.NewHTTPError(http.StatusNotFound, fmt.Sprint("invalid activity id"))
+			}
+
+			c.Set(activityContextKey, activity)
 			return next(c)
 		}
 	}

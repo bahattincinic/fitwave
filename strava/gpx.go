@@ -64,6 +64,7 @@ func (s *Strava) GetActivityStream(user *User, activityId int64) (*client.Stream
 
 	return streams, nil
 }
+
 func (s *Strava) ExportGPX(user *User, activityId int64) (string, error) {
 	streams, err := s.GetActivityStream(user, activityId)
 	if err != nil {

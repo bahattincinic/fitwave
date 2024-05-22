@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/bahattincinic/fitwave/models"
 	"github.com/bahattincinic/fitwave/strava"
 	"github.com/labstack/echo/v4"
 )
@@ -45,19 +46,12 @@ func (a *API) listActivities(c echo.Context) error {
 //	@Success	200	{object}	models.Activity
 //	@Router		/activities/{id} [get]
 func (a *API) getActivity(c echo.Context) error {
-	act, err := a.db.GetActivity(c.Param("id"))
-	if err != nil {
-		return err
-	}
-
-	if act == nil {
-		return echo.NewHTTPError(http.StatusNotFound, "activity Not Found")
-	}
+	act := c.Get(activityContextKey).(*models.Activity)
 
 	return c.JSON(http.StatusOK, act)
 }
 
-// getActivity godoc
+// exportActivityGPS godoc
 //
 //	@Summary	Export Activity GPX
 //	@Tags		activity
@@ -68,15 +62,7 @@ func (a *API) getActivity(c echo.Context) error {
 //	@Router		/activities/{id}/gpx [get]
 func (a *API) exportActivityGPS(c echo.Context) error {
 	user := c.Get(userContextKey).(*strava.User)
-
-	act, err := a.db.GetActivity(c.Param("id"))
-	if err != nil {
-		return err
-	}
-
-	if act == nil {
-		return echo.NewHTTPError(http.StatusNotFound, "activity Not Found")
-	}
+	act := c.Get(activityContextKey).(*models.Activity)
 
 	gpx, err := a.st.ExportGPX(user, act.Id)
 	if err != nil {
@@ -92,4 +78,28 @@ func (a *API) exportActivityGPS(c echo.Context) error {
 	c.Response().Header().Set(echo.HeaderContentType,
 		"application/gpx+xml")
 	return c.Blob(http.StatusOK, "application/gpx+xml", []byte(xml.Header+gpx))
+}
+
+// getActivityLaps godoc
+//
+//	@Summary	Get Activity Laps
+//	@Tags		activity
+//	@Accept		json
+//	@Param		id				path		string	true	"Activity ID"
+//	@Param		Authorization	header		string	true	"Strava Access Token"
+//	@Success	200				{object}	PaginatedResponse{Results=[]strava.LapEffortSummary, count=int}
+//	@Router		/activities/{id}/laps [get]
+func (a *API) getActivityLaps(c echo.Context) error {
+	user := c.Get(userContextKey).(*strava.User)
+	act := c.Get(activityContextKey).(*models.Activity)
+
+	laps, err := a.st.GetActivityLaps(user, act.Id)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err)
+	}
+
+	return c.JSON(http.StatusOK, PaginatedResponse{
+		Results: laps,
+		Count:   int64(len(laps)),
+	})
 }

@@ -389,6 +389,53 @@ definitions:
       primary:
         type: boolean
     type: object
+  strava.LapEffortSummary:
+    properties:
+      activity:
+        properties:
+          id:
+            type: integer
+        type: object
+      athlete:
+        properties:
+          id:
+            type: integer
+        type: object
+      average_cadence:
+        type: number
+      average_heartrate:
+        type: number
+      average_speed:
+        type: number
+      average_watts:
+        type: number
+      distance:
+        type: number
+      elapsed_time:
+        type: integer
+      end_index:
+        type: integer
+      id:
+        type: integer
+      lap_index:
+        type: integer
+      max_heartrate:
+        type: number
+      max_speed:
+        type: number
+      moving_time:
+        type: integer
+      name:
+        type: string
+      start_date:
+        type: string
+      start_date_local:
+        type: string
+      start_index:
+        type: integer
+      total_elevation_gain:
+        type: number
+    type: object
   strava.User:
     properties:
       accessToken:
@@ -468,6 +515,38 @@ paths:
         "200":
           description: OK
       summary: Export Activity GPX
+      tags:
+      - activity
+  /activities/{id}/laps:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Activity ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Strava Access Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/api.PaginatedResponse'
+            - properties:
+                ' count':
+                  type: integer
+                Results:
+                  items:
+                    $ref: '#/definitions/strava.LapEffortSummary'
+                  type: array
+              type: object
+      summary: Get Activity Laps
       tags:
       - activity
   /athletes:
