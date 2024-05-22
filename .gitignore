@@ -23,3 +23,6 @@
 # Playground
 cmd/playground
 playground
+
+# UI
+ui/node_modules
