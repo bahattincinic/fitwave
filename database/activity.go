@@ -48,13 +48,21 @@ func (d *Database) ListActivities(offset, limit int) (int64, []models.Activity, 
 	var count int64
 
 	err := d.db.
+		Model(&models.Activity{}).
+		Count(&count).
+		Error
+
+	if err != nil {
+		return 0, nil, pkgerrors.New("error while counting activities")
+	}
+
+	err = d.db.
 		Limit(limit).
 		Offset(offset).
 		Order("id desc").
 		Preload("Athlete").
 		Preload("Gear").
 		Find(&activities).
-		Count(&count).
 		Error
 
 	if err != nil {

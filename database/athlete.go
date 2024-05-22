@@ -26,11 +26,19 @@ func (d *Database) ListAthletes(offset, limit int) (int64, []models.Athlete, err
 	var count int64
 
 	err := d.db.
+		Model(&models.Athlete{}).
+		Count(&count).
+		Error
+
+	if err != nil {
+		return 0, nil, pkgerrors.New("error while counting athletes")
+	}
+
+	err = d.db.
 		Limit(limit).
 		Offset(offset).
 		Order("id desc").
 		Find(&athletes).
-		Count(&count).
 		Error
 
 	if err != nil {
