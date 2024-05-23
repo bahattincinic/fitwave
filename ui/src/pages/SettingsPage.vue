@@ -1,6 +1,7 @@
 <template>
   <div>
-    <h1>Settings Page</h1>
+    <Toast />
+    <h1>Settings</h1>
     <form @submit.prevent="saveSettings">
       <div class="field">
         <label for="client_id">Client ID:</label>
@@ -18,6 +19,8 @@
 <script>
 import { ref, onMounted } from 'vue';
 import { getUserConfig, saveUserConfig } from '@/services/user';
+import Toast from 'primevue/toast';
+import { useToast } from 'primevue/usetoast';
 import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
 
@@ -25,11 +28,13 @@ export default {
   name: 'SettingsPage',
   components: {
     InputText,
-    Button
+    Button,
+    Toast
   },
   setup() {
     const clientId = ref('');
     const clientSecret = ref('');
+    const toast = useToast();
 
     onMounted(async () => {
       try {
@@ -37,7 +42,12 @@ export default {
         clientId.value = config.client_id;
         clientSecret.value = config.client_secret;
       } catch (error) {
-        console.error('Error fetching user config:', error);
+        toast.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: error.toString(),
+          life: 3000,
+        });
       }
     });
 
@@ -47,10 +57,19 @@ export default {
           client_id: parseInt(clientId.value),
           client_secret: clientSecret.value
         });
-        alert('Settings saved successfully!');
+        toast.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'Settings saved successfully!',
+          life: 3000,
+        });
       } catch (error) {
-        console.error('Error saving user config:', error);
-        alert('Error saving settings.');
+        toast.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: error.toString(),
+          life: 3000,
+        });
       }
     };
 

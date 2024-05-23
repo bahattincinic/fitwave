@@ -1,4 +1,4 @@
-# ui
+# FitWave UI
 
 ## Project setup
 ```

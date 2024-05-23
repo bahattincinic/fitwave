@@ -1,8 +1,9 @@
 <template>
   <div>
+    <Toast />
     <h1>Athletes</h1>
 
-    <DataTable :value="athletes" :loading="loading" @onPage="handlePageChange">
+    <DataTable :value="athletes" :loading="loading">
       <Column field="id" header="ID"></Column>
       <Column field="firstname" header="First Name"></Column>
       <Column field="lastname" header="Last Name"></Column>
@@ -15,8 +16,10 @@
 </template>
 
 <script>
-import { ref, onMounted } from "vue";
+import { ref, onMounted } from 'vue';
 import { fetchAthletes } from '@/services/athletes';
+import Toast from 'primevue/toast';
+import { useToast } from 'primevue/usetoast';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import Paginator from 'primevue/paginator';
@@ -26,13 +29,15 @@ export default {
   components: {
     DataTable,
     Column,
-    Paginator
+    Paginator,
+    Toast,
   },
   setup() {
     const athletes = ref([]);
     const count = ref(0);
     let currentPage = 1;
     const loading = ref(false);
+    const toast = useToast();
 
     const fetch = async () => {
       try {
@@ -41,7 +46,12 @@ export default {
         athletes.value = response.results;
         count.value = response.count;
       } catch (error) {
-        console.error('Error fetching athletes:', error);
+        toast.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: error.toString(),
+          life: 3000,
+        });
       } finally {
         loading.value = false;
       }
