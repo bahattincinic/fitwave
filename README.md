@@ -2,18 +2,65 @@
 
 Virtualize Your Strava Workouts
 
-## How to get access token
+## Setup
 
-Follow the following document to get Access token
+**1. Clone the Repository**
 
-https://developers.strava.com/docs/getting-started/#:~:text=Access%20tokens%20are%20required%20for,tokens%20expire%20every%20six%20hours.
+```
+git clone git@github.com:bahattincinic/fitwave.git
+cd fitwave
+```
 
-Step 1:
-http://www.strava.com/oauth/authorize?client_id=30980&response_type=code&redirect_uri=http://localhost/exchange_token&approval_prompt=force&scope=read,activity:read
+**2. Build Backend**
 
-Step2:
-curl -X POST https://www.strava.com/oauth/token \
--F client_id=30980 \
--F client_secret=d8d5256cc59c20e49d984d412377604e8dfb6052 \
--F code=fe297327dc6a6ddd5e81705e25dc248f7dda2a88 \
--F grant_type=authorization_code
+```
+make
+```
+
+**2. Build Frontend**
+
+```
+cd ui
+npm install
+```
+
+## Running the Application
+
+**1. Run Backend**
+
+Run project with the following command;
+
+    ./fitwave
+
+If you need to override the configuration, create a `.env` file.
+
+**2. Run Frontend (`different terminal tab`)**
+
+    cd ui
+    npm run serve
+
+## Environment Variables
+
+| Field Name            | Type    | Default    | Options/Examples                                                                           |
+|-----------------------|---------|------------|--------------------------------------------------------------------------------------------|
+| ENV                   | string  | local      | - local<br/>- testing<br/>- production                                                     |
+| LOG_LEVEL             | string  | debug      | - debug<br/>- info<br/>- warn<br/>- error<br/>- panic<br/>- fatal                          |
+| LOG_OUTPUT            | string  | stdout     | - stdout<br/>- /foo/bar/fitwave.log                                                        |
+| DATABASE_DSN          | string  | fitWave.db | - fitWave.db<br/>- host=localhost user=postgres password=postgres dbname=fitwave port=5432 |
+| DATABASE_TYPE         | string  | sqlite     | - mysql<br/>- postgresql<br/>- sqlite                                                      |
+| DATABASE_AUTO_MIGRATE | boolean | true       | - true<br/>- false                                                                         |
+| API_PORT              | integer | 9000       |                                                                                            |
+
+## Production Build
+
+Build Frontend
+
+```
+make build-frontend
+```
+
+Build Backend
+
+```
+make GCFLAGS="-tags=prod"
+```

@@ -24,6 +24,9 @@ fitwave:
 clean:
 	rm -vf ./fitwave
 
+build-frontend:
+	cd ui && npm install && npm run build
+
 .PHONY: all fmt build clean vet fitwave
 
 .NOTPARALLEL:
