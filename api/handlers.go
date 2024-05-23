@@ -54,7 +54,7 @@ func (a *API) setupHandlers() {
 	}
 
 	{
-		dash := a.ec.Group("/dashboard")
+		dash := a.ec.Group("/dashboards")
 		// Dashboard
 		dash.GET("", a.listDashboards)
 		dash.POST("", a.createDashboard)

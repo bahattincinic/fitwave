@@ -325,120 +325,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/dashboard/{id}": {
-            "get": {
-                "consumes": [
-                    "application/json"
-                ],
-                "tags": [
-                    "dashboard"
-                ],
-                "summary": "Get Dashboard",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Dashboard ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.Dashboard"
-                        }
-                    }
-                }
-            },
-            "put": {
-                "consumes": [
-                    "application/json"
-                ],
-                "tags": [
-                    "dashboard"
-                ],
-                "summary": "Update Dashboard",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Dashboard ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "Dashboard Input",
-                        "name": "input",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/api.updateDashboard.dashboardInput"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.Dashboard"
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "consumes": [
-                    "application/json"
-                ],
-                "tags": [
-                    "dashboard"
-                ],
-                "summary": "Delete Dashboard",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Dashboard ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "204": {
-                        "description": "No Content"
-                    }
-                }
-            }
-        },
-        "/dashboard/{id}/run": {
-            "post": {
-                "consumes": [
-                    "application/json"
-                ],
-                "tags": [
-                    "dashboard"
-                ],
-                "summary": "Run Dashboard",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Dashboard ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/queue.TaskResult"
-                        }
-                    }
-                }
-            }
-        },
         "/dashboards": {
             "get": {
                 "consumes": [
@@ -520,6 +406,92 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/models.Dashboard"
                         }
+                    }
+                }
+            }
+        },
+        "/dashboards/{id}": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "dashboard"
+                ],
+                "summary": "Get Dashboard",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Dashboard ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Dashboard"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "dashboard"
+                ],
+                "summary": "Update Dashboard",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Dashboard ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Dashboard Input",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.updateDashboard.dashboardInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Dashboard"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "dashboard"
+                ],
+                "summary": "Delete Dashboard",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Dashboard ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
                     }
                 }
             }
@@ -715,6 +687,34 @@ const docTemplate = `{
                         "type": "string",
                         "description": "Component ID",
                         "name": "cpid",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/queue.TaskResult"
+                        }
+                    }
+                }
+            }
+        },
+        "/dashboards/{id}/run": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "dashboard"
+                ],
+                "summary": "Run Dashboard",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Dashboard ID",
+                        "name": "id",
                         "in": "path",
                         "required": true
                     }

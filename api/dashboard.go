@@ -69,7 +69,7 @@ func (a *API) createDashboard(c echo.Context) error {
 //	@Accept		json
 //	@Param		id	path		string	true	"Dashboard ID"
 //	@Success	200	{object}	models.Dashboard
-//	@Router		/dashboard/{id} [get]
+//	@Router		/dashboards/{id} [get]
 func (a *API) getDashboard(c echo.Context) error {
 	dashboard := c.Get(dashboardContextKey).(*models.Dashboard)
 
@@ -84,7 +84,7 @@ func (a *API) getDashboard(c echo.Context) error {
 //	@Param		id		path		string	true	"Dashboard ID"
 //	@Success	200		{object}	models.Dashboard
 //	@Param		input	body		api.updateDashboard.dashboardInput	true	"Dashboard Input"
-//	@Router		/dashboard/{id} [put]
+//	@Router		/dashboards/{id} [put]
 func (a *API) updateDashboard(c echo.Context) error {
 	dashboard := c.Get(dashboardContextKey).(*models.Dashboard)
 
@@ -112,7 +112,7 @@ func (a *API) updateDashboard(c echo.Context) error {
 //	@Accept		json
 //	@Param		id	path	string	true	"Dashboard ID"
 //	@Success	204
-//	@Router		/dashboard/{id} [delete]
+//	@Router		/dashboards/{id} [delete]
 func (a *API) deleteDashboard(c echo.Context) error {
 	dashboard := c.Get(dashboardContextKey).(*models.Dashboard)
 
@@ -130,7 +130,7 @@ func (a *API) deleteDashboard(c echo.Context) error {
 //	@Accept		json
 //	@Param		id	path		string	true	"Dashboard ID"
 //	@Success	200	{object}	queue.TaskResult
-//	@Router		/dashboard/{id}/run [post]
+//	@Router		/dashboards/{id}/run [post]
 func (a *API) runDashboard(c echo.Context) error {
 	dashboard := c.Get(dashboardContextKey).(*models.Dashboard)
 

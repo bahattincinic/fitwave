@@ -638,7 +638,59 @@ paths:
       summary: Get Access Token from Auth Code
       tags:
       - auth
-  /dashboard/{id}:
+  /dashboards:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: pagination limit
+        in: query
+        name: limit
+        type: string
+      - description: active page
+        in: query
+        name: page
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/api.PaginatedResponse'
+            - properties:
+                ' count':
+                  type: integer
+                Results:
+                  items:
+                    $ref: '#/definitions/models.Dashboard'
+                  type: array
+              type: object
+      summary: List Dashboards
+      tags:
+      - dashboard
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Dashboard Input
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/api.createDashboard.dashboardInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Dashboard'
+      summary: Create Dashboard
+      tags:
+      - dashboard
+  /dashboards/{id}:
     delete:
       consumes:
       - application/json
@@ -692,76 +744,6 @@ paths:
           schema:
             $ref: '#/definitions/models.Dashboard'
       summary: Update Dashboard
-      tags:
-      - dashboard
-  /dashboard/{id}/run:
-    post:
-      consumes:
-      - application/json
-      parameters:
-      - description: Dashboard ID
-        in: path
-        name: id
-        required: true
-        type: string
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/queue.TaskResult'
-      summary: Run Dashboard
-      tags:
-      - dashboard
-  /dashboards:
-    get:
-      consumes:
-      - application/json
-      parameters:
-      - description: pagination limit
-        in: query
-        name: limit
-        type: string
-      - description: active page
-        in: query
-        name: page
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            allOf:
-            - $ref: '#/definitions/api.PaginatedResponse'
-            - properties:
-                ' count':
-                  type: integer
-                Results:
-                  items:
-                    $ref: '#/definitions/models.Dashboard'
-                  type: array
-              type: object
-      summary: List Dashboards
-      tags:
-      - dashboard
-    post:
-      consumes:
-      - application/json
-      parameters:
-      - description: Dashboard Input
-        in: body
-        name: input
-        required: true
-        schema:
-          $ref: '#/definitions/api.createDashboard.dashboardInput'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/models.Dashboard'
-      summary: Create Dashboard
       tags:
       - dashboard
   /dashboards/{id}/components:
@@ -894,6 +876,24 @@ paths:
           schema:
             $ref: '#/definitions/queue.TaskResult'
       summary: Run Dashboard Component
+      tags:
+      - dashboard
+  /dashboards/{id}/run:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Dashboard ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/queue.TaskResult'
+      summary: Run Dashboard
       tags:
       - dashboard
   /gears:

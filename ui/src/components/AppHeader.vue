@@ -16,7 +16,7 @@ export default {
   setup() {
     const router = useRouter();
     const items = [
-      { label: 'Home', icon: 'pi pi-fw pi-home', command: () => router.push('/') },
+      { label: 'Dashboard', icon: 'pi pi-fw pi-home', command: () => router.push('/') },
       { label: 'Settings', icon: 'pi pi-fw pi-cog', command: () => router.push('/settings') },
       { label: 'Activities', icon: 'pi pi-fw pi-calendar', command: () => router.push('/activities') },
       { label: 'Gears', icon: 'pi pi-fw pi-sitemap', command: () => router.push('/gears') }
