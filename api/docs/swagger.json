@@ -4,7 +4,7 @@
         "contact": {}
     },
     "paths": {
-        "/activities": {
+        "/api/activities": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -58,7 +58,7 @@
                 }
             }
         },
-        "/activities/{id}": {
+        "/api/activities/{id}": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -86,7 +86,7 @@
                 }
             }
         },
-        "/activities/{id}/gpx": {
+        "/api/activities/{id}/gpx": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -118,7 +118,7 @@
                 }
             }
         },
-        "/activities/{id}/laps": {
+        "/api/activities/{id}/laps": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -171,7 +171,7 @@
                 }
             }
         },
-        "/athletes": {
+        "/api/athletes": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -225,7 +225,7 @@
                 }
             }
         },
-        "/athletes/{id}": {
+        "/api/athletes/{id}": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -253,7 +253,7 @@
                 }
             }
         },
-        "/auth/authorization-url": {
+        "/api/auth/authorization-url": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -284,7 +284,7 @@
                 }
             }
         },
-        "/auth/token": {
+        "/api/auth/token": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -314,7 +314,7 @@
                 }
             }
         },
-        "/dashboards": {
+        "/api/dashboards": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -399,7 +399,7 @@
                 }
             }
         },
-        "/dashboards/{id}": {
+        "/api/dashboards/{id}": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -485,7 +485,7 @@
                 }
             }
         },
-        "/dashboards/{id}/components": {
+        "/api/dashboards/{id}/components": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -572,7 +572,7 @@
                 }
             }
         },
-        "/dashboards/{id}/components/{cpid}": {
+        "/api/dashboards/{id}/components/{cpid}": {
             "put": {
                 "consumes": [
                     "application/json"
@@ -652,7 +652,7 @@
                 }
             }
         },
-        "/dashboards/{id}/components/{cpid}/run": {
+        "/api/dashboards/{id}/components/{cpid}/run": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -690,7 +690,7 @@
                 }
             }
         },
-        "/dashboards/{id}/run": {
+        "/api/dashboards/{id}/run": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -718,7 +718,7 @@
                 }
             }
         },
-        "/gears": {
+        "/api/gears": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -772,7 +772,7 @@
                 }
             }
         },
-        "/gears/{id}": {
+        "/api/gears/{id}": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -800,7 +800,7 @@
                 }
             }
         },
-        "/user/config": {
+        "/api/user/config": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -847,7 +847,7 @@
                 }
             }
         },
-        "/user/me": {
+        "/api/user/me": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -866,7 +866,7 @@
                 }
             }
         },
-        "/user/query": {
+        "/api/user/query": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -896,7 +896,7 @@
                 }
             }
         },
-        "/user/sync": {
+        "/api/user/sync": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -924,7 +924,7 @@
                 }
             }
         },
-        "/user/task/{id}": {
+        "/api/user/task/{id}": {
             "get": {
                 "consumes": [
                     "application/json"

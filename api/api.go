@@ -3,10 +3,12 @@ package api
 import (
 	"context"
 	"fmt"
+	"io/fs"
 	"net/http"
 	"sync"
 	"time"
 
+	"github.com/bahattincinic/fitwave"
 	"github.com/bahattincinic/fitwave/config"
 	"github.com/bahattincinic/fitwave/database"
 	"github.com/bahattincinic/fitwave/importer"
@@ -27,6 +29,8 @@ type API struct {
 	q   *queue.Queue
 }
 
+var uiFS fs.FS
+
 func RunAPI(ctx context.Context, wg *sync.WaitGroup, log *zap.Logger, db *database.Database, cfg *config.Config, st *strava.Strava, im *importer.Importer, q *queue.Queue) {
 	srv := &API{
 		ec:  echo.New(),
@@ -43,6 +47,14 @@ func RunAPI(ctx context.Context, wg *sync.WaitGroup, log *zap.Logger, db *databa
 	srv.setupHandlers()
 	srv.setupSwagger()
 	srv.setupCors()
+
+	{
+		var err error
+		uiFS, err = fs.Sub(fitwave.UI, "ui/dist")
+		if err != nil {
+			log.Fatal("failed to get ui fs", zap.Error(err))
+		}
+	}
 
 	// Start server
 	wg.Add(1)

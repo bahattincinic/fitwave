@@ -19,7 +19,7 @@ import (
 //	@Param		limit	query		string	false	"pagination limit"
 //	@Param		page	query		string	false	"active page"
 //	@Success	200		{object}	PaginatedResponse{Results=[]models.Activity, count=int}
-//	@Router		/activities [get]
+//	@Router		/api/activities [get]
 func (a *API) listActivities(c echo.Context) error {
 	offset, limit, err := a.GetPageAndSize(c, 20)
 	if err != nil {
@@ -44,7 +44,7 @@ func (a *API) listActivities(c echo.Context) error {
 //	@Accept		json
 //	@Param		id	path		string	true	"Activity ID"
 //	@Success	200	{object}	models.Activity
-//	@Router		/activities/{id} [get]
+//	@Router		/api/activities/{id} [get]
 func (a *API) getActivity(c echo.Context) error {
 	act := c.Get(activityContextKey).(*models.Activity)
 
@@ -59,7 +59,7 @@ func (a *API) getActivity(c echo.Context) error {
 //	@Param		id				path	string	true	"Activity ID"
 //	@Param		Authorization	header	string	true	"Strava Access Token"
 //	@Success	200
-//	@Router		/activities/{id}/gpx [get]
+//	@Router		/api/activities/{id}/gpx [get]
 func (a *API) exportActivityGPS(c echo.Context) error {
 	user := c.Get(userContextKey).(*strava.User)
 	act := c.Get(activityContextKey).(*models.Activity)
@@ -88,7 +88,7 @@ func (a *API) exportActivityGPS(c echo.Context) error {
 //	@Param		id				path		string	true	"Activity ID"
 //	@Param		Authorization	header		string	true	"Strava Access Token"
 //	@Success	200				{object}	PaginatedResponse{Results=[]strava.LapEffortSummary, count=int}
-//	@Router		/activities/{id}/laps [get]
+//	@Router		/api/activities/{id}/laps [get]
 func (a *API) getActivityLaps(c echo.Context) error {
 	user := c.Get(userContextKey).(*strava.User)
 	act := c.Get(activityContextKey).(*models.Activity)

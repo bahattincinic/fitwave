@@ -15,7 +15,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/activities": {
+        "/api/activities": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -69,7 +69,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/activities/{id}": {
+        "/api/activities/{id}": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -97,7 +97,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/activities/{id}/gpx": {
+        "/api/activities/{id}/gpx": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -129,7 +129,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/activities/{id}/laps": {
+        "/api/activities/{id}/laps": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -182,7 +182,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/athletes": {
+        "/api/athletes": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -236,7 +236,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/athletes/{id}": {
+        "/api/athletes/{id}": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -264,7 +264,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/auth/authorization-url": {
+        "/api/auth/authorization-url": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -295,7 +295,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/auth/token": {
+        "/api/auth/token": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -325,7 +325,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/dashboards": {
+        "/api/dashboards": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -410,7 +410,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/dashboards/{id}": {
+        "/api/dashboards/{id}": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -496,7 +496,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/dashboards/{id}/components": {
+        "/api/dashboards/{id}/components": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -583,7 +583,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/dashboards/{id}/components/{cpid}": {
+        "/api/dashboards/{id}/components/{cpid}": {
             "put": {
                 "consumes": [
                     "application/json"
@@ -663,7 +663,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/dashboards/{id}/components/{cpid}/run": {
+        "/api/dashboards/{id}/components/{cpid}/run": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -701,7 +701,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/dashboards/{id}/run": {
+        "/api/dashboards/{id}/run": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -729,7 +729,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/gears": {
+        "/api/gears": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -783,7 +783,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/gears/{id}": {
+        "/api/gears/{id}": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -811,7 +811,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/config": {
+        "/api/user/config": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -858,7 +858,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/me": {
+        "/api/user/me": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -877,7 +877,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/query": {
+        "/api/user/query": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -907,7 +907,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/sync": {
+        "/api/user/sync": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -935,7 +935,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/task/{id}": {
+        "/api/user/task/{id}": {
             "get": {
                 "consumes": [
                     "application/json"

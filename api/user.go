@@ -14,7 +14,7 @@ import (
 //	@Accept		json
 //	@Param		Authorization	header		string	true	"Strava Access Token"
 //	@Success	200				{object}	queue.TaskResult
-//	@Router		/user/sync [post]
+//	@Router		/api/user/sync [post]
 func (a *API) syncData(c echo.Context) error {
 	user := c.Get(userContextKey).(*strava.User)
 
@@ -35,7 +35,7 @@ func (a *API) syncData(c echo.Context) error {
 //	@Accept		json
 //	@Param		id	path		string	true	"Task ID"
 //	@Success	200	{object}	queue.TaskResult
-//	@Router		/user/task/{id} [get]
+//	@Router		/api/user/task/{id} [get]
 func (a *API) getTask(c echo.Context) error {
 	task, err := a.q.GetResult(c.Param("id"))
 
@@ -51,7 +51,7 @@ func (a *API) getTask(c echo.Context) error {
 //	@Tags		user
 //	@Accept		json
 //	@Success	200	{object}	strava.User
-//	@Router		/user/me [get]
+//	@Router		/api/user/me [get]
 func (a *API) getMe(c echo.Context) error {
 	user := c.Get(userContextKey).(*strava.User)
 	return c.JSON(http.StatusOK, user)
@@ -64,7 +64,7 @@ func (a *API) getMe(c echo.Context) error {
 //	@Accept		json
 //	@Param		input	body		api.runQuery.queryInput	true	"Query Input"
 //	@Success	200		{object}	queue.TaskResult
-//	@Router		/user/query [post]
+//	@Router		/api/user/query [post]
 func (a *API) runQuery(c echo.Context) error {
 	type queryInput struct {
 		Query string `json:"query"`

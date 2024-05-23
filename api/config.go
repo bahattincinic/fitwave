@@ -13,7 +13,7 @@ import (
 //	@Tags		user
 //	@Accept		json
 //	@Success	200	{object}	models.Config
-//	@Router		/user/config [get]
+//	@Router		/api/user/config [get]
 func (a *API) getConfig(c echo.Context) error {
 	cfg, err := a.db.GetCurrentConfig()
 	if err != nil {
@@ -30,7 +30,7 @@ func (a *API) getConfig(c echo.Context) error {
 //	@Accept		json
 //	@Param		config	body		models.Config	true	"Config Input"
 //	@Success	200		{object}	models.Config
-//	@Router		/user/config [put]
+//	@Router		/api/user/config [put]
 func (a *API) upsertConfig(c echo.Context) error {
 	var in models.Config
 	if err := c.Bind(&in); err != nil {

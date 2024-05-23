@@ -16,7 +16,7 @@ swaggen:
 testci: test
 
 vet:
-	go vet ./...
+	go vet ${GCFLAGS} ./...
 
 fitwave:
 	go build ${GCFLAGS} -ldflags "${LDFLAGS}" ./cmd/fitwave

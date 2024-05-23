@@ -15,7 +15,7 @@ import (
 //	@Param		limit	query		string	false	"pagination limit"
 //	@Param		page	query		string	false	"active page"
 //	@Success	200		{object}	PaginatedResponse{Results=[]models.Athlete, count=int}
-//	@Router		/athletes [get]
+//	@Router		/api/athletes [get]
 func (a *API) listAthletes(c echo.Context) error {
 	offset, limit, err := a.GetPageAndSize(c, 20)
 	if err != nil {
@@ -40,7 +40,7 @@ func (a *API) listAthletes(c echo.Context) error {
 //	@Accept		json
 //	@Param		id	path		string	true	"Athlete ID"
 //	@Success	200	{object}	models.Athlete
-//	@Router		/athletes/{id} [get]
+//	@Router		/api/athletes/{id} [get]
 func (a *API) getAthlete(c echo.Context) error {
 	ath, err := a.db.GetAthlete(c.Param("id"))
 	if err != nil {

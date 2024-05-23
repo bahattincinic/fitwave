@@ -17,7 +17,7 @@ import (
 //	@Param		limit	query		string	false	"pagination limit"
 //	@Param		page	query		string	false	"active page"
 //	@Success	200		{object}	PaginatedResponse{Results=[]models.Dashboard, count=int}
-//	@Router		/dashboards [get]
+//	@Router		/api/dashboards [get]
 func (a *API) listDashboards(c echo.Context) error {
 	offset, limit, err := a.GetPageAndSize(c, 20)
 	if err != nil {
@@ -43,7 +43,7 @@ func (a *API) listDashboards(c echo.Context) error {
 //	@Produce	json
 //	@Param		input	body		api.createDashboard.dashboardInput	true	"Dashboard Input"
 //	@Success	201		{object}	models.Dashboard
-//	@Router		/dashboards [post]
+//	@Router		/api/dashboards [post]
 func (a *API) createDashboard(c echo.Context) error {
 	type dashboardInput struct {
 		Name string `json:"name"`
@@ -69,7 +69,7 @@ func (a *API) createDashboard(c echo.Context) error {
 //	@Accept		json
 //	@Param		id	path		string	true	"Dashboard ID"
 //	@Success	200	{object}	models.Dashboard
-//	@Router		/dashboards/{id} [get]
+//	@Router		/api/dashboards/{id} [get]
 func (a *API) getDashboard(c echo.Context) error {
 	dashboard := c.Get(dashboardContextKey).(*models.Dashboard)
 
@@ -84,7 +84,7 @@ func (a *API) getDashboard(c echo.Context) error {
 //	@Param		id		path		string	true	"Dashboard ID"
 //	@Success	200		{object}	models.Dashboard
 //	@Param		input	body		api.updateDashboard.dashboardInput	true	"Dashboard Input"
-//	@Router		/dashboards/{id} [put]
+//	@Router		/api/dashboards/{id} [put]
 func (a *API) updateDashboard(c echo.Context) error {
 	dashboard := c.Get(dashboardContextKey).(*models.Dashboard)
 
@@ -112,7 +112,7 @@ func (a *API) updateDashboard(c echo.Context) error {
 //	@Accept		json
 //	@Param		id	path	string	true	"Dashboard ID"
 //	@Success	204
-//	@Router		/dashboards/{id} [delete]
+//	@Router		/api/dashboards/{id} [delete]
 func (a *API) deleteDashboard(c echo.Context) error {
 	dashboard := c.Get(dashboardContextKey).(*models.Dashboard)
 
@@ -130,7 +130,7 @@ func (a *API) deleteDashboard(c echo.Context) error {
 //	@Accept		json
 //	@Param		id	path		string	true	"Dashboard ID"
 //	@Success	200	{object}	queue.TaskResult
-//	@Router		/dashboards/{id}/run [post]
+//	@Router		/api/dashboards/{id}/run [post]
 func (a *API) runDashboard(c echo.Context) error {
 	dashboard := c.Get(dashboardContextKey).(*models.Dashboard)
 
@@ -172,7 +172,7 @@ func (a *API) runDashboard(c echo.Context) error {
 //	@Produce	json
 //	@Param		id	path		string	true	"Dashboard ID"
 //	@Success	200	{object}	PaginatedResponse{Results=[]models.Component, count=int}
-//	@Router		/dashboards/{id}/components [get]
+//	@Router		/api/dashboards/{id}/components [get]
 func (a *API) getDashboardComponents(c echo.Context) error {
 	dashboard := c.Get(dashboardContextKey).(*models.Dashboard)
 
@@ -196,7 +196,7 @@ func (a *API) getDashboardComponents(c echo.Context) error {
 //	@Success	201		{object}	models.Component
 //	@Param		id		path		string								true	"Dashboard ID"
 //	@Param		input	body		api.createComponent.componentInput	true	"Component Input"
-//	@Router		/dashboards/{id}/components [post]
+//	@Router		/api/dashboards/{id}/components [post]
 func (a *API) createComponent(c echo.Context) error {
 	dashboard := c.Get(dashboardContextKey).(*models.Dashboard)
 
@@ -230,7 +230,7 @@ func (a *API) createComponent(c echo.Context) error {
 //	@Param		id		path		string								true	"Dashboard ID"
 //	@Param		cpid	path		string								true	"Component ID"
 //	@Param		input	body		api.updateComponent.componentInput	true	"Component Input"
-//	@Router		/dashboards/{id}/components/{cpid} [put]
+//	@Router		/api/dashboards/{id}/components/{cpid} [put]
 func (a *API) updateComponent(c echo.Context) error {
 	component := c.Get(componentContextKey).(*models.Component)
 
@@ -276,7 +276,7 @@ func (a *API) updateComponent(c echo.Context) error {
 //	@Success	204
 //	@Param		id		path	string	true	"Dashboard ID"
 //	@Param		cpid	path	string	true	"Component ID"
-//	@Router		/dashboards/{id}/components/{cpid} [delete]
+//	@Router		/api/dashboards/{id}/components/{cpid} [delete]
 func (a *API) deleteComponent(c echo.Context) error {
 	component := c.Get(componentContextKey).(*models.Component)
 
@@ -296,7 +296,7 @@ func (a *API) deleteComponent(c echo.Context) error {
 //	@Success	200		{object}	queue.TaskResult
 //	@Param		id		path		string	true	"Dashboard ID"
 //	@Param		cpid	path		string	true	"Component ID"
-//	@Router		/dashboards/{id}/components/{cpid}/run [post]
+//	@Router		/api/dashboards/{id}/components/{cpid}/run [post]
 func (a *API) runComponent(c echo.Context) error {
 	component := c.Get(componentContextKey).(*models.Component)
 

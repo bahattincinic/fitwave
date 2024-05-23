@@ -14,7 +14,7 @@ import (
 //	@Accept		json
 //	@Param		auth	body		api.getAccessToken.tokenRequestInput	true	"Access Token Input"
 //	@Success	200		{object}	strava.AuthorizationResponse
-//	@Router		/auth/token [post]
+//	@Router		/api/auth/token [post]
 func (a *API) getAccessToken(c echo.Context) error {
 	type tokenRequestInput struct {
 		Code string `json:"code"`
@@ -45,7 +45,7 @@ func (a *API) getAccessToken(c echo.Context) error {
 //	@Accept		json
 //	@Param		callback_url	query		string	true	"Callback URL"
 //	@Success	200				{object}	map[string]string
-//	@Router		/auth/authorization-url [get]
+//	@Router		/api/auth/authorization-url [get]
 func (a *API) getAuthorizationURL(c echo.Context) error {
 	cfg, err := a.db.GetCurrentConfig()
 	if err != nil {

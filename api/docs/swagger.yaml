@@ -446,7 +446,7 @@ definitions:
 info:
   contact: {}
 paths:
-  /activities:
+  /api/activities:
     get:
       consumes:
       - application/json
@@ -478,7 +478,7 @@ paths:
       summary: List Activities
       tags:
       - activity
-  /activities/{id}:
+  /api/activities/{id}:
     get:
       consumes:
       - application/json
@@ -496,7 +496,7 @@ paths:
       summary: Get Activity
       tags:
       - activity
-  /activities/{id}/gpx:
+  /api/activities/{id}/gpx:
     get:
       consumes:
       - application/json
@@ -517,7 +517,7 @@ paths:
       summary: Export Activity GPX
       tags:
       - activity
-  /activities/{id}/laps:
+  /api/activities/{id}/laps:
     get:
       consumes:
       - application/json
@@ -549,7 +549,7 @@ paths:
       summary: Get Activity Laps
       tags:
       - activity
-  /athletes:
+  /api/athletes:
     get:
       consumes:
       - application/json
@@ -581,7 +581,7 @@ paths:
       summary: List Athletes
       tags:
       - athlete
-  /athletes/{id}:
+  /api/athletes/{id}:
     get:
       consumes:
       - application/json
@@ -599,7 +599,7 @@ paths:
       summary: Get Athlete
       tags:
       - athlete
-  /auth/authorization-url:
+  /api/auth/authorization-url:
     get:
       consumes:
       - application/json
@@ -619,7 +619,7 @@ paths:
       summary: Get Access Token from Auth Code
       tags:
       - auth
-  /auth/token:
+  /api/auth/token:
     post:
       consumes:
       - application/json
@@ -638,7 +638,7 @@ paths:
       summary: Get Access Token from Auth Code
       tags:
       - auth
-  /dashboards:
+  /api/dashboards:
     get:
       consumes:
       - application/json
@@ -690,7 +690,7 @@ paths:
       summary: Create Dashboard
       tags:
       - dashboard
-  /dashboards/{id}:
+  /api/dashboards/{id}:
     delete:
       consumes:
       - application/json
@@ -746,7 +746,7 @@ paths:
       summary: Update Dashboard
       tags:
       - dashboard
-  /dashboards/{id}/components:
+  /api/dashboards/{id}/components:
     get:
       consumes:
       - application/json
@@ -800,7 +800,7 @@ paths:
       summary: Create Dashboard Components
       tags:
       - dashboard
-  /dashboards/{id}/components/{cpid}:
+  /api/dashboards/{id}/components/{cpid}:
     delete:
       consumes:
       - application/json
@@ -853,7 +853,7 @@ paths:
       summary: Update Dashboard Component
       tags:
       - dashboard
-  /dashboards/{id}/components/{cpid}/run:
+  /api/dashboards/{id}/components/{cpid}/run:
     post:
       consumes:
       - application/json
@@ -878,7 +878,7 @@ paths:
       summary: Run Dashboard Component
       tags:
       - dashboard
-  /dashboards/{id}/run:
+  /api/dashboards/{id}/run:
     post:
       consumes:
       - application/json
@@ -896,7 +896,7 @@ paths:
       summary: Run Dashboard
       tags:
       - dashboard
-  /gears:
+  /api/gears:
     get:
       consumes:
       - application/json
@@ -928,7 +928,7 @@ paths:
       summary: List Gears
       tags:
       - gear
-  /gears/{id}:
+  /api/gears/{id}:
     get:
       consumes:
       - application/json
@@ -946,7 +946,7 @@ paths:
       summary: Get Gear
       tags:
       - gear
-  /user/config:
+  /api/user/config:
     get:
       consumes:
       - application/json
@@ -976,7 +976,7 @@ paths:
       summary: Upsert Application Config
       tags:
       - user
-  /user/me:
+  /api/user/me:
     get:
       consumes:
       - application/json
@@ -988,7 +988,7 @@ paths:
       summary: Get Current User Details
       tags:
       - user
-  /user/query:
+  /api/user/query:
     post:
       consumes:
       - application/json
@@ -1007,7 +1007,7 @@ paths:
       summary: Run Query
       tags:
       - user
-  /user/sync:
+  /api/user/sync:
     post:
       consumes:
       - application/json
@@ -1025,7 +1025,7 @@ paths:
       summary: Sync Strava data
       tags:
       - user
-  /user/task/{id}:
+  /api/user/task/{id}:
     get:
       consumes:
       - application/json
