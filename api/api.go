@@ -15,6 +15,7 @@ import (
 	"github.com/bahattincinic/fitwave/queue"
 	"github.com/bahattincinic/fitwave/strava"
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 	"go.uber.org/zap"
 )
 
@@ -43,6 +44,10 @@ func RunAPI(ctx context.Context, wg *sync.WaitGroup, log *zap.Logger, db *databa
 		q:   q,
 	}
 	srv.ec.Server.IdleTimeout = 120 * time.Second
+
+	srv.ec.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
+		Format: "method=${method}, uri=${uri}, status=${status}, error=${error}\n",
+	}))
 
 	srv.setupHandlers()
 	srv.setupSwagger()

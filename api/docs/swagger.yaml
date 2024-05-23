@@ -265,7 +265,7 @@ definitions:
     type: object
   queue.TaskResult:
     properties:
-      completionTime:
+      completion_time:
         type: string
       error: {}
       id:
@@ -438,7 +438,7 @@ definitions:
     type: object
   strava.User:
     properties:
-      accessToken:
+      access_token:
         type: string
       athlete:
         $ref: '#/definitions/strava.AthleteDetailed'

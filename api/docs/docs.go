@@ -1359,7 +1359,7 @@ const docTemplate = `{
         "queue.TaskResult": {
             "type": "object",
             "properties": {
-                "completionTime": {
+                "completion_time": {
                     "type": "string"
                 },
                 "error": {},
@@ -1613,7 +1613,7 @@ const docTemplate = `{
         "strava.User": {
             "type": "object",
             "properties": {
-                "accessToken": {
+                "access_token": {
                     "type": "string"
                 },
                 "athlete": {

@@ -8,9 +8,9 @@ import (
 
 type User struct {
 	st          *client.Client
-	AccessToken string
+	AccessToken string `json:"access_token"`
 	cfg         *models.Config
-	Athlete     *client.AthleteDetailed
+	Athlete     *client.AthleteDetailed `json:"athlete"`
 }
 
 func (s *Strava) NewUser(cfg *models.Config, accessToken string) (*User, error) {

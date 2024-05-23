@@ -30,11 +30,11 @@ type Task struct {
 }
 
 type TaskResult struct {
-	ID             string
-	Status         TaskStatus
-	Error          error
-	CompletionTime time.Time
-	Result         interface{}
+	ID             string      `json:"id"`
+	Status         TaskStatus  `json:"status"`
+	Error          error       `json:"error"`
+	CompletionTime time.Time   `json:"completion_time"`
+	Result         interface{} `json:"result"`
 }
 
 // Queue represents a task queue.
