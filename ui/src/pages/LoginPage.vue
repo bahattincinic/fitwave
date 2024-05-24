@@ -1,19 +1,29 @@
 <template>
-  <div>
+  <div class="mt-4">
     <Toast />
 
     <Message v-if="!isSyncEligible" severity="error">
       You need to fill config from first to be able to sync your Strava data.
     </Message>
 
-    <Button
-      v-else
-      :disabled="loading"
-      severity="success"
-      label="Login with Strava"
-      icon="pi pi-user"
-      @click="redirectToStrava()"
-    />
+    <Card v-else class="max-w-30rem">
+      <template #title>Strava Login</template>
+      <template #content>
+        <div>
+          <p class="mb-3">
+            To log in, please click the "Login with Strava"
+            button below. Once the login process is complete, Strava will redirect you back to our application.
+          </p>
+        </div>
+        <Button
+          :disabled="loading"
+          severity="success"
+          label="Login with Strava"
+          icon="pi pi-user"
+          @click="redirectToStrava()"
+        />
+      </template>
+    </Card>
   </div>
 </template>
 
@@ -27,6 +37,7 @@ import {useRoute, useRouter} from 'vue-router';
 import {useUserStore} from "@/store/user";
 import Cookies from "js-cookie";
 import Message from 'primevue/message';
+import Card from 'primevue/card';
 import { getUserConfig } from "@/services/user";
 
 export default {
@@ -34,7 +45,8 @@ export default {
   components: {
     Toast,
     Button,
-    Message
+    Message,
+    Card
   },
   setup() {
     const loading = ref(false);
@@ -47,9 +59,7 @@ export default {
 
     const login = async (code) => {
       const resp = await getAccessToken(code);
-      user.setAccessToken(resp.access_token);
-      user.setUser(resp.athlete);
-      Cookies.set('accessToken', resp.access_token);
+      user.login(resp.access_token, resp.athlete);
       await router.push('/');
     }
 

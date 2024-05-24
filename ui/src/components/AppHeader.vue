@@ -7,6 +7,7 @@
 <script>
 import Menubar from 'primevue/menubar';
 import { useRouter } from "vue-router";
+import { useUserStore } from "@/store/user";
 
 export default {
   name: 'AppHeader',
@@ -15,15 +16,63 @@ export default {
   },
   setup() {
     const router = useRouter();
-    const items = [
-      { label: 'Dashboard', icon: 'pi pi-fw pi-home', command: () => router.push('/') },
-      { label: 'Settings', icon: 'pi pi-fw pi-cog', command: () => router.push('/settings') },
-      { label: 'Activities', icon: 'pi pi-fw pi-calendar', command: () => router.push('/activities') },
-      { label: 'Gears', icon: 'pi pi-fw pi-sitemap', command: () => router.push('/gears') },
-      { label: 'Athletes', icon: 'pi pi-fw pi-user', command: () => router.push('/athletes') }
-    ];
+    const user = useUserStore();
 
-    return { items };
+    return { router, user }
+  },
+  computed: {
+    items() {
+      const accessToken = this.user.accessToken;
+      const user = this.user.user;
+
+      return [
+        {
+          label: 'Dashboard',
+          icon: 'pi pi-fw pi-home',
+          command: () => this.router.push('/') },
+        {
+          label: 'Settings',
+          icon: 'pi pi-fw pi-cog',
+          command: () => this.router.push('/settings')
+        },
+        {
+          label: 'Data',
+          icon: 'pi pi-fw pi-server',
+          items: [
+            { label: 'Activities', icon: 'pi pi-fw pi-calendar', command: () => this.router.push('/activities') },
+            { label: 'Gears', icon: 'pi pi-fw pi-sitemap', command: () => this.router.push('/gears') },
+            { label: 'Athletes', icon: 'pi pi-fw pi-user', command: () => this.router.push('/athletes') }
+          ]
+        },
+        {
+          label: accessToken ? user.firstname : 'Anonymous',
+          icon: 'pi pi-fw pi-user',
+          items: [
+            ...(accessToken
+                ? [
+                  {
+                    label: 'Logout',
+                    icon: 'pi pi-fw pi-sign-out',
+                    command: () => this.logout()
+                  }
+                ]
+                : [
+                  {
+                    label: 'Login',
+                    icon: 'pi pi-fw pi-sign-in',
+                    command: () => this.router.push('/login')
+                  }
+                ]),
+          ]
+        }
+      ];
+    },
+  },
+  methods: {
+    logout() {
+      const user = useUserStore();
+      user.logout();
+    }
   }
 }
 </script>

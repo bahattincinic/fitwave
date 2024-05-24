@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="m-3">
     <Toast />
     <h1>Settings</h1>
     <TabView>

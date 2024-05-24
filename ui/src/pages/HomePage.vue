@@ -1,11 +1,14 @@
 <template>
-  <div>
+  <div class="m-3">
     <Toast />
     <h1>Dashboards</h1>
 
     <DataTable :value="dashboards" :loading="loading">
       <Column field="id" header="ID"></Column>
       <Column field="name" header="Name"></Column>
+      <template #empty>
+        No records found
+      </template>
     </DataTable>
   </div>
 </template>

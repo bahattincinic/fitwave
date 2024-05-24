@@ -30,11 +30,9 @@ router.beforeEach(async (to, from, next) => {
   if (userStore.accessToken === '' && accessToken) {
     try {
       const resp = await getUserMe(accessToken);
-      userStore.setAccessToken(accessToken);
-      userStore.setUser(resp.athlete);
+      userStore.setUser(accessToken, resp.athlete);
     } catch {
-      userStore.setAccessToken('');
-      Cookies.remove('accessToken');
+      userStore.logout();
     }
   }
   next();

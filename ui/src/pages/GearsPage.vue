@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="m-3">
     <Toast />
     <h1>Gears</h1>
 
@@ -8,6 +8,9 @@
       <Column field="name" header="Name"></Column>
       <Column field="distance" header="Distance"></Column>
       <Column :field="athleteName" header="Athlete"></Column>
+      <template #empty>
+        No records found
+      </template>
     </DataTable>
 
     <Paginator :rows="20" :totalRecords="count" @page="handlePageChange"></Paginator>
