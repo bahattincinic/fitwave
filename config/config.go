@@ -11,7 +11,6 @@ var (
 )
 
 const (
-	EnvTesting    = "testing"
 	EnvProduction = "production"
 	EnvLocal      = "local"
 )
@@ -48,10 +47,6 @@ type API struct {
 
 func Production() bool {
 	return Env == EnvProduction
-}
-
-func Testing() bool {
-	return Env == EnvTesting
 }
 
 func Local() bool {

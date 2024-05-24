@@ -43,7 +43,7 @@ If you need to override the configuration, create a `.env` file.
 
 | Field Name            | Type    | Default    | Options/Examples                                                                           |
 |-----------------------|---------|------------|--------------------------------------------------------------------------------------------|
-| ENV                   | string  | local      | - local<br/>- testing<br/>- production                                                     |
+| ENV                   | string  | local      | - local<br/>- production                                                                   |
 | LOG_LEVEL             | string  | debug      | - debug<br/>- info<br/>- warn<br/>- error<br/>- panic<br/>- fatal                          |
 | LOG_OUTPUT            | string  | stdout     | - stdout<br/>- /foo/bar/fitwave.log                                                        |
 | DATABASE_DSN          | string  | fitWave.db | - fitWave.db<br/>- host=localhost user=postgres password=postgres dbname=fitwave port=5432 |
