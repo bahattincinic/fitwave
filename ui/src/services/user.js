@@ -32,7 +32,9 @@ export async function getUserMe(accessToken) {
 }
 
 export async function getTaskDetail(id) {
-  const response = await fetch(`${API_BASE_URL}/user/task/${id}`, {
+  const endpoint = `${API_BASE_URL}/user/task/${id}`;
+
+  const response = await fetch(endpoint, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -73,6 +75,22 @@ export async function saveUserConfig(config) {
 
   if (!response.ok) {
     throw new Error('Could not save user config');
+  }
+
+  return await response.json();
+}
+
+export async function runQuery(query) {
+  const response = await fetch(`${API_BASE_URL}/user/query`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(query),
+  });
+
+  if (!response.ok) {
+    throw new Error('Could not run query');
   }
 
   return await response.json();

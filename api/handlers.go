@@ -61,22 +61,22 @@ func (a *API) setupHandlers() {
 
 	{
 		dash := api.Group("/dashboards")
-		// Dashboard
 		dash.GET("", a.listDashboards)
 		dash.POST("", a.createDashboard)
 		dash.GET("/:id", a.getDashboard, a.setDashboardMiddleware())
 		dash.PUT("/:id", a.updateDashboard, a.setDashboardMiddleware())
 		dash.DELETE("/:id", a.deleteDashboard, a.setDashboardMiddleware())
-		dash.POST("/:id/run", a.runQuery, a.setDashboardMiddleware())
-		// Component
-		dash.GET("/:id/components", a.getDashboardComponents, a.setDashboardMiddleware())
-		dash.POST("/:id/components", a.createComponent, a.setDashboardMiddleware())
-		dash.PUT("/:id/components/:cpid", a.updateComponent,
-			a.setDashboardMiddleware(), a.setComponentMiddleware())
-		dash.DELETE("/:id/components/:cpid", a.deleteComponent,
-			a.setDashboardMiddleware(), a.setComponentMiddleware())
-		dash.POST("/:id/components/:cpid/run", a.runComponent,
-			a.setDashboardMiddleware(), a.setComponentMiddleware())
+		dash.POST("/:id/run", a.runDashboard, a.setDashboardMiddleware())
+
+	}
+
+	{
+		comp := api.Group("/dashboards/:id/components", a.setDashboardMiddleware())
+		comp.GET("", a.getDashboardComponents)
+		comp.POST("", a.createComponent)
+		comp.PUT("/:cpid", a.updateComponent, a.setComponentMiddleware())
+		comp.DELETE("/:cpid", a.deleteComponent, a.setComponentMiddleware())
+		comp.POST("/:cpid/run", a.runComponent, a.setComponentMiddleware())
 	}
 
 	a.ec.GET("/*", a.serveStatic)

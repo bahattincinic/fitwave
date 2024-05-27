@@ -14,3 +14,20 @@ export async function fetchGears(page) {
 
   return await response.json();
 }
+
+export async function getGear(id) {
+  const endpoint = `${API_BASE_URL}/gears/${id}`;
+
+  const response = await fetch(endpoint, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error('Could not get gear');
+  }
+
+  return await response.json();
+}
