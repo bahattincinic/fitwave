@@ -1,7 +1,5 @@
 <template>
   <div class="mt-4">
-    <Toast />
-
     <Message v-if="!isSyncEligible" severity="error">
       You need to fill config from first to be able to sync your Strava data.
     </Message>
@@ -29,10 +27,8 @@
 </template>
 
 <script>
-import Toast from 'primevue/toast';
 import Button from 'primevue/button';
 import { onMounted, ref } from 'vue';
-import { useToast } from 'primevue/usetoast';
 import { getAccessToken, getAuthorizationURL } from '@/services/auth';
 import { useRoute, useRouter } from 'vue-router';
 import { useUserStore } from '@/store/user';
@@ -44,7 +40,6 @@ import { useHead } from '@unhead/vue';
 export default {
   name: 'LoginPage',
   components: {
-    Toast,
     Button,
     Message,
     Card,
@@ -53,7 +48,6 @@ export default {
     useHead({ title: 'Login' });
 
     const loading = ref(false);
-    const toast = useToast();
     const user = useUserStore();
     const url = ref('');
     const config = ref({});
@@ -84,7 +78,7 @@ export default {
           }
         }
       } catch (error) {
-        toast.add({
+        this.$toast.add({
           severity: 'error',
           summary: 'Error',
           detail: error.toString(),
@@ -97,7 +91,6 @@ export default {
 
     return {
       loading,
-      toast,
       url,
       user,
       config,

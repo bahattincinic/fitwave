@@ -1,6 +1,5 @@
 <template>
   <div class="m-3">
-    <Toast />
     <h1>Dashboards</h1>
 
     <DataTable :value="dashboards" :loading="loading">
@@ -12,11 +11,8 @@
 </template>
 
 <script>
-import { ref, onMounted } from 'vue';
 import { useHead } from '@unhead/vue';
 import { fetchDashboards } from '@/services/dashboars';
-import Toast from 'primevue/toast';
-import { useToast } from 'primevue/usetoast';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 
@@ -25,40 +21,36 @@ export default {
   components: {
     DataTable,
     Column,
-    Toast,
   },
   setup() {
     useHead({ title: 'Dashboard' });
-
-    const dashboards = ref([]);
-    const loading = ref(false);
-    const toast = useToast();
-
-    const fetch = async () => {
+  },
+  mounted() {
+    this.fetch();
+  },
+  data() {
+    return {
+      loading: false,
+      dashboards: [],
+    };
+  },
+  methods: {
+    async fetch() {
       try {
-        loading.value = true;
+        this.loading = true;
         const response = await fetchDashboards();
-        dashboards.value = response.results;
+        this.dashboards = response.results;
       } catch (error) {
-        toast.add({
+        this.$toast.add({
           severity: 'error',
           summary: 'Error',
           detail: error.toString(),
           life: 3000,
         });
       } finally {
-        loading.value = false;
+        this.loading = false;
       }
-    };
-
-    onMounted(() => {
-      fetch();
-    });
-
-    return {
-      dashboards,
-      loading,
-    };
+    },
   },
 };
 </script>

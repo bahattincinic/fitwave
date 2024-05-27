@@ -1,12 +1,16 @@
 <template>
   <div class="m-3">
-    <Toast />
     <h1>Gears</h1>
 
-    <DataTable :value="gears" :loading="loading">
+    <DataTable
+      :value="gears"
+      :loading="loading"
+      selectionMode="single"
+      @rowSelect="onRowSelect"
+    >
       <Column field="id" header="ID"></Column>
       <Column field="name" header="Name"></Column>
-      <Column field="distance" header="Distance"></Column>
+      <Column :field="formatDistance" header="Distance"></Column>
       <Column :field="athleteName" header="Athlete"></Column>
       <template #empty> No records found </template>
     </DataTable>
@@ -16,17 +20,25 @@
       :totalRecords="count"
       @page="handlePageChange"
     ></Paginator>
+
+    <Dialog
+      v-model:visible="modal.show"
+      modal
+      header="Gear Detail"
+      :style="{ width: '50rem' }"
+    >
+      <vue-json-pretty :data="modal.data" />
+    </Dialog>
   </div>
 </template>
 
 <script>
-import { ref, onMounted } from 'vue';
 import { fetchGears } from '@/services/gears';
-import Toast from 'primevue/toast';
-import { useToast } from 'primevue/usetoast';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import Paginator from 'primevue/paginator';
+import Dialog from 'primevue/dialog';
+import VueJsonPretty from 'vue-json-pretty';
 import { useHead } from '@unhead/vue';
 
 export default {
@@ -35,54 +47,58 @@ export default {
     DataTable,
     Column,
     Paginator,
-    Toast,
+    Dialog,
+    VueJsonPretty,
   },
   setup() {
     useHead({ title: 'Gears' });
-
-    const gears = ref([]);
-    const count = ref(0);
-    let currentPage = 1;
-    const loading = ref(false);
-    const toast = useToast();
-
-    const fetch = async () => {
+  },
+  data() {
+    return {
+      gears: [],
+      loading: false,
+      currentPage: 1,
+      count: 0,
+      modal: {
+        show: false,
+        data: {},
+      },
+    };
+  },
+  mounted() {
+    this.fetch();
+  },
+  methods: {
+    athleteName(row) {
+      return `${row.athlete.firstname} ${row.athlete.lastname}`;
+    },
+    formatDistance(row) {
+      return `${(row.distance / 1000).toFixed(1)} km`;
+    },
+    handlePageChange(event) {
+      this.currentPage = event.page + 1;
+      this.fetch();
+    },
+    async fetch() {
       try {
-        loading.value = true;
-        const response = await fetchGears(currentPage);
-        gears.value = response.results;
-        count.value = response.count;
+        this.loading = true;
+        const response = await fetchGears(this.currentPage);
+        this.gears = response.results;
+        this.count = response.count;
       } catch (error) {
-        toast.add({
+        this.$toast.add({
           severity: 'error',
           summary: 'Error',
           detail: error.toString(),
           life: 3000,
         });
       } finally {
-        loading.value = false;
+        this.loading = false;
       }
-    };
-
-    const handlePageChange = (event) => {
-      currentPage = event.page + 1;
-      fetch();
-    };
-
-    onMounted(() => {
-      fetch();
-    });
-
-    return {
-      gears,
-      count,
-      loading,
-      handlePageChange,
-    };
-  },
-  methods: {
-    athleteName(row) {
-      return `${row.athlete.firstname} ${row.athlete.lastname}`;
+    },
+    onRowSelect(event) {
+      this.modal.data = event.data;
+      this.modal.show = true;
     },
   },
 };

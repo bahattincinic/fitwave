@@ -47,7 +47,7 @@ export async function getActivityGPX(id, accessToken) {
     throw new Error('Could not get activity');
   }
 
-  return await response.json();
+  return await response.blob();
 }
 
 export async function getActivityLaps(id, accessToken) {

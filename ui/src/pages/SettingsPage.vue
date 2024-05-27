@@ -1,6 +1,5 @@
 <template>
   <div class="m-3">
-    <Toast />
     <h1>Settings</h1>
     <TabView>
       <TabPanel header="Config">
@@ -54,7 +53,6 @@
 </template>
 
 <script>
-import { ref, onMounted } from 'vue';
 import { mapState } from 'pinia';
 import {
   getUserConfig,
@@ -62,8 +60,6 @@ import {
   triggerSync,
   getTaskDetail,
 } from '@/services/user';
-import Toast from 'primevue/toast';
-import { useToast } from 'primevue/usetoast';
 import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
 import TabView from 'primevue/tabview';
@@ -77,7 +73,6 @@ export default {
   components: {
     InputText,
     Button,
-    Toast,
     TabView,
     TabPanel,
     Message,
@@ -85,36 +80,17 @@ export default {
   setup() {
     useHead({ title: 'Settings' });
 
-    const clientId = ref('');
-    const clientSecret = ref('');
-    const toast = useToast();
     const userStore = useUserStore();
-    const loading = ref(false);
-
-    onMounted(async () => {
-      try {
-        const config = await getUserConfig();
-        clientId.value = config.client_id;
-        clientSecret.value = config.client_secret;
-        loading.value = true;
-      } catch (error) {
-        toast.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: error.toString(),
-          life: 3000,
-        });
-      } finally {
-        loading.value = false;
-      }
-    });
 
     return {
-      clientId,
-      clientSecret,
-      toast,
-      loading,
       userStore,
+    };
+  },
+  data() {
+    return {
+      clientId: '',
+      clientSecret: '',
+      loading: false,
     };
   },
   computed: {
@@ -123,7 +99,27 @@ export default {
       return !!this.clientId && !!this.clientSecret;
     },
   },
+  mounted() {
+    this.getConfig();
+  },
   methods: {
+    async getConfig() {
+      this.loading = true;
+      try {
+        const config = await getUserConfig();
+        this.clientId = config.client_id;
+        this.clientSecret = config.client_secret;
+      } catch (error) {
+        this.$toast.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: error.toString(),
+          life: 3000,
+        });
+      } finally {
+        this.loading = false;
+      }
+    },
     async saveSettings() {
       try {
         this.loading = true;
@@ -131,14 +127,14 @@ export default {
           client_id: parseInt(this.clientId),
           client_secret: this.clientSecret,
         });
-        this.toast.add({
+        this.$toast.add({
           severity: 'success',
           summary: 'Success',
           detail: 'Settings saved successfully!',
           life: 3000,
         });
       } catch (error) {
-        this.toast.add({
+        this.$toast.add({
           severity: 'error',
           summary: 'Error',
           detail: error.toString(),
@@ -163,14 +159,14 @@ export default {
           taskStatus = taskDetail.status;
         }
 
-        this.toast.add({
+        this.$toast.add({
           severity: 'success',
           summary: 'Success',
           detail: 'Sync operation completed successfully',
           life: 3000,
         });
       } catch (error) {
-        this.toast.add({
+        this.$toast.add({
           severity: 'error',
           summary: 'Error',
           detail: error.toString(),
