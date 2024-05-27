@@ -11,8 +11,9 @@
       <template #content>
         <div>
           <p class="mb-3">
-            To log in, please click the "Login with Strava"
-            button below. Once the login process is complete, Strava will redirect you back to our application.
+            To log in, please click the "Login with Strava" button below. Once
+            the login process is complete, Strava will redirect you back to our
+            application.
           </p>
         </div>
         <Button
@@ -30,15 +31,15 @@
 <script>
 import Toast from 'primevue/toast';
 import Button from 'primevue/button';
-import {onMounted, ref} from 'vue';
-import {useToast} from 'primevue/usetoast';
-import {getAccessToken, getAuthorizationURL} from '@/services/auth';
-import {useRoute, useRouter} from 'vue-router';
-import {useUserStore} from "@/store/user";
-import Cookies from "js-cookie";
+import { onMounted, ref } from 'vue';
+import { useToast } from 'primevue/usetoast';
+import { getAccessToken, getAuthorizationURL } from '@/services/auth';
+import { useRoute, useRouter } from 'vue-router';
+import { useUserStore } from '@/store/user';
 import Message from 'primevue/message';
 import Card from 'primevue/card';
-import { getUserConfig } from "@/services/user";
+import { getUserConfig } from '@/services/user';
+import { useHead } from '@unhead/vue';
 
 export default {
   name: 'LoginPage',
@@ -46,9 +47,11 @@ export default {
     Toast,
     Button,
     Message,
-    Card
+    Card,
   },
   setup() {
+    useHead({ title: 'Login' });
+
     const loading = ref(false);
     const toast = useToast();
     const user = useUserStore();
@@ -61,12 +64,12 @@ export default {
       const resp = await getAccessToken(code);
       user.login(resp.access_token, resp.athlete);
       await router.push('/');
-    }
+    };
 
     const fetchURL = async () => {
       const resp = await getAuthorizationURL();
       url.value = resp.authorization_url;
-    }
+    };
 
     onMounted(async () => {
       try {
@@ -90,7 +93,7 @@ export default {
       } finally {
         loading.value = false;
       }
-    })
+    });
 
     return {
       loading,
@@ -98,17 +101,17 @@ export default {
       url,
       user,
       config,
-    }
+    };
   },
   methods: {
     redirectToStrava() {
       window.location.href = this.url;
-    }
+    },
   },
   computed: {
     isSyncEligible() {
       return !!this.config.client_id && !!this.config.client_secret;
-    }
-  }
+    },
+  },
 };
 </script>

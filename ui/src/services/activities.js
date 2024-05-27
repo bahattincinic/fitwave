@@ -4,8 +4,8 @@ export async function fetchActivities(page) {
   const response = await fetch(`${API_BASE_URL}/activities?page=${page}`, {
     method: 'GET',
     headers: {
-      'Content-Type': 'application/json'
-    }
+      'Content-Type': 'application/json',
+    },
   });
 
   if (!response.ok) {

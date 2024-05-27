@@ -9,12 +9,14 @@
       <Column field="lastname" header="Last Name"></Column>
       <Column field="country" header="Country"></Column>
       <Column field="city" header="City"></Column>
-      <template #empty>
-        No records found
-      </template>
+      <template #empty> No records found </template>
     </DataTable>
 
-    <Paginator :rows="20" :totalRecords="count" @page="handlePageChange"></Paginator>
+    <Paginator
+      :rows="20"
+      :totalRecords="count"
+      @page="handlePageChange"
+    ></Paginator>
   </div>
 </template>
 
@@ -26,6 +28,7 @@ import { useToast } from 'primevue/usetoast';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import Paginator from 'primevue/paginator';
+import { useHead } from '@unhead/vue';
 
 export default {
   name: 'AthletesPage',
@@ -36,6 +39,8 @@ export default {
     Toast,
   },
   setup() {
+    useHead({ title: 'Athletes' });
+
     const athletes = ref([]);
     const count = ref(0);
     let currentPage = 1;
@@ -73,8 +78,8 @@ export default {
       athletes,
       count,
       loading,
-      handlePageChange
+      handlePageChange,
     };
-  }
-}
+  },
+};
 </script>

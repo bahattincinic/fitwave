@@ -6,19 +6,19 @@
 
 <script>
 import Menubar from 'primevue/menubar';
-import { useRouter } from "vue-router";
-import { useUserStore } from "@/store/user";
+import { useRouter } from 'vue-router';
+import { useUserStore } from '@/store/user';
 
 export default {
   name: 'AppHeader',
   components: {
-    Menubar
+    Menubar,
   },
   setup() {
     const router = useRouter();
     const user = useUserStore();
 
-    return { router, user }
+    return { router, user };
   },
   computed: {
     items() {
@@ -29,42 +29,55 @@ export default {
         {
           label: 'Dashboard',
           icon: 'pi pi-fw pi-home',
-          command: () => this.router.push('/') },
+          command: () => this.router.push('/'),
+        },
         {
           label: 'Settings',
           icon: 'pi pi-fw pi-cog',
-          command: () => this.router.push('/settings')
+          command: () => this.router.push('/settings'),
         },
         {
           label: 'Data',
           icon: 'pi pi-fw pi-server',
           items: [
-            { label: 'Activities', icon: 'pi pi-fw pi-calendar', command: () => this.router.push('/activities') },
-            { label: 'Gears', icon: 'pi pi-fw pi-sitemap', command: () => this.router.push('/gears') },
-            { label: 'Athletes', icon: 'pi pi-fw pi-user', command: () => this.router.push('/athletes') }
-          ]
+            {
+              label: 'Activities',
+              icon: 'pi pi-fw pi-calendar',
+              command: () => this.router.push('/activities'),
+            },
+            {
+              label: 'Gears',
+              icon: 'pi pi-fw pi-sitemap',
+              command: () => this.router.push('/gears'),
+            },
+            {
+              label: 'Athletes',
+              icon: 'pi pi-fw pi-user',
+              command: () => this.router.push('/athletes'),
+            },
+          ],
         },
         {
           label: accessToken ? user.firstname : 'Anonymous',
           icon: 'pi pi-fw pi-user',
           items: [
             ...(accessToken
-                ? [
+              ? [
                   {
                     label: 'Logout',
                     icon: 'pi pi-fw pi-sign-out',
-                    command: () => this.logout()
-                  }
+                    command: () => this.logout(),
+                  },
                 ]
-                : [
+              : [
                   {
                     label: 'Login',
                     icon: 'pi pi-fw pi-sign-in',
-                    command: () => this.router.push('/login')
-                  }
+                    command: () => this.router.push('/login'),
+                  },
                 ]),
-          ]
-        }
+          ],
+        },
       ];
     },
   },
@@ -72,7 +85,7 @@ export default {
     logout() {
       const user = useUserStore();
       user.logout();
-    }
-  }
-}
+    },
+  },
+};
 </script>

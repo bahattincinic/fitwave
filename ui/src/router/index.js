@@ -7,7 +7,7 @@ import AthletesPage from '@/pages/AthletesPage';
 import ActivitiesPage from '@/pages/ActivitiesPage';
 import GearsPage from '@/pages/GearsPage';
 import { useUserStore } from '@/store/user';
-import { getUserMe } from "@/services/user";
+import { getUserMe } from '@/services/user';
 
 const routes = [
   { path: '/', name: 'Home', component: HomePage },
@@ -15,12 +15,12 @@ const routes = [
   { path: '/settings', name: 'Settings', component: SettingsPage },
   { path: '/activities', name: 'Activities', component: ActivitiesPage },
   { path: '/athletes', name: 'Athletes', component: AthletesPage },
-  { path: '/gears', name: 'Gears', component: GearsPage }
+  { path: '/gears', name: 'Gears', component: GearsPage },
 ];
 
 const router = createRouter({
   history: createWebHistory(),
-  routes
+  routes,
 });
 
 router.beforeEach(async (to, from, next) => {

@@ -1,10 +1,10 @@
 import { defineStore } from 'pinia';
-import Cookies from "js-cookie";
+import Cookies from 'js-cookie';
 
 export const useUserStore = defineStore('user', {
   state: () => ({
     accessToken: '',
-    user: {}
+    user: {},
   }),
   actions: {
     logout() {
@@ -19,6 +19,6 @@ export const useUserStore = defineStore('user', {
     setUser(accessToken, user) {
       this.accessToken = accessToken;
       this.user = user;
-    }
-  }
+    },
+  },
 });

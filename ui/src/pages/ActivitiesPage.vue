@@ -9,12 +9,14 @@
       <Column field="name" header="Name"></Column>
       <Column :field="athleteName" header="Athlete"></Column>
       <Column field="gear.name" header="Gear"></Column>
-      <template #empty>
-        No records found
-      </template>
+      <template #empty> No records found </template>
     </DataTable>
 
-    <Paginator :rows="20" :totalRecords="count" @page="handlePageChange"></Paginator>
+    <Paginator
+      :rows="20"
+      :totalRecords="count"
+      @page="handlePageChange"
+    ></Paginator>
   </div>
 </template>
 
@@ -26,6 +28,7 @@ import { useToast } from 'primevue/usetoast';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import Paginator from 'primevue/paginator';
+import { useHead } from '@unhead/vue';
 
 export default {
   name: 'ActivitiesPage',
@@ -33,9 +36,11 @@ export default {
     DataTable,
     Column,
     Paginator,
-    Toast
+    Toast,
   },
   setup() {
+    useHead({ title: 'Activities' });
+
     const activities = ref([]);
     const count = ref(0);
     let currentPage = 1;
@@ -73,13 +78,13 @@ export default {
       activities,
       count,
       loading,
-      handlePageChange
+      handlePageChange,
     };
   },
   methods: {
     athleteName(row) {
       return `${row.athlete.firstname} ${row.athlete.lastname}`;
-    }
-  }
-}
+    },
+  },
+};
 </script>

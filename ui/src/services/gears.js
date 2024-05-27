@@ -4,8 +4,8 @@ export async function fetchGears(page) {
   const response = await fetch(`${API_BASE_URL}/gears?page=${page}`, {
     method: 'GET',
     headers: {
-      'Content-Type': 'application/json'
-    }
+      'Content-Type': 'application/json',
+    },
   });
 
   if (!response.ok) {

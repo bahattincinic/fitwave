@@ -13,14 +13,24 @@
             <label for="client_secret">Client Secret:</label>
             <InputText v-model="clientSecret" id="client_secret" />
           </div>
-          <Button :disabled="loading" label="Save" type="submit" icon="pi pi-save" />
+          <Button
+            :disabled="loading"
+            label="Save"
+            type="submit"
+            icon="pi pi-save"
+          />
         </form>
       </TabPanel>
       <TabPanel header="Sync Data">
         <Message v-if="!isSyncEligible" severity="error">
-          You need to fill config from first to be able to sync your Strava data.
+          You need to fill config from first to be able to sync your Strava
+          data.
         </Message>
-        <div v-else>
+        <Message v-else-if="!accessToken" severity="info">
+          You need to Login with Strava to be able to sync your data.
+        </Message>
+
+        <div v-if="isSyncEligible">
           <Button
             v-if="accessToken"
             :disabled="loading"
@@ -50,7 +60,7 @@ import {
   getUserConfig,
   saveUserConfig,
   triggerSync,
-  getTaskDetail
+  getTaskDetail,
 } from '@/services/user';
 import Toast from 'primevue/toast';
 import { useToast } from 'primevue/usetoast';
@@ -59,7 +69,8 @@ import Button from 'primevue/button';
 import TabView from 'primevue/tabview';
 import TabPanel from 'primevue/tabpanel';
 import Message from 'primevue/message';
-import { useUserStore } from "@/store/user";
+import { useUserStore } from '@/store/user';
+import { useHead } from '@unhead/vue';
 
 export default {
   name: 'SettingsPage',
@@ -69,9 +80,11 @@ export default {
     Toast,
     TabView,
     TabPanel,
-    Message
+    Message,
   },
   setup() {
+    useHead({ title: 'Settings' });
+
     const clientId = ref('');
     const clientSecret = ref('');
     const toast = useToast();
@@ -108,7 +121,7 @@ export default {
     ...mapState(useUserStore, ['user', 'accessToken']),
     isSyncEligible() {
       return !!this.clientId && !!this.clientSecret;
-    }
+    },
   },
   methods: {
     async saveSettings() {
@@ -116,7 +129,7 @@ export default {
         this.loading = true;
         await saveUserConfig({
           client_id: parseInt(this.clientId),
-          client_secret: this.clientSecret
+          client_secret: this.clientSecret,
         });
         this.toast.add({
           severity: 'success',
@@ -136,7 +149,7 @@ export default {
       }
     },
     async delay(ms) {
-      return new Promise(resolve => setTimeout(resolve, ms));
+      return new Promise((resolve) => setTimeout(resolve, ms));
     },
     async syncData() {
       try {
@@ -166,9 +179,9 @@ export default {
       } finally {
         this.loading = false;
       }
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <style scoped>

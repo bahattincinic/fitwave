@@ -4,8 +4,8 @@ export async function fetchDashboards() {
   const response = await fetch(`${API_BASE_URL}/dashboards`, {
     method: 'GET',
     headers: {
-      'Content-Type': 'application/json'
-    }
+      'Content-Type': 'application/json',
+    },
   });
 
   if (!response.ok) {

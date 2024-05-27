@@ -5,8 +5,8 @@ export async function getAuthorizationURL() {
   const response = await fetch(endpoint, {
     method: 'GET',
     headers: {
-      'Content-Type': 'application/json'
-    }
+      'Content-Type': 'application/json',
+    },
   });
 
   if (!response.ok) {
@@ -21,9 +21,9 @@ export async function getAccessToken(code) {
   const response = await fetch(endpoint, {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ code })
+    body: JSON.stringify({ code }),
   });
 
   if (!response.ok) {

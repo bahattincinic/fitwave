@@ -6,15 +6,14 @@
     <DataTable :value="dashboards" :loading="loading">
       <Column field="id" header="ID"></Column>
       <Column field="name" header="Name"></Column>
-      <template #empty>
-        No records found
-      </template>
+      <template #empty> No records found </template>
     </DataTable>
   </div>
 </template>
 
 <script>
 import { ref, onMounted } from 'vue';
+import { useHead } from '@unhead/vue';
 import { fetchDashboards } from '@/services/dashboars';
 import Toast from 'primevue/toast';
 import { useToast } from 'primevue/usetoast';
@@ -26,9 +25,11 @@ export default {
   components: {
     DataTable,
     Column,
-    Toast
+    Toast,
   },
   setup() {
+    useHead({ title: 'Dashboard' });
+
     const dashboards = ref([]);
     const loading = ref(false);
     const toast = useToast();
@@ -58,6 +59,6 @@ export default {
       dashboards,
       loading,
     };
-  }
-}
+  },
+};
 </script>

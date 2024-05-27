@@ -4,8 +4,8 @@ export async function getUserConfig() {
   const response = await fetch(`${API_BASE_URL}/user/config`, {
     method: 'GET',
     headers: {
-      'Content-Type': 'application/json'
-    }
+      'Content-Type': 'application/json',
+    },
   });
 
   if (!response.ok) {
@@ -20,8 +20,8 @@ export async function getUserMe(accessToken) {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${accessToken}`
-    }
+      Authorization: `Bearer ${accessToken}`,
+    },
   });
 
   if (!response.ok) {
@@ -36,7 +36,7 @@ export async function getTaskDetail(id) {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
-    }
+    },
   });
 
   if (!response.ok) {
@@ -51,8 +51,8 @@ export async function triggerSync(accessToken) {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${accessToken}`
-    }
+      Authorization: `Bearer ${accessToken}`,
+    },
   });
 
   if (!response.ok) {
@@ -66,9 +66,9 @@ export async function saveUserConfig(config) {
   const response = await fetch(`${API_BASE_URL}/user/config`, {
     method: 'PUT',
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
     },
-    body: JSON.stringify(config)
+    body: JSON.stringify(config),
   });
 
   if (!response.ok) {
