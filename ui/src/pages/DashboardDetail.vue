@@ -18,6 +18,10 @@
       </div>
     </div>
 
+    <div v-if="!loading" class="mb-2 mt-2">
+      <ComponentGrid :components="components" />
+    </div>
+
     <Dialog
       v-model:visible="modal.showUpdate"
       modal
@@ -46,7 +50,8 @@
     </Dialog>
     <Dialog
       v-model:visible="modal.showCreateComponent"
-      maximizable modal
+      maximizable
+      modal
       header="Create Component"
       :style="{ width: '50rem' }"
       :breakpoints="{ '1199px': '75vw', '575px': '90vw' }"
@@ -92,7 +97,9 @@
           @click="onPreviewQuery"
         />
         <Button
-          :disabled="loading || !modal.form.name || !modal.form.type || !modal.form.query"
+          :disabled="
+            loading || !modal.form.name || !modal.form.type || !modal.form.query
+          "
           type="button"
           label="Create"
           @click="onCreateComponent"
@@ -107,9 +114,14 @@ import {
   getDashboard,
   deleteDashboard,
   updateDashboard,
+  runDashboard,
 } from '@/services/dashboars';
-import {getTaskDetail, runQuery} from '@/services/user';
-import { fetchComponents, createComponent, componentTypes } from '@/services/components';
+import { getTaskDetail, runQuery } from '@/services/user';
+import {
+  fetchComponents,
+  createComponent,
+  componentTypes,
+} from '@/services/components';
 import Button from 'primevue/button';
 import InputText from 'primevue/inputtext';
 import Textarea from 'primevue/textarea';
@@ -117,7 +129,8 @@ import Dropdown from 'primevue/dropdown';
 import TieredMenu from 'primevue/tieredmenu';
 import Dialog from 'primevue/dialog';
 import { useHead } from '@unhead/vue';
-import TableComponent from "@/components/TableComponent";
+import TableComponent from '@/components/TableComponent';
+import ComponentGrid from '@/components/ComponentGrid';
 
 export default {
   name: 'DashboardDetail',
@@ -128,7 +141,8 @@ export default {
     Dialog,
     Textarea,
     Dropdown,
-    TableComponent
+    TableComponent,
+    ComponentGrid,
   },
   data() {
     return {
@@ -138,10 +152,15 @@ export default {
       components: [],
       modal: {
         showUpdate: false,
-        showCreateComponent : false,
+        showCreateComponent: false,
         form: {},
       },
       menuItems: [
+        {
+          label: 'Refresh',
+          icon: 'pi pi-refresh',
+          command: this.refreshDashboard,
+        },
         {
           label: 'Update Dashboard',
           icon: 'pi pi-file-edit',
@@ -178,6 +197,7 @@ export default {
       } finally {
         this.loading = false;
       }
+      await this.refreshDashboard();
     },
     onDeleteDashboard() {
       this.$confirm.require({
@@ -259,10 +279,33 @@ export default {
     async onPreviewQuery() {
       try {
         this.loading = true;
-        const task = await this.waitTask(await runQuery({
-          query: this.modal.form.query
-        }));
+        const task = await this.waitTask(
+          await runQuery({
+            query: this.modal.form.query,
+          })
+        );
         this.modal.form.result = task.result;
+      } catch (error) {
+        this.$toast.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: error.toString(),
+          life: 3000,
+        });
+      } finally {
+        this.loading = false;
+      }
+    },
+    async refreshDashboard() {
+      try {
+        this.loading = true;
+        const task = await this.waitTask(await runDashboard(this.dashboard.id));
+        task.result.map((row) => {
+          const component = this.components.find((comp) => comp.id === row.id);
+          if (component) {
+            component.results = row.results;
+          }
+        });
       } catch (error) {
         this.$toast.add({
           severity: 'error',
@@ -280,10 +323,14 @@ export default {
       };
 
       let taskStatus = task.status;
-      while (taskStatus !== 'success') {
+      while (!['success', 'error'].includes(taskStatus)) {
         await delay(1000);
         task = await getTaskDetail(task.id);
         taskStatus = task.status;
+      }
+
+      if (taskStatus === 'error') {
+        throw new Error('Query fetching Failed');
       }
 
       return task;
@@ -298,7 +345,7 @@ export default {
         name: '',
         query: '',
         type: '',
-      }
+      };
     },
     closeModal() {
       this.modal.showUpdate = false;
