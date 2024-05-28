@@ -17,7 +17,6 @@
     "primeicons": "^7.0.0",
     "primevue": "^3.52.0",
     "vue": "^3.2.13",
-    "vue-grid-layout": "^2.4.0",
     "vue-grid-layout-v3": "^3.0.3",
     "vue-json-pretty": "^2.4.0",
     "vue-router": "^4.3.2"
