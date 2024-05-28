@@ -1,5 +1,13 @@
 import { API_BASE_URL } from './api';
 
+export const componentTypes = [
+  { name: 'Table', code: 'table' },
+  { name: 'Text', code: 'text' },
+  { name: 'Pie Chart', code: 'pie_chart' },
+  { name: 'Bar Chart', code: 'bar_chart' },
+  { name: 'Line Chart', code: 'line_chart' },
+];
+
 export async function fetchComponents(dashId) {
   const endpoint = `${API_BASE_URL}/dashboards/${dashId}/components`;
 
