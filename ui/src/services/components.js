@@ -77,7 +77,7 @@ export async function deleteComponent(dashId, compId) {
 }
 
 export async function runComponent(dashId, compId) {
-  const endpoint = `${API_BASE_URL}/dashboards/${dashId}/components/${compId}`;
+  const endpoint = `${API_BASE_URL}/dashboards/${dashId}/components/${compId}/run`;
 
   const response = await fetch(endpoint, {
     method: 'POST',

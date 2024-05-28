@@ -19,7 +19,12 @@
     </div>
 
     <div v-if="!loading" class="mb-2 mt-2">
-      <ComponentGrid :components="components" />
+      <ComponentGrid
+        :components="components"
+        @refresh="refreshComponent"
+        @edit="openEditComponentModal"
+        @delete="deleteComponent"
+      />
     </div>
 
     <Dialog
@@ -49,10 +54,10 @@
       </div>
     </Dialog>
     <Dialog
-      v-model:visible="modal.showCreateComponent"
+      v-model:visible="modal.showComponent"
       maximizable
       modal
-      header="Create Component"
+      :header="modal.form.id ? 'Update Component' : 'Create Component'"
       :style="{ width: '50rem' }"
       :breakpoints="{ '1199px': '75vw', '575px': '90vw' }"
     >
@@ -101,8 +106,8 @@
             loading || !modal.form.name || !modal.form.type || !modal.form.query
           "
           type="button"
-          label="Create"
-          @click="onCreateComponent"
+          :label="modal.form.id ? 'Update' : 'Create'"
+          @click="onSaveComponent"
         />
       </div>
     </Dialog>
@@ -121,6 +126,9 @@ import {
   fetchComponents,
   createComponent,
   componentTypes,
+  deleteComponent,
+  updateComponent,
+  runComponent,
 } from '@/services/components';
 import Button from 'primevue/button';
 import InputText from 'primevue/inputtext';
@@ -152,7 +160,7 @@ export default {
       components: [],
       modal: {
         showUpdate: false,
-        showCreateComponent: false,
+        showComponent: false,
         form: {},
       },
       menuItems: [
@@ -250,17 +258,24 @@ export default {
       }
       await this.fetch();
     },
-    async onCreateComponent() {
+    async onSaveComponent() {
+      const data = {
+        name: this.modal.form.name,
+        type: this.modal.form.type.code,
+        query: this.modal.form.query,
+      };
+
       try {
-        await createComponent(this.dashboard.id, {
-          name: this.modal.form.name,
-          type: this.modal.form.type.code,
-          query: this.modal.form.query,
-        });
+        if (this.modal.form.id) {
+          await updateComponent(this.dashboard.id, this.modal.form.id, data);
+        } else {
+          await createComponent(this.dashboard.id, data);
+        }
+
         this.$toast.add({
           severity: 'success',
           summary: 'Success',
-          detail: 'Component has been created successfully',
+          detail: 'Component has been saved successfully',
           life: 3000,
         });
       } catch (error) {
@@ -299,6 +314,7 @@ export default {
     async refreshDashboard() {
       try {
         this.loading = true;
+
         const task = await this.waitTask(await runDashboard(this.dashboard.id));
         task.result.map((row) => {
           const component = this.components.find((comp) => comp.id === row.id);
@@ -335,12 +351,70 @@ export default {
 
       return task;
     },
+    async refreshComponent(component) {
+      try {
+        this.loading = true;
+
+        const task = await this.waitTask(
+          await runComponent(this.dashboard.id, component.id)
+        );
+        const cmp = this.components.find((comp) => comp.id === component.id);
+        if (cmp) {
+          cmp.results = task.result;
+        }
+      } catch (error) {
+        this.$toast.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: error.toString(),
+          life: 3000,
+        });
+      } finally {
+        this.loading = false;
+      }
+    },
+    async openEditComponentModal(component) {
+      this.modal.showComponent = true;
+      this.modal.form = {
+        id: component.id,
+        name: component.name,
+        query: component.query,
+        type: componentTypes.find((t) => t.code === component.type),
+      };
+    },
+    async deleteComponent(component) {
+      this.$confirm.require({
+        header: 'Confirmation',
+        message: `Do you want to delete '${component.name}' Component`,
+        icon: 'pi pi-info-circle',
+        rejectClass: 'p-button-secondary p-button-outlined p-button-sm',
+        acceptClass: 'p-button-danger p-button-sm',
+        rejectLabel: 'Cancel',
+        acceptLabel: 'Delete',
+        accept: async () => {
+          try {
+            this.loading = true;
+            await deleteComponent(this.dashboard.id, component.id);
+          } catch (error) {
+            this.$toast.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: error.toString(),
+              life: 3000,
+            });
+          } finally {
+            this.loading = false;
+          }
+          await this.fetch();
+        },
+      });
+    },
     openUpdateModal() {
       this.modal.showUpdate = true;
       this.modal.form.name = this.dashboard.name;
     },
     openCreateComponentModal() {
-      this.modal.showCreateComponent = true;
+      this.modal.showComponent = true;
       this.modal.form = {
         name: '',
         query: '',
@@ -349,7 +423,7 @@ export default {
     },
     closeModal() {
       this.modal.showUpdate = false;
-      this.modal.showCreateComponent = false;
+      this.modal.showComponent = false;
       this.modal.form = {};
     },
   },

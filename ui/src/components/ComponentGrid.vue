@@ -19,15 +19,27 @@
       :h="item.h"
     >
       <Panel :header="item.name" class="panel">
+        <template #icons>
+          <Button
+            class="p-panel-header-icon p-link mr-2"
+            @click="onToggle(item, $event)"
+          >
+            <span class="pi pi-cog"></span>
+          </Button>
+        </template>
         <TableComponent :rows="item.results" />
       </Panel>
     </GridItem>
   </GridLayout>
+
+  <Menu ref="menu" :model="menuItems" popup />
 </template>
 
 <script>
 import { GridLayout, GridItem } from 'vue-grid-layout-v3';
 import Panel from 'primevue/panel';
+import Menu from 'primevue/menu';
+import Button from 'primevue/button';
 import TableComponent from '@/components/TableComponent';
 
 export default {
@@ -36,6 +48,8 @@ export default {
     GridLayout,
     GridItem,
     Panel,
+    Button,
+    Menu,
     TableComponent,
   },
   props: {
@@ -52,9 +66,34 @@ export default {
       deep: true,
     },
   },
+  emits: ['refresh', 'edit', 'delete'],
   data() {
     return {
       layout: this.calculateLayout(this.components),
+      selectedItem: null,
+      menuItems: [
+        {
+          label: 'Refresh',
+          icon: 'pi pi-refresh',
+          command: () => {
+            this.$emit('refresh', this.selectedItem.component);
+          },
+        },
+        {
+          label: 'Edit',
+          icon: 'pi pi-file-edit',
+          command: () => {
+            this.$emit('edit', this.selectedItem.component);
+          },
+        },
+        {
+          label: 'Delete',
+          icon: 'pi pi-delete-left',
+          command: () => {
+            this.$emit('delete', this.selectedItem.component);
+          },
+        },
+      ],
     };
   },
   methods: {
@@ -67,10 +106,15 @@ export default {
         i: component.id,
         name: component.name,
         results: component.results,
+        component,
       }));
     },
     onLayoutUpdated(newLayout) {
       this.layout = newLayout;
+    },
+    onToggle(item, event) {
+      this.selectedItem = item;
+      this.$refs.menu.toggle(event);
     },
   },
 };
