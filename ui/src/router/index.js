@@ -3,6 +3,7 @@ import Cookies from 'js-cookie';
 import LoginPage from '@/pages/LoginPage';
 import HomePage from '@/pages/HomePage';
 import SettingsPage from '@/pages/SettingsPage';
+import DashboardDetail from '@/pages/DashboardDetail';
 import AthletesPage from '@/pages/AthletesPage';
 import ActivitiesPage from '@/pages/ActivitiesPage';
 import GearsPage from '@/pages/GearsPage';
@@ -11,6 +12,11 @@ import { getUserMe } from '@/services/user';
 
 const routes = [
   { path: '/', name: 'Home', component: HomePage },
+  {
+    path: '/dashboard/:id',
+    name: 'DashboardDetail',
+    component: DashboardDetail,
+  },
   { path: '/login', name: 'Login', component: LoginPage },
   { path: '/settings', name: 'Settings', component: SettingsPage },
   { path: '/activities', name: 'Activities', component: ActivitiesPage },

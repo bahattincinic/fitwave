@@ -118,15 +118,23 @@ export default {
     async downloadGPXFile() {
       try {
         this.loading = true;
+        const fileName = `activity_${this.modal.data.id}.gpx`;
+
         const blob = await getActivityGPX(this.modal.data.id, this.accessToken);
         const url = window.URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
-        const fileName = `activity_${this.modal.data.id}.gpx`;
         link.setAttribute('download', fileName);
         document.body.appendChild(link);
         link.click();
         link.remove();
+      } catch (error) {
+        this.$toast.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: error.toString(),
+          life: 3000,
+        });
       } finally {
         this.loading = false;
       }
