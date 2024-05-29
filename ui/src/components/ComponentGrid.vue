@@ -27,7 +27,14 @@
             <span class="pi pi-cog"></span>
           </Button>
         </template>
-        <TableComponent :rows="item.results" />
+        <div v-if="item.loading" class="m-3">
+          <Skeleton class="mb-2"></Skeleton>
+          <Skeleton width="10rem" class="mb-2"></Skeleton>
+          <Skeleton width="5rem" class="mb-2"></Skeleton>
+          <Skeleton height="2rem" class="mb-2"></Skeleton>
+          <Skeleton width="10rem" height="4rem"></Skeleton>
+        </div>
+        <TableComponent v-else :rows="item.results" />
       </Panel>
     </GridItem>
   </GridLayout>
@@ -40,6 +47,7 @@ import { GridLayout, GridItem } from 'vue-grid-layout-v3';
 import Panel from 'primevue/panel';
 import Menu from 'primevue/menu';
 import Button from 'primevue/button';
+import Skeleton from 'primevue/skeleton';
 import TableComponent from '@/components/TableComponent';
 
 export default {
@@ -51,6 +59,7 @@ export default {
     Button,
     Menu,
     TableComponent,
+    Skeleton,
   },
   props: {
     components: {
@@ -106,6 +115,7 @@ export default {
         i: component.id,
         name: component.name,
         results: component.results,
+        loading: component.loading || false,
         component,
       }));
     },

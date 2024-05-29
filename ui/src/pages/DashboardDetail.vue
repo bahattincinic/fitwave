@@ -1,5 +1,12 @@
 <template>
-  <div class="m-3">
+  <div v-if="loading" class="m-3">
+    <Skeleton class="mb-2"></Skeleton>
+    <Skeleton width="10rem" class="mb-2"></Skeleton>
+    <Skeleton width="5rem" class="mb-2"></Skeleton>
+    <Skeleton height="2rem" class="mb-2"></Skeleton>
+    <Skeleton width="10rem" height="4rem"></Skeleton>
+  </div>
+  <div v-else class="m-3">
     <div class="flex justify-content-between align-items-center">
       <div>
         <h1 class="pl-1">{{ dashboard.name }}</h1>
@@ -145,6 +152,7 @@ import InputText from 'primevue/inputtext';
 import Textarea from 'primevue/textarea';
 import Dropdown from 'primevue/dropdown';
 import TieredMenu from 'primevue/tieredmenu';
+import Skeleton from 'primevue/skeleton';
 import Dialog from 'primevue/dialog';
 import { useHead } from '@unhead/vue';
 import TableComponent from '@/components/TableComponent';
@@ -161,6 +169,7 @@ export default {
     Dropdown,
     TableComponent,
     ComponentGrid,
+    Skeleton,
   },
   data() {
     return {
@@ -344,8 +353,9 @@ export default {
       return task;
     },
     async refreshComponent(component) {
+      const comp = this.components.find((comp) => comp.id === component.id);
       try {
-        this.loading = true;
+        comp.loading = true;
 
         const task = await this.waitTask(
           await runComponent(this.dashboard.id, component.id)
@@ -357,7 +367,7 @@ export default {
       } catch (error) {
         this.onError(error);
       } finally {
-        this.loading = false;
+        comp.loading = false;
       }
     },
     async openEditComponentModal(component) {
