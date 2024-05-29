@@ -34,7 +34,12 @@
           <Skeleton height="2rem" class="mb-2"></Skeleton>
           <Skeleton width="10rem" height="4rem"></Skeleton>
         </div>
-        <TableComponent v-else :rows="item.results" />
+        <div v-else>
+          <TableComponent
+            v-if="item.type === componentTypeEnum.table"
+            :rows="item.results"
+          />
+        </div>
       </Panel>
     </GridItem>
   </GridLayout>
@@ -49,6 +54,7 @@ import Menu from 'primevue/menu';
 import Button from 'primevue/button';
 import Skeleton from 'primevue/skeleton';
 import TableComponent from '@/components/TableComponent';
+import { componentTypeEnum } from '@/services/components';
 
 export default {
   name: 'ComponentGrid',
@@ -80,6 +86,7 @@ export default {
     return {
       layout: this.calculateLayout(this.components),
       selectedItem: null,
+      componentTypeEnum,
       menuItems: [
         {
           label: 'Refresh',
@@ -114,6 +121,7 @@ export default {
         h: 1,
         i: component.id,
         name: component.name,
+        type: component.type,
         results: component.results,
         loading: component.loading || false,
         component,

@@ -1,5 +1,12 @@
 import { API_BASE_URL } from './api';
 
+export const taskStatusEnum = {
+  pending: 'pending',
+  success: 'success',
+  error: 'error',
+  archived: 'archived',
+};
+
 export async function getUserConfig() {
   const response = await fetch(`${API_BASE_URL}/user/config`, {
     method: 'GET',
@@ -94,4 +101,23 @@ export async function runQuery(query) {
   }
 
   return await response.json();
+}
+
+export async function waitAsyncTask(task) {
+  const delay = async (ms) => {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  };
+
+  let taskStatus = task.status;
+  while (![taskStatusEnum.success, taskStatusEnum.error].includes(taskStatus)) {
+    await delay(1000);
+    task = await getTaskDetail(task.id);
+    taskStatus = task.status;
+  }
+
+  if (taskStatus === taskStatusEnum.error) {
+    throw new Error('Async Task Failed');
+  }
+
+  return task;
 }

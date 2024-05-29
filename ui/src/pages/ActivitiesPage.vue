@@ -105,12 +105,7 @@ export default {
         this.activities = response.results;
         this.count = response.count;
       } catch (error) {
-        this.$toast.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: error.toString(),
-          life: 3000,
-        });
+        this.onError(error);
       } finally {
         this.loading = false;
       }
@@ -129,15 +124,18 @@ export default {
         link.click();
         link.remove();
       } catch (error) {
-        this.$toast.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: error.toString(),
-          life: 3000,
-        });
+        this.onError(error);
       } finally {
         this.loading = false;
       }
+    },
+    onError(err) {
+      this.$toast.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: err.toString(),
+        life: 3000,
+      });
     },
     onRowSelect(event) {
       this.modal.data = event.data;

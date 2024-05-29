@@ -97,12 +97,7 @@ export default {
         const response = await fetchDashboards();
         this.dashboards = response.results;
       } catch (error) {
-        this.$toast.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: error.toString(),
-          life: 3000,
-        });
+        this.onError(error);
       } finally {
         this.loading = false;
       }
@@ -119,12 +114,7 @@ export default {
           life: 3000,
         });
       } catch (error) {
-        this.$toast.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: error.toString(),
-          life: 3000,
-        });
+        this.onError(error);
       } finally {
         this.loading = false;
         this.closeModal();
@@ -141,6 +131,14 @@ export default {
     },
     onRowSelect(event) {
       this.$router.push(`/dashboard/${event.data.id}`);
+    },
+    onError(err) {
+      this.$toast.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: err.toString(),
+        life: 3000,
+      });
     },
   },
 };

@@ -58,7 +58,7 @@ import {
   getUserConfig,
   saveUserConfig,
   triggerSync,
-  getTaskDetail,
+  waitAsyncTask,
 } from '@/services/user';
 import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
@@ -110,12 +110,7 @@ export default {
         this.clientId = config.client_id;
         this.clientSecret = config.client_secret;
       } catch (error) {
-        this.$toast.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: error.toString(),
-          life: 3000,
-        });
+        this.onError(error);
       } finally {
         this.loading = false;
       }
@@ -134,31 +129,15 @@ export default {
           life: 3000,
         });
       } catch (error) {
-        this.$toast.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: error.toString(),
-          life: 3000,
-        });
+        this.onError(error);
       } finally {
         this.loading = false;
       }
     },
-    async delay(ms) {
-      return new Promise((resolve) => setTimeout(resolve, ms));
-    },
     async syncData() {
       try {
         this.loading = true;
-        const task = await triggerSync(this.accessToken);
-
-        let taskStatus = task.status;
-        while (taskStatus !== 'success') {
-          await this.delay(5000);
-          const taskDetail = await getTaskDetail(task.id);
-          taskStatus = taskDetail.status;
-        }
-
+        await waitAsyncTask(await triggerSync(this.accessToken));
         this.$toast.add({
           severity: 'success',
           summary: 'Success',
@@ -166,15 +145,18 @@ export default {
           life: 3000,
         });
       } catch (error) {
-        this.$toast.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: error.toString(),
-          life: 3000,
-        });
+        this.onError(error);
       } finally {
         this.loading = false;
       }
+    },
+    onError(err) {
+      this.$toast.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: err.toString(),
+        life: 3000,
+      });
     },
   },
 };

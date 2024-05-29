@@ -1,11 +1,19 @@
 import { API_BASE_URL } from './api';
 
+export const componentTypeEnum = {
+  table: 'table',
+  text: 'text',
+  pieChart: 'pie_chart',
+  barChart: 'bar_chart',
+  lineChart: 'line_chart',
+};
+
 export const componentTypes = [
-  { name: 'Table', code: 'table' },
-  { name: 'Text', code: 'text' },
-  { name: 'Pie Chart', code: 'pie_chart' },
-  { name: 'Bar Chart', code: 'bar_chart' },
-  { name: 'Line Chart', code: 'line_chart' },
+  { name: 'Table', code: componentTypeEnum.table },
+  { name: 'Text', code: componentTypeEnum.text },
+  { name: 'Pie Chart', code: componentTypeEnum.pieChart },
+  { name: 'Bar Chart', code: componentTypeEnum.barChart },
+  { name: 'Line Chart', code: componentTypeEnum.lineChart },
 ];
 
 export async function fetchComponents(dashId) {

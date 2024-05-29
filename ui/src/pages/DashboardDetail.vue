@@ -138,7 +138,7 @@ import {
   updateDashboard,
   runDashboard,
 } from '@/services/dashboars';
-import { getTaskDetail, runQuery } from '@/services/user';
+import { runQuery, waitAsyncTask } from '@/services/user';
 import {
   fetchComponents,
   createComponent,
@@ -305,7 +305,7 @@ export default {
       try {
         this.modal.loading = true;
 
-        const task = await this.waitTask(
+        const task = await waitAsyncTask(
           await runQuery({
             query: this.modal.form.query,
           })
@@ -321,7 +321,7 @@ export default {
       try {
         this.loading = true;
 
-        const task = await this.waitTask(await runDashboard(this.dashboard.id));
+        const task = await waitAsyncTask(await runDashboard(this.dashboard.id));
         task.result.map((row) => {
           const component = this.components.find((comp) => comp.id === row.id);
           if (component) {
@@ -334,30 +334,12 @@ export default {
         this.loading = false;
       }
     },
-    async waitTask(task) {
-      const delay = async (ms) => {
-        return new Promise((resolve) => setTimeout(resolve, ms));
-      };
-
-      let taskStatus = task.status;
-      while (!['success', 'error'].includes(taskStatus)) {
-        await delay(1000);
-        task = await getTaskDetail(task.id);
-        taskStatus = task.status;
-      }
-
-      if (taskStatus === 'error') {
-        throw new Error('Query fetching Failed');
-      }
-
-      return task;
-    },
     async refreshComponent(component) {
       const comp = this.components.find((comp) => comp.id === component.id);
       try {
         comp.loading = true;
 
-        const task = await this.waitTask(
+        const task = await waitAsyncTask(
           await runComponent(this.dashboard.id, component.id)
         );
         const cmp = this.components.find((comp) => comp.id === component.id);
