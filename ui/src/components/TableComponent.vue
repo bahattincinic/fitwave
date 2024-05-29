@@ -1,7 +1,8 @@
 <template>
-  <DataTable :value="rows" :tableStyle="style">
+  <DataTable sortMode="multiple" :value="rows" :tableStyle="style">
     <Column
       v-for="col of columns"
+      sortable
       :key="col"
       :field="col"
       :header="col"

@@ -39,14 +39,14 @@
       </div>
       <div class="flex justify-content-center gap-2">
         <Button
-          :disabled="loading"
+          :disabled="loading || modal.loading"
           type="button"
           label="Cancel"
           severity="secondary"
           @click="closeModal"
         />
         <Button
-          :disabled="loading || !modal.form.name"
+          :disabled="loading || modal.loading || !modal.form.name"
           type="button"
           label="Save"
           @click="onUpdateDashboard"
@@ -62,7 +62,7 @@
       :breakpoints="{ '1199px': '75vw', '575px': '90vw' }"
     >
       <div class="flex align-items-center gap-3 mb-3">
-        <label for="username" class="font-semibold w-6rem">Name</label>
+        <label for="name" class="font-semibold w-6rem">Name</label>
         <InputText v-model="modal.form.name" id="name" />
       </div>
       <div class="flex align-items-center gap-3 mb-3">
@@ -79,7 +79,13 @@
       </div>
       <div class="flex align-items-center gap-3 mb-3">
         <label for="username" class="font-semibold w-6rem">Query</label>
-        <Textarea v-model="modal.form.query" id="query" rows="5" cols="30" />
+        <Textarea
+          v-model="modal.form.query"
+          id="query"
+          rows="5"
+          cols="30"
+          class="query-input"
+        />
       </div>
 
       <div v-if="modal.form.result" class="mb-4">
@@ -88,14 +94,14 @@
 
       <div class="flex justify-content-end gap-2">
         <Button
-          :disabled="loading"
+          :disabled="loading || modal.loading"
           type="button"
           label="Cancel"
           severity="secondary"
           @click="closeModal"
         />
         <Button
-          :disabled="loading || !modal.form.query"
+          :disabled="loading || modal.loading || !modal.form.query"
           type="button"
           label="Preview"
           severity="warning"
@@ -103,7 +109,11 @@
         />
         <Button
           :disabled="
-            loading || !modal.form.name || !modal.form.type || !modal.form.query
+            loading ||
+            modal.loading ||
+            !modal.form.name ||
+            !modal.form.type ||
+            !modal.form.query
           "
           type="button"
           :label="modal.form.id ? 'Update' : 'Create'"
@@ -162,6 +172,7 @@ export default {
         showUpdate: false,
         showComponent: false,
         form: {},
+        loading: false,
       },
       menuItems: [
         {
@@ -222,12 +233,7 @@ export default {
             await deleteDashboard(this.dashboard.id);
             this.$router.push('/');
           } catch (error) {
-            this.$toast.add({
-              severity: 'error',
-              summary: 'Error',
-              detail: error.toString(),
-              life: 3000,
-            });
+            this.onError(error);
           } finally {
             this.loading = false;
           }
@@ -236,9 +242,12 @@ export default {
     },
     async onUpdateDashboard() {
       try {
+        this.modal.loading = true;
+
         await updateDashboard(this.dashboard.id, {
           name: this.modal.form.name,
         });
+
         this.$toast.add({
           severity: 'success',
           summary: 'Success',
@@ -246,19 +255,16 @@ export default {
           life: 3000,
         });
       } catch (error) {
-        this.$toast.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: error.toString(),
-          life: 3000,
-        });
+        this.onError(error);
       } finally {
-        this.loading = false;
+        this.modal.loading = false;
         this.closeModal();
       }
       await this.fetch();
     },
     async onSaveComponent() {
+      this.modal.loading = true;
+
       const data = {
         name: this.modal.form.name,
         type: this.modal.form.type.code,
@@ -279,21 +285,17 @@ export default {
           life: 3000,
         });
       } catch (error) {
-        this.$toast.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: error.toString(),
-          life: 3000,
-        });
+        this.onError(error);
       } finally {
-        this.loading = false;
+        this.modal.loading = false;
         this.closeModal();
       }
       await this.fetch();
     },
     async onPreviewQuery() {
       try {
-        this.loading = true;
+        this.modal.loading = true;
+
         const task = await this.waitTask(
           await runQuery({
             query: this.modal.form.query,
@@ -301,14 +303,9 @@ export default {
         );
         this.modal.form.result = task.result;
       } catch (error) {
-        this.$toast.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: error.toString(),
-          life: 3000,
-        });
+        this.onError(error);
       } finally {
-        this.loading = false;
+        this.modal.loading = false;
       }
     },
     async refreshDashboard() {
@@ -323,12 +320,7 @@ export default {
           }
         });
       } catch (error) {
-        this.$toast.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: error.toString(),
-          life: 3000,
-        });
+        this.onError(error);
       } finally {
         this.loading = false;
       }
@@ -363,12 +355,7 @@ export default {
           cmp.results = task.result;
         }
       } catch (error) {
-        this.$toast.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: error.toString(),
-          life: 3000,
-        });
+        this.onError(error);
       } finally {
         this.loading = false;
       }
@@ -396,12 +383,7 @@ export default {
             this.loading = true;
             await deleteComponent(this.dashboard.id, component.id);
           } catch (error) {
-            this.$toast.add({
-              severity: 'error',
-              summary: 'Error',
-              detail: error.toString(),
-              life: 3000,
-            });
+            this.onError(error);
           } finally {
             this.loading = false;
           }
@@ -425,7 +407,23 @@ export default {
       this.modal.showUpdate = false;
       this.modal.showComponent = false;
       this.modal.form = {};
+      this.modal.loading = false;
+    },
+    onError(err) {
+      this.$toast.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: err.toString(),
+        life: 3000,
+      });
     },
   },
 };
 </script>
+
+<style scoped>
+.query-input {
+  width: 524px;
+  height: 239px;
+}
+</style>
