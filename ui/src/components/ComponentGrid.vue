@@ -34,7 +34,7 @@
           <Skeleton height="2rem" class="mb-2"></Skeleton>
           <Skeleton width="10rem" height="4rem"></Skeleton>
         </div>
-        <div v-else-if="item.results">
+        <div v-else-if="item.results" class="panel-content">
           <TableComponent
             v-if="item.type === componentTypeEnum.table"
             :rows="item.results"
@@ -167,5 +167,8 @@ export default {
 .panel {
   max-height: 100%;
   overflow-y: auto;
+}
+.panel-content {
+  min-height: 300px;
 }
 </style>
