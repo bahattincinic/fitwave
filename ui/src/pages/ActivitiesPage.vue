@@ -2,9 +2,16 @@
   <div class="m-3">
     <h1>Activities</h1>
 
+    <div v-if="loading" class="m-3">
+      <Skeleton class="mb-2"></Skeleton>
+      <Skeleton width="10rem" class="mb-2"></Skeleton>
+      <Skeleton width="5rem" class="mb-2"></Skeleton>
+      <Skeleton height="2rem" class="mb-2"></Skeleton>
+      <Skeleton width="10rem" height="4rem"></Skeleton>
+    </div>
     <DataTable
+      v-else
       :value="activities"
-      :loading="loading"
       selectionMode="single"
       @rowSelect="onRowSelect"
     >
@@ -52,6 +59,7 @@ import { fetchActivities, getActivityGPX } from '@/services/activities';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import Paginator from 'primevue/paginator';
+import Skeleton from 'primevue/skeleton';
 import VueJsonPretty from 'vue-json-pretty';
 import Dialog from 'primevue/dialog';
 import Button from 'primevue/button';
@@ -68,6 +76,7 @@ export default {
     Dialog,
     Button,
     VueJsonPretty,
+    Skeleton,
   },
   setup() {
     useHead({ title: 'Activities' });

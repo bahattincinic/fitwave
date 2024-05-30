@@ -27,6 +27,7 @@
 
     <div v-if="!loading" class="mb-2 mt-2">
       <ComponentGrid
+        :change-layout="changeLayout"
         :components="components"
         @refresh="refreshComponent"
         @edit="openEditComponentModal"
@@ -91,6 +92,7 @@ export default {
     return {
       componentTypes,
       loading: false,
+      changeLayout: false,
       dashboard: {},
       components: [],
       modal: {
@@ -104,6 +106,13 @@ export default {
           label: 'Refresh',
           icon: 'pi pi-refresh',
           command: this.refreshDashboard,
+        },
+        {
+          label: 'Change Layout',
+          icon: 'pi pi-arrows-alt',
+          command: () => {
+            this.changeLayout = !this.changeLayout;
+          },
         },
         {
           label: 'Update Dashboard',

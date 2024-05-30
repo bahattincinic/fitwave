@@ -221,7 +221,7 @@ export default {
       form: this.getInitialForm(this.row),
     };
   },
-  emits: ['close', 'save'],
+  emits: ['close', 'save', 'set-loading'],
   watch: {
     row: {
       handler(newVal) {
@@ -324,6 +324,7 @@ export default {
       }
 
       if (status && hasResult) {
+        this.form = this.getInitialForm();
         nextCallback();
       }
     },

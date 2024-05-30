@@ -4,8 +4,8 @@
     :layout="layout"
     :col-num="2"
     :row-height="400"
-    :is-draggable="true"
-    :is-resizable="false"
+    :is-draggable="changeLayout"
+    :is-resizable="changeLayout"
     :auto-size="true"
     @layout-updated="onLayoutUpdated"
   >
@@ -96,6 +96,10 @@ export default {
       type: Array,
       required: true,
     },
+    changeLayout: {
+      type: Boolean,
+      default: false,
+    },
   },
   watch: {
     components: {
@@ -105,7 +109,7 @@ export default {
       deep: true,
     },
   },
-  emits: ['refresh', 'edit', 'delete'],
+  emits: ['refresh', 'edit', 'delete', 'change-layout'],
   data() {
     return {
       layout: this.calculateLayout(this.components),
@@ -154,6 +158,7 @@ export default {
     },
     onLayoutUpdated(newLayout) {
       this.layout = newLayout;
+      this.$emit('change-layout', newLayout);
     },
     onToggle(item, event) {
       this.selectedItem = item;

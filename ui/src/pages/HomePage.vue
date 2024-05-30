@@ -14,9 +14,16 @@
       </div>
     </div>
 
+    <div v-if="loading" class="m-3">
+      <Skeleton class="mb-2"></Skeleton>
+      <Skeleton width="10rem" class="mb-2"></Skeleton>
+      <Skeleton width="5rem" class="mb-2"></Skeleton>
+      <Skeleton height="2rem" class="mb-2"></Skeleton>
+      <Skeleton width="10rem" height="4rem"></Skeleton>
+    </div>
     <DataTable
+      v-else
       :value="dashboards"
-      :loading="loading"
       selectionMode="single"
       @rowSelect="onRowSelect"
     >
@@ -40,6 +47,7 @@ import { fetchDashboards, createDashboard } from '@/services/dashboars';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import Button from 'primevue/button';
+import Skeleton from 'primevue/skeleton';
 import DashboardModal from '@/components/DashboardModal';
 
 export default {
@@ -49,6 +57,7 @@ export default {
     Column,
     DashboardModal,
     Button,
+    Skeleton,
   },
   setup() {
     useHead({ title: 'Dashboard' });

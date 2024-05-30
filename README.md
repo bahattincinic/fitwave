@@ -64,3 +64,10 @@ Build Backend
 ```
 make GCFLAGS="-tags=prod"
 ```
+
+
+## Swagger API Documentation
+
+To view the API Swagger documentation, please visit the following link:
+
+[http://localhost:9000/api/docs/](http://localhost:9000/api/docs/)
