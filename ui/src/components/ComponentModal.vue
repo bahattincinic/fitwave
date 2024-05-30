@@ -251,7 +251,7 @@ export default {
       return options.includes(this.form.type.code);
     },
     chartChoices() {
-      if (this.queryResult.length === 0) {
+      if (!this.queryResult || this.queryResult.length === 0) {
         return [];
       }
       return Object.keys(this.queryResult[0]).map((k) => {
