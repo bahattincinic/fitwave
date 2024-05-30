@@ -16,7 +16,7 @@ better and make informed decisions about your fitness.
 
 To see FitWave in action, watch the demo on YouTube: 
 
-https://www.youtube.com/watch?v=Y7Hl4OOkgB4
+[![Demo Video](https://img.youtube.com/vi/Y7Hl4OOkgB4/0.jpg)](https://www.youtube.com/watch?v=Y7Hl4OOkgB4)
 
 ## Install the Project
 
