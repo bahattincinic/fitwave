@@ -1,6 +1,6 @@
 # FitWave
 
-Fitwawe is a tool that lets you fetch your Strava data, 
+FitWave is a tool that lets you fetch your Strava data, 
 create custom dashboards using SQL, and view your workouts 
 with tables and charts. It helps you understand your training 
 better and make informed decisions about your fitness.
@@ -11,6 +11,12 @@ better and make informed decisions about your fitness.
 - **Visualization Tools:** See your workout data in tables and charts.
 - **User-Friendly Interface:** Easy to use and navigate.
 - **Real-Time Updates:** Keep your dashboards updated with the latest data from Strava.
+
+## Demo
+
+To see FitWave in action, watch the demo on YouTube: 
+
+https://www.youtube.com/watch?v=Y7Hl4OOkgB4
 
 ## Install the Project
 
