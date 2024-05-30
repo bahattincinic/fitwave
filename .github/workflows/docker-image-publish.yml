@@ -1,13 +1,5 @@
 name: Publish Docker image
-on:
-  push:
-    branches:
-      - "master"
-    tags:
-      - "v*"
-  pull_request:
-    branches:
-      - "master"
+on: [workflow_dispatch]
 jobs:
   push_to_registry:
     name: Push Docker image to Docker Hub
