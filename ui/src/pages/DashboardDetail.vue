@@ -34,111 +34,33 @@
       />
     </div>
 
-    <Dialog
-      v-model:visible="modal.showUpdate"
-      modal
-      header="Update Dashboard"
-      :style="{ width: '30rem' }"
-    >
-      <div class="flex align-items-center gap-3 mb-3">
-        <label for="username" class="font-semibold w-6rem">Name</label>
-        <InputText v-model="modal.form.name" id="name" />
-      </div>
-      <div class="flex justify-content-center gap-2">
-        <Button
-          :disabled="loading || modal.loading"
-          type="button"
-          label="Cancel"
-          severity="secondary"
-          @click="closeModal"
-        />
-        <Button
-          :disabled="loading || modal.loading || !modal.form.name"
-          type="button"
-          label="Save"
-          @click="onUpdateDashboard"
-        />
-      </div>
-    </Dialog>
-    <Dialog
-      v-model:visible="modal.showComponent"
-      maximizable
-      modal
-      :header="modal.form.id ? 'Update Component' : 'Create Component'"
-      :style="{ width: '50rem' }"
-      :breakpoints="{ '1199px': '75vw', '575px': '90vw' }"
-    >
-      <div class="flex align-items-center gap-3 mb-3">
-        <label for="name" class="font-semibold w-6rem">Name</label>
-        <InputText v-model="modal.form.name" id="name" />
-      </div>
-      <div class="flex align-items-center gap-3 mb-3">
-        <label for="username" class="font-semibold w-6rem">Type</label>
-        <Dropdown
-          v-model="modal.form.type"
-          :options="componentTypes"
-          optionLabel="name"
-          placeholder="Select a Type"
-          checkmark
-          :highlightOnSelect="false"
-          class="w-full md:w-14rem"
-        />
-      </div>
-      <div class="flex align-items-center gap-3 mb-3">
-        <label for="username" class="font-semibold w-6rem">Query</label>
-        <Textarea
-          v-model="modal.form.query"
-          id="query"
-          rows="5"
-          cols="30"
-          class="query-input"
-        />
-      </div>
+    <DashboardModal
+      :visible="modal.showUpdate"
+      :loading="modal.loading"
+      :row="dashboard"
+      @save="onUpdateDashboard"
+      @close="closeModal"
+    />
 
-      <div v-if="modal.form.result" class="mb-4">
-        <TableComponent :rows="modal.form.result" />
-      </div>
-
-      <div class="flex justify-content-end gap-2">
-        <Button
-          :disabled="loading || modal.loading"
-          type="button"
-          label="Cancel"
-          severity="secondary"
-          @click="closeModal"
-        />
-        <Button
-          :disabled="loading || modal.loading || !modal.form.query"
-          type="button"
-          label="Preview"
-          severity="warning"
-          @click="onPreviewQuery"
-        />
-        <Button
-          :disabled="
-            loading ||
-            modal.loading ||
-            !modal.form.name ||
-            !modal.form.type ||
-            !modal.form.query
-          "
-          type="button"
-          :label="modal.form.id ? 'Update' : 'Create'"
-          @click="onSaveComponent"
-        />
-      </div>
-    </Dialog>
+    <ComponentModal
+      :visible="modal.showComponent"
+      :loading="modal.loading"
+      :row="modal.form"
+      @save="onSaveComponent"
+      @close="closeModal"
+      @set-loading="(v) => (this.modal.loading = v)"
+    />
   </div>
 </template>
 
 <script>
 import {
+  runDashboard,
   getDashboard,
   deleteDashboard,
   updateDashboard,
-  runDashboard,
 } from '@/services/dashboars';
-import { runQuery, waitAsyncTask } from '@/services/user';
+import { waitAsyncTask } from '@/services/user';
 import {
   fetchComponents,
   createComponent,
@@ -148,28 +70,22 @@ import {
   runComponent,
 } from '@/services/components';
 import Button from 'primevue/button';
-import InputText from 'primevue/inputtext';
-import Textarea from 'primevue/textarea';
-import Dropdown from 'primevue/dropdown';
 import TieredMenu from 'primevue/tieredmenu';
 import Skeleton from 'primevue/skeleton';
-import Dialog from 'primevue/dialog';
 import { useHead } from '@unhead/vue';
-import TableComponent from '@/components/TableComponent';
 import ComponentGrid from '@/components/ComponentGrid';
+import DashboardModal from '@/components/DashboardModal';
+import ComponentModal from '@/components/ComponentModal';
 
 export default {
   name: 'DashboardDetail',
   components: {
     Button,
-    InputText,
     TieredMenu,
-    Dialog,
-    Textarea,
-    Dropdown,
-    TableComponent,
     ComponentGrid,
     Skeleton,
+    DashboardModal,
+    ComponentModal,
   },
   data() {
     return {
@@ -192,12 +108,17 @@ export default {
         {
           label: 'Update Dashboard',
           icon: 'pi pi-file-edit',
-          command: this.openUpdateModal,
+          command: () => {
+            this.modal.showUpdate = true;
+          },
         },
         {
           label: 'Create Component',
           icon: 'pi pi-file-edit',
-          command: this.openCreateComponentModal,
+          command: () => {
+            this.modal.showComponent = true;
+            this.modal.form = {};
+          },
         },
         {
           label: 'Delete',
@@ -225,7 +146,27 @@ export default {
       } finally {
         this.loading = false;
       }
-      await this.refreshDashboard();
+
+      if (this.components.length > 0) {
+        await this.refreshDashboard();
+      }
+    },
+    async refreshDashboard() {
+      try {
+        this.loading = true;
+
+        const task = await waitAsyncTask(await runDashboard(this.dashboard.id));
+        task.result.map((row) => {
+          const component = this.components.find((comp) => comp.id === row.id);
+          if (component) {
+            component.results = row.results;
+          }
+        });
+      } catch (error) {
+        this.onError(error);
+      } finally {
+        this.loading = false;
+      }
     },
     onDeleteDashboard() {
       this.$confirm.require({
@@ -249,14 +190,15 @@ export default {
         },
       });
     },
-    async onUpdateDashboard() {
+    async onUpdateDashboard(form) {
       try {
         this.modal.loading = true;
 
         await updateDashboard(this.dashboard.id, {
-          name: this.modal.form.name,
+          name: form.name,
         });
 
+        this.dashboard.name = form.name;
         this.$toast.add({
           severity: 'success',
           summary: 'Success',
@@ -269,20 +211,20 @@ export default {
         this.modal.loading = false;
         this.closeModal();
       }
-      await this.fetch();
     },
-    async onSaveComponent() {
+    async onSaveComponent(form) {
       this.modal.loading = true;
 
       const data = {
-        name: this.modal.form.name,
-        type: this.modal.form.type.code,
-        query: this.modal.form.query,
+        name: form.name,
+        type: form.type.code,
+        query: form.query,
+        configs: form.configs || null,
       };
 
       try {
-        if (this.modal.form.id) {
-          await updateComponent(this.dashboard.id, this.modal.form.id, data);
+        if (form.id) {
+          await updateComponent(this.dashboard.id, form.id, data);
         } else {
           await createComponent(this.dashboard.id, data);
         }
@@ -296,43 +238,9 @@ export default {
       } catch (error) {
         this.onError(error);
       } finally {
-        this.modal.loading = false;
         this.closeModal();
       }
       await this.fetch();
-    },
-    async onPreviewQuery() {
-      try {
-        this.modal.loading = true;
-
-        const task = await waitAsyncTask(
-          await runQuery({
-            query: this.modal.form.query,
-          })
-        );
-        this.modal.form.result = task.result;
-      } catch (error) {
-        this.onError(error);
-      } finally {
-        this.modal.loading = false;
-      }
-    },
-    async refreshDashboard() {
-      try {
-        this.loading = true;
-
-        const task = await waitAsyncTask(await runDashboard(this.dashboard.id));
-        task.result.map((row) => {
-          const component = this.components.find((comp) => comp.id === row.id);
-          if (component) {
-            component.results = row.results;
-          }
-        });
-      } catch (error) {
-        this.onError(error);
-      } finally {
-        this.loading = false;
-      }
     },
     async refreshComponent(component) {
       const comp = this.components.find((comp) => comp.id === component.id);
@@ -354,12 +262,7 @@ export default {
     },
     async openEditComponentModal(component) {
       this.modal.showComponent = true;
-      this.modal.form = {
-        id: component.id,
-        name: component.name,
-        query: component.query,
-        type: componentTypes.find((t) => t.code === component.type),
-      };
+      this.modal.form = component;
     },
     async deleteComponent(component) {
       this.$confirm.require({
@@ -383,18 +286,6 @@ export default {
         },
       });
     },
-    openUpdateModal() {
-      this.modal.showUpdate = true;
-      this.modal.form.name = this.dashboard.name;
-    },
-    openCreateComponentModal() {
-      this.modal.showComponent = true;
-      this.modal.form = {
-        name: '',
-        query: '',
-        type: '',
-      };
-    },
     closeModal() {
       this.modal.showUpdate = false;
       this.modal.showComponent = false;
@@ -412,10 +303,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.query-input {
-  width: 524px;
-  height: 239px;
-}
-</style>

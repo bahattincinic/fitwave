@@ -34,10 +34,28 @@
           <Skeleton height="2rem" class="mb-2"></Skeleton>
           <Skeleton width="10rem" height="4rem"></Skeleton>
         </div>
-        <div v-else>
+        <div v-else-if="item.results">
           <TableComponent
             v-if="item.type === componentTypeEnum.table"
             :rows="item.results"
+          />
+          <PieChartComponent
+            v-else-if="item.type === componentTypeEnum.pieChart"
+            :rows="item.results"
+            :x="item.configs.x"
+            :y="item.configs.y"
+          />
+          <BarChartComponent
+            v-else-if="item.type === componentTypeEnum.barChart"
+            :rows="item.results"
+            :x="item.configs.x"
+            :y="item.configs.y"
+          />
+          <LineChartComponent
+            v-else-if="item.type === componentTypeEnum.lineChart"
+            :rows="item.results"
+            :x="item.configs.x"
+            :y="item.configs.y"
           />
         </div>
       </Panel>
@@ -54,6 +72,9 @@ import Menu from 'primevue/menu';
 import Button from 'primevue/button';
 import Skeleton from 'primevue/skeleton';
 import TableComponent from '@/components/TableComponent';
+import PieChartComponent from '@/components/PieChartComponent';
+import BarChartComponent from '@/components/BarChartComponent';
+import LineChartComponent from '@/components/LineChartComponent';
 import { componentTypeEnum } from '@/services/components';
 
 export default {
@@ -65,6 +86,9 @@ export default {
     Button,
     Menu,
     TableComponent,
+    PieChartComponent,
+    BarChartComponent,
+    LineChartComponent,
     Skeleton,
   },
   props: {
@@ -124,6 +148,7 @@ export default {
         type: component.type,
         results: component.results,
         loading: component.loading || false,
+        configs: component.configs || {},
         component,
       }));
     },

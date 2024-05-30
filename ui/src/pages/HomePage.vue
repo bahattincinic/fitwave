@@ -25,32 +25,12 @@
       <template #empty> No records found </template>
     </DataTable>
 
-    <Dialog
-      v-model:visible="modal.show"
-      modal
-      header="Create Dashboard"
-      :style="{ width: '30rem' }"
-    >
-      <div class="flex align-items-center gap-3 mb-3">
-        <label for="username" class="font-semibold w-6rem">Name</label>
-        <InputText v-model="modal.form.name" id="name" />
-      </div>
-      <div class="flex justify-content-center gap-2">
-        <Button
-          :disabled="loading"
-          type="button"
-          label="Cancel"
-          severity="secondary"
-          @click="closeModal"
-        />
-        <Button
-          :disabled="loading || !modal.form.name"
-          type="button"
-          label="Save"
-          @click="onCreateDashboard"
-        />
-      </div>
-    </Dialog>
+    <DashboardModal
+      :visible="modalShow"
+      :loading="loading"
+      @save="onCreateDashboard"
+      @close="modalShow = false"
+    />
   </div>
 </template>
 
@@ -60,17 +40,15 @@ import { fetchDashboards, createDashboard } from '@/services/dashboars';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import Button from 'primevue/button';
-import InputText from 'primevue/inputtext';
-import Dialog from 'primevue/dialog';
+import DashboardModal from '@/components/DashboardModal';
 
 export default {
   name: 'HomePage',
   components: {
     DataTable,
     Column,
+    DashboardModal,
     Button,
-    Dialog,
-    InputText,
   },
   setup() {
     useHead({ title: 'Dashboard' });
@@ -82,12 +60,7 @@ export default {
     return {
       loading: false,
       dashboards: [],
-      modal: {
-        show: false,
-        form: {
-          name: '',
-        },
-      },
+      modalShow: false,
     };
   },
   methods: {
@@ -102,10 +75,10 @@ export default {
         this.loading = false;
       }
     },
-    async onCreateDashboard() {
+    async onCreateDashboard(form) {
       try {
         await createDashboard({
-          name: this.modal.form.name,
+          name: form.name,
         });
         this.$toast.add({
           severity: 'success',
@@ -117,17 +90,12 @@ export default {
         this.onError(error);
       } finally {
         this.loading = false;
-        this.closeModal();
+        this.modalShow = false;
       }
       await this.fetch();
     },
     openCreateModal() {
-      this.modal.show = true;
-      this.modal.form.name = '';
-    },
-    closeModal() {
-      this.modal.show = false;
-      this.modal.form.name = '';
+      this.modalShow = true;
     },
     onRowSelect(event) {
       this.$router.push(`/dashboard/${event.data.id}`);
