@@ -1280,14 +1280,12 @@ const docTemplate = `{
             "type": "string",
             "enum": [
                 "table",
-                "text",
                 "pie_chart",
                 "bar_chart",
                 "line_chart"
             ],
             "x-enum-varnames": [
                 "TableComponent",
-                "TextComponent",
                 "PieChartComponent",
                 "BarChartComponent",
                 "LineChartComponent"

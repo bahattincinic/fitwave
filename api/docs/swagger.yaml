@@ -211,14 +211,12 @@ definitions:
   models.ComponentType:
     enum:
     - table
-    - text
     - pie_chart
     - bar_chart
     - line_chart
     type: string
     x-enum-varnames:
     - TableComponent
-    - TextComponent
     - PieChartComponent
     - BarChartComponent
     - LineChartComponent

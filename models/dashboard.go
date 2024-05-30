@@ -18,7 +18,6 @@ type ComponentType string
 
 const (
 	TableComponent     = ComponentType("table")
-	TextComponent      = ComponentType("text")
 	PieChartComponent  = ComponentType("pie_chart")
 	BarChartComponent  = ComponentType("bar_chart")
 	LineChartComponent = ComponentType("line_chart")

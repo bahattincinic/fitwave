@@ -1,8 +1,42 @@
 # FitWave
 
-Virtualize Your Strava Workouts
+Fitwawe is a tool that lets you fetch your Strava data, 
+create custom dashboards using SQL, and view your workouts 
+with tables and charts. It helps you understand your training 
+better and make informed decisions about your fitness.
 
-## Setup
+## Features
+- **Data Integration:** Connect with your Strava account and get your workout data.
+- **Custom Dashboards:** Use SQL to create dashboards that show the information you want.
+- **Visualization Tools:** See your workout data in tables and charts.
+- **User-Friendly Interface:** Easy to use and navigate.
+- **Real-Time Updates:** Keep your dashboards updated with the latest data from Strava.
+
+## Install the Project
+
+There are a few options to install the project:
+
+- [Download a release binary](#release-binaries)
+- [Download a docker image](#docker-image)
+- [Build a binary from source](#building-from-source)
+
+### Release binaries
+
+You can download the release binary for your system from the [releases page](https://github.com/bahattincinic/fitwave/releases).
+
+### Docker image
+
+To pull the Docker image:
+
+```bash
+# Pull the latest image
+docker pull bahattincinic/fitwave
+
+# Or specify the image by tag
+docker pull bahattincinic/fitwave[:tag]
+```
+
+### Building from source
 
 **1. Clone the Repository**
 
@@ -24,7 +58,7 @@ cd ui
 npm install
 ```
 
-## Running the Application
+#### Running the Application
 
 **1. Run Backend**
 
@@ -71,3 +105,7 @@ make GCFLAGS="-tags=prod"
 To view the API Swagger documentation, please visit the following link:
 
 [http://localhost:9000/api/docs/](http://localhost:9000/api/docs/)
+
+Updating Swagger
+
+    make swaggen
