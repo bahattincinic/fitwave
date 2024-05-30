@@ -295,6 +295,7 @@ export default {
           y: this.form.y.code,
         };
       }
+
       this.$emit('save', data);
     },
     async runPreviewQuery() {
@@ -324,7 +325,9 @@ export default {
       }
 
       if (status && hasResult) {
-        this.form = this.getInitialForm();
+        const { x, y } = this.getInitialForm();
+        this.form.x = x;
+        this.form.y = y;
         nextCallback();
       }
     },
