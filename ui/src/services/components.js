@@ -1,4 +1,4 @@
-import { API_BASE_URL } from './api';
+import { getApiBaseURL } from './api';
 
 export const componentTypeEnum = {
   table: 'table',
@@ -15,7 +15,7 @@ export const componentTypes = [
 ];
 
 export async function fetchComponents(dashId) {
-  const endpoint = `${API_BASE_URL}/dashboards/${dashId}/components`;
+  const endpoint = `${getApiBaseURL()}/dashboards/${dashId}/components`;
 
   const response = await fetch(endpoint, {
     method: 'GET',
@@ -32,7 +32,7 @@ export async function fetchComponents(dashId) {
 }
 
 export async function createComponent(dashId, data) {
-  const endpoint = `${API_BASE_URL}/dashboards/${dashId}/components`;
+  const endpoint = `${getApiBaseURL()}/dashboards/${dashId}/components`;
 
   const response = await fetch(endpoint, {
     method: 'POST',
@@ -50,7 +50,7 @@ export async function createComponent(dashId, data) {
 }
 
 export async function updateComponent(dashId, compId, data) {
-  const endpoint = `${API_BASE_URL}/dashboards/${dashId}/components/${compId}`;
+  const endpoint = `${getApiBaseURL()}/dashboards/${dashId}/components/${compId}`;
 
   const response = await fetch(endpoint, {
     method: 'PUT',
@@ -68,7 +68,7 @@ export async function updateComponent(dashId, compId, data) {
 }
 
 export async function deleteComponent(dashId, compId) {
-  const endpoint = `${API_BASE_URL}/dashboards/${dashId}/components/${compId}`;
+  const endpoint = `${getApiBaseURL()}/dashboards/${dashId}/components/${compId}`;
 
   const response = await fetch(endpoint, {
     method: 'DELETE',
@@ -83,7 +83,7 @@ export async function deleteComponent(dashId, compId) {
 }
 
 export async function runComponent(dashId, compId) {
-  const endpoint = `${API_BASE_URL}/dashboards/${dashId}/components/${compId}/run`;
+  const endpoint = `${getApiBaseURL()}/dashboards/${dashId}/components/${compId}/run`;
 
   const response = await fetch(endpoint, {
     method: 'POST',

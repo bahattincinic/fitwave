@@ -1,4 +1,4 @@
-import { API_BASE_URL } from './api';
+import { getApiBaseURL } from './api';
 
 export const taskStatusEnum = {
   pending: 'pending',
@@ -8,7 +8,9 @@ export const taskStatusEnum = {
 };
 
 export async function getUserConfig() {
-  const response = await fetch(`${API_BASE_URL}/user/config`, {
+  const endpoint = `${getApiBaseURL()}/user/config`;
+
+  const response = await fetch(endpoint, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -23,7 +25,9 @@ export async function getUserConfig() {
 }
 
 export async function getUserMe(accessToken) {
-  const response = await fetch(`${API_BASE_URL}/user/me`, {
+  const endpoint = `${getApiBaseURL()}/user/me`;
+
+  const response = await fetch(endpoint, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -39,7 +43,7 @@ export async function getUserMe(accessToken) {
 }
 
 export async function getTaskDetail(id) {
-  const endpoint = `${API_BASE_URL}/user/task/${id}`;
+  const endpoint = `${getApiBaseURL()}/user/task/${id}`;
 
   const response = await fetch(endpoint, {
     method: 'GET',
@@ -56,7 +60,9 @@ export async function getTaskDetail(id) {
 }
 
 export async function triggerSync(accessToken) {
-  const response = await fetch(`${API_BASE_URL}/user/sync`, {
+  const endpoint = `${getApiBaseURL()}/user/sync`;
+
+  const response = await fetch(endpoint, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -72,7 +78,9 @@ export async function triggerSync(accessToken) {
 }
 
 export async function saveUserConfig(config) {
-  const response = await fetch(`${API_BASE_URL}/user/config`, {
+  const endpoint = `${getApiBaseURL()}/user/config`;
+
+  const response = await fetch(endpoint, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -88,7 +96,9 @@ export async function saveUserConfig(config) {
 }
 
 export async function runQuery(query) {
-  const response = await fetch(`${API_BASE_URL}/user/query`, {
+  const endpoint = `${getApiBaseURL()}/user/query`;
+
+  const response = await fetch(endpoint, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

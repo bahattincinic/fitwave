@@ -1,7 +1,9 @@
-import { API_BASE_URL } from './api';
+import { getApiBaseURL } from './api';
 
 export async function fetchDashboards() {
-  const response = await fetch(`${API_BASE_URL}/dashboards`, {
+  const endpoint = `${getApiBaseURL()}/dashboards`;
+
+  const response = await fetch(endpoint, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -16,7 +18,7 @@ export async function fetchDashboards() {
 }
 
 export async function getDashboard(id) {
-  const endpoint = `${API_BASE_URL}/dashboards/${id}`;
+  const endpoint = `${getApiBaseURL()}/dashboards/${id}`;
 
   const response = await fetch(endpoint, {
     method: 'GET',
@@ -33,7 +35,9 @@ export async function getDashboard(id) {
 }
 
 export async function createDashboard(data) {
-  const response = await fetch(`${API_BASE_URL}/dashboards`, {
+  const endpoint = `${getApiBaseURL()}/dashboards`;
+
+  const response = await fetch(endpoint, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -49,7 +53,7 @@ export async function createDashboard(data) {
 }
 
 export async function updateDashboard(id, data) {
-  const endpoint = `${API_BASE_URL}/dashboards/${id}`;
+  const endpoint = `${getApiBaseURL()}/dashboards/${id}`;
 
   const response = await fetch(endpoint, {
     method: 'PUT',
@@ -67,7 +71,7 @@ export async function updateDashboard(id, data) {
 }
 
 export async function deleteDashboard(id) {
-  const endpoint = `${API_BASE_URL}/dashboards/${id}`;
+  const endpoint = `${getApiBaseURL()}/dashboards/${id}`;
 
   const response = await fetch(endpoint, {
     method: 'DELETE',
@@ -82,7 +86,7 @@ export async function deleteDashboard(id) {
 }
 
 export async function runDashboard(id) {
-  const endpoint = `${API_BASE_URL}/dashboards/${id}/run`;
+  const endpoint = `${getApiBaseURL()}/dashboards/${id}/run`;
 
   const response = await fetch(endpoint, {
     method: 'POST',

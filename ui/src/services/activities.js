@@ -1,7 +1,9 @@
-import { API_BASE_URL } from './api';
+import { getApiBaseURL } from './api';
 
 export async function fetchActivities(page) {
-  const response = await fetch(`${API_BASE_URL}/activities?page=${page}`, {
+  const endpoint = `${getApiBaseURL()}/activities?page=${page}`;
+
+  const response = await fetch(endpoint, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -16,7 +18,7 @@ export async function fetchActivities(page) {
 }
 
 export async function getActivity(id) {
-  const endpoint = `${API_BASE_URL}/activities/${id}`;
+  const endpoint = `${getApiBaseURL()}/activities/${id}`;
 
   const response = await fetch(endpoint, {
     method: 'GET',
@@ -33,7 +35,7 @@ export async function getActivity(id) {
 }
 
 export async function getActivityGPX(id, accessToken) {
-  const endpoint = `${API_BASE_URL}/activities/${id}/gpx`;
+  const endpoint = `${getApiBaseURL()}/activities/${id}/gpx`;
 
   const response = await fetch(endpoint, {
     method: 'GET',
@@ -51,7 +53,7 @@ export async function getActivityGPX(id, accessToken) {
 }
 
 export async function getActivityLaps(id, accessToken) {
-  const endpoint = `${API_BASE_URL}/activities/${id}/laps`;
+  const endpoint = `${getApiBaseURL()}/activities/${id}/laps`;
 
   const response = await fetch(endpoint, {
     method: 'GET',

@@ -1,7 +1,9 @@
-import { API_BASE_URL } from './api';
+import { getApiBaseURL } from './api';
 
 export async function fetchAthletes(page) {
-  const response = await fetch(`${API_BASE_URL}/athletes?page=${page}`, {
+  const endpoint = `${getApiBaseURL()}/athletes?page=${page}`;
+
+  const response = await fetch(endpoint, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -16,7 +18,7 @@ export async function fetchAthletes(page) {
 }
 
 export async function getAthlete(id) {
-  const endpoint = `${API_BASE_URL}/athletes/${id}`;
+  const endpoint = `${getApiBaseURL()}/athletes/${id}`;
 
   const response = await fetch(endpoint, {
     method: 'GET',
