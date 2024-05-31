@@ -34,7 +34,7 @@ export default {
         {
           label: 'Settings',
           icon: 'pi pi-fw pi-cog',
-          command: () => this.router.push('/settings'),
+          command: () => this.router.push('/app/settings'),
         },
         {
           label: 'Data',
@@ -43,17 +43,17 @@ export default {
             {
               label: 'Activities',
               icon: 'pi pi-fw pi-calendar',
-              command: () => this.router.push('/activities'),
+              command: () => this.router.push('/app/activities'),
             },
             {
               label: 'Gears',
               icon: 'pi pi-fw pi-sitemap',
-              command: () => this.router.push('/gears'),
+              command: () => this.router.push('/app/gears'),
             },
             {
               label: 'Athletes',
               icon: 'pi pi-fw pi-user',
-              command: () => this.router.push('/athletes'),
+              command: () => this.router.push('/app/athletes'),
             },
           ],
         },
@@ -73,7 +73,7 @@ export default {
                   {
                     label: 'Login',
                     icon: 'pi pi-fw pi-sign-in',
-                    command: () => this.router.push('/login'),
+                    command: () => this.router.push('/app/login'),
                   },
                 ]),
           ],

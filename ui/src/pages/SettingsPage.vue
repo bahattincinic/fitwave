@@ -44,7 +44,7 @@
             severity="success"
             label="Login with Strava"
             icon="pi pi-user"
-            @click="$router.push('/login')"
+            @click="$router.push('/app/login')"
           />
         </div>
       </TabPanel>

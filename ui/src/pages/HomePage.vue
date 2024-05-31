@@ -107,7 +107,7 @@ export default {
       this.modalShow = true;
     },
     onRowSelect(event) {
-      this.$router.push(`/dashboard/${event.data.id}`);
+      this.$router.push(`/app/dashboard/${event.data.id}`);
     },
     onError(err) {
       this.$toast.add({

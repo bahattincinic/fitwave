@@ -1,7 +1,16 @@
-import { API_BASE_URL, CALLBACK_URL } from './api';
+import { API_BASE_URL } from './api';
+
+function getDomain() {
+  const protocol = window.location.protocol;
+  const hostname = window.location.hostname;
+  const port = window.location.port;
+  return `${protocol}//${hostname}${port ? `:${port}` : ''}`;
+}
 
 export async function getAuthorizationURL() {
-  const endpoint = `${API_BASE_URL}/auth/authorization-url?callback_url=${CALLBACK_URL}`;
+  const callbackURL = `${getDomain()}/app/login`;
+  const endpoint = `${API_BASE_URL}/auth/authorization-url?callback_url=${callbackURL}`;
+
   const response = await fetch(endpoint, {
     method: 'GET',
     headers: {

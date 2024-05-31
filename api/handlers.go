@@ -103,7 +103,7 @@ func (a *API) setupCors() {
 
 func (a *API) serveStatic(c echo.Context) error {
 	path := filepath.Clean(c.Request().URL.Path)
-	if path == "/" {
+	if path == "/" || strings.HasPrefix(path, "/app") {
 		path = "index.html"
 	}
 	path = strings.TrimPrefix(path, "/")

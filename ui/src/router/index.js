@@ -13,15 +13,15 @@ import { getUserMe } from '@/services/user';
 const routes = [
   { path: '/', name: 'Home', component: HomePage },
   {
-    path: '/dashboard/:id',
+    path: '/app/dashboard/:id',
     name: 'DashboardDetail',
     component: DashboardDetail,
   },
-  { path: '/login', name: 'Login', component: LoginPage },
-  { path: '/settings', name: 'Settings', component: SettingsPage },
-  { path: '/activities', name: 'Activities', component: ActivitiesPage },
-  { path: '/athletes', name: 'Athletes', component: AthletesPage },
-  { path: '/gears', name: 'Gears', component: GearsPage },
+  { path: '/app/login', name: 'Login', component: LoginPage },
+  { path: '/app/settings', name: 'Settings', component: SettingsPage },
+  { path: '/app/activities', name: 'Activities', component: ActivitiesPage },
+  { path: '/app/athletes', name: 'Athletes', component: AthletesPage },
+  { path: '/app/gears', name: 'Gears', component: GearsPage },
 ];
 
 const router = createRouter({
