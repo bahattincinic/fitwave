@@ -10,9 +10,12 @@ WORKDIR /static
 
 # https://stackoverflow.com/questions/69692842/error-message-error0308010cdigital-envelope-routinesunsupported
 ENV NODE_OPTIONS=--openssl-legacy-provider
-# Install npm (with latest nodejs)
-RUN apk add --update nodejs npm && \
-    npm i -g -s --unsafe-perm
+
+# Update repositories and install npm (with latest nodejs)
+RUN apk update && apk add --no-cache nodejs npm
+
+# Log npm and node versions for debugging purposes
+RUN node -v && npm -v
 
 # Copy only ./ui folder to the working directory.
 COPY ui .
@@ -30,27 +33,43 @@ FROM golang:1.18-alpine AS backend
 # Move to a working directory (/build).
 WORKDIR /build
 
+# Install build dependencies
+RUN apk add --no-cache gcc musl-dev
+
 # Copy and download dependencies.
 COPY go.mod go.sum ./
 RUN go mod download
 
-# Copy a source code to the container.
+# Copy the source code to the container.
 COPY . .
 
 # Copy frontend static files from /static to the root folder of the backend container.
-COPY --from=frontend ["/static/dist", "ui/dist"]
+COPY --from=frontend /static/dist ui/dist
 
-RUN make GCFLAGS="-tags=prod"
+# Build the Go binary
+RUN go build -tags=prod -o /build/fitwave ./cmd/fitwave
+
+# Verify the binary is built
+RUN ls -l /build/fitwave
 
 #
 # Third stage:
-# Creating and running a new scratch container with the backend binary.
+# Creating and running a new container with the backend binary.
 #
 
-FROM scratch
+FROM alpine:3.17
 
-# Copy binary from /build to the root folder of the scratch container.
-COPY --from=backend ["/build/fitwave", "/"]
+# Install necessary runtime dependencies
+RUN apk add --no-cache ca-certificates
+
+# Copy binary from /build to the root folder of the container.
+COPY --from=backend /build/fitwave /
+
+# Verify the binary is copied correctly
+RUN ls -l /fitwave
+
+# Expose the application port
+EXPOSE 9000
 
 # Command to run when starting the container.
 ENTRYPOINT ["/fitwave"]
