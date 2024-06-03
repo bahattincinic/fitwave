@@ -17,6 +17,7 @@ import (
 
 func (a *API) setupHandlers() {
 	requireStravaAuth := a.requireStravaAuthMiddleware()
+	requireAppAuth := a.requireAppAuthMiddleware()
 	api := a.ec.Group("/api")
 
 	api.GET("/", a.serveOK)
@@ -24,13 +25,13 @@ func (a *API) setupHandlers() {
 	api.GET("/docs/*", echoSwagger.WrapHandler)
 
 	{
-		gr := api.Group("/gears")
+		gr := api.Group("/gears", requireAppAuth)
 		gr.GET("", a.listGears)
 		gr.GET("/:id", a.getGear)
 	}
 
 	{
-		str := api.Group("/strava", requireStravaAuth)
+		str := api.Group("/strava", requireAppAuth)
 		str.GET("/activities/:id/gpx", a.exportActivityGPS, a.setActivityMiddleware(), requireStravaAuth)
 		str.GET("/activities/:id/laps", a.getActivityLaps, a.setActivityMiddleware(), requireStravaAuth)
 		str.POST("/sync", a.syncData, requireStravaAuth)
@@ -40,31 +41,38 @@ func (a *API) setupHandlers() {
 	}
 
 	{
-		act := api.Group("/activities")
+		act := api.Group("/activities", requireAppAuth)
 		act.GET("", a.listActivities)
 		act.GET("/:id", a.getActivity, a.setActivityMiddleware())
 	}
 
 	{
-		ath := api.Group("/athletes")
+		ath := api.Group("/athletes", requireAppAuth)
 		ath.GET("", a.listAthletes)
 		ath.GET("/:id", a.getAthlete)
 	}
 
 	{
 		cfg := api.Group("/config")
-		cfg.GET("", a.getConfig)
-		cfg.PUT("", a.upsertConfig)
+		cfg.GET("", a.getConfig, requireAppAuth)
+		cfg.PUT("", a.upsertConfig, requireAppAuth)
+		cfg.GET("/setup", a.checkSetupCompleted)
+		cfg.POST("/setup", a.completeSetup)
 	}
 
 	{
-		usr := api.Group("/user")
+		auth := api.Group("/auth")
+		auth.POST("/token", a.login)
+	}
+
+	{
+		usr := api.Group("/user", requireAppAuth)
 		usr.GET("/task/:id", a.getTask)
 		usr.POST("/query", a.runQuery)
 	}
 
 	{
-		dash := api.Group("/dashboards")
+		dash := api.Group("/dashboards", requireAppAuth)
 		dash.GET("", a.listDashboards)
 		dash.POST("", a.createDashboard)
 		dash.GET("/:id", a.getDashboard, a.setDashboardMiddleware())
@@ -75,7 +83,8 @@ func (a *API) setupHandlers() {
 	}
 
 	{
-		comp := api.Group("/dashboards/:id/components", a.setDashboardMiddleware())
+		comp := api.Group("/dashboards/:id/components",
+			requireAppAuth, a.setDashboardMiddleware())
 		comp.GET("", a.getDashboardComponents)
 		comp.POST("", a.createComponent)
 		comp.PUT("/:cpid", a.updateComponent, a.setComponentMiddleware())

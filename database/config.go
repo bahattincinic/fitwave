@@ -25,16 +25,8 @@ func (d *Database) GetCurrentConfig() (*models.Config, error) {
 }
 
 func (d *Database) UpsertConfig(in models.Config) (*models.Config, error) {
-	cfg, err := d.GetCurrentConfig()
-	if err != nil {
+	if err := d.db.Save(&in).Error; err != nil {
 		return nil, err
 	}
-
-	cfg.ClientId = in.ClientId
-	cfg.ClientSecret = in.ClientSecret
-
-	if err := d.db.Save(&cfg).Error; err != nil {
-		return nil, err
-	}
-	return cfg, nil
+	return &in, nil
 }

@@ -17,6 +17,9 @@ const (
 	maxPageSize = int64(100)
 )
 
+// GetPageAndSize retrieves the pagination parameters (page and page size) from the query parameters of the request context.
+// If no parameters are provided, it uses the default page size. It also ensures the page and page size values are valid.
+// Returns the offset for database queries, the page size, and an error if any of the parameters are invalid.
 func (a *API) GetPageAndSize(c echo.Context, defaultPageSize int64) (int64, int64, error) {
 	pageSize := defaultPageSize
 	if tmp := c.QueryParam("limit"); tmp != "" {

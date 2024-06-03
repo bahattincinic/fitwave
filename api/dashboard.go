@@ -14,9 +14,10 @@ import (
 //	@Tags		dashboard
 //	@Accept		json
 //	@Produce	json
-//	@Param		limit	query		string	false	"pagination limit"
-//	@Param		page	query		string	false	"active page"
-//	@Success	200		{object}	PaginatedResponse{Results=[]models.Dashboard, count=int}
+//	@Param		limit			query		string	false	"pagination limit"
+//	@Param		page			query		string	false	"active page"
+//	@Param		Authorization	header		string	true	"Bearer <Access Token>"
+//	@Success	200				{object}	PaginatedResponse{Results=[]models.Dashboard, count=int}
 //	@Router		/api/dashboards [get]
 func (a *API) listDashboards(c echo.Context) error {
 	offset, limit, err := a.GetPageAndSize(c, 20)
@@ -41,8 +42,9 @@ func (a *API) listDashboards(c echo.Context) error {
 //	@Tags		dashboard
 //	@Accept		json
 //	@Produce	json
-//	@Param		input	body		api.createDashboard.dashboardInput	true	"Dashboard Input"
-//	@Success	201		{object}	models.Dashboard
+//	@Param		input			body		api.createDashboard.dashboardInput	true	"Dashboard Input"
+//	@Param		Authorization	header		string								true	"Bearer <Access Token>"
+//	@Success	201				{object}	models.Dashboard
 //	@Router		/api/dashboards [post]
 func (a *API) createDashboard(c echo.Context) error {
 	type dashboardInput struct {
@@ -67,8 +69,9 @@ func (a *API) createDashboard(c echo.Context) error {
 //	@Summary	Get Dashboard
 //	@Tags		dashboard
 //	@Accept		json
-//	@Param		id	path		string	true	"Dashboard ID"
-//	@Success	200	{object}	models.Dashboard
+//	@Param		id				path		string	true	"Dashboard ID"
+//	@Param		Authorization	header		string	true	"Bearer <Access Token>"
+//	@Success	200				{object}	models.Dashboard
 //	@Router		/api/dashboards/{id} [get]
 func (a *API) getDashboard(c echo.Context) error {
 	dashboard := c.Get(dashboardContextKey).(*models.Dashboard)
@@ -81,9 +84,10 @@ func (a *API) getDashboard(c echo.Context) error {
 //	@Summary	Update Dashboard
 //	@Tags		dashboard
 //	@Accept		json
-//	@Param		id		path		string	true	"Dashboard ID"
-//	@Success	200		{object}	models.Dashboard
-//	@Param		input	body		api.updateDashboard.dashboardInput	true	"Dashboard Input"
+//	@Param		id				path		string	true	"Dashboard ID"
+//	@Success	200				{object}	models.Dashboard
+//	@Param		input			body		api.updateDashboard.dashboardInput	true	"Dashboard Input"
+//	@Param		Authorization	header		string								true	"Bearer <Access Token>"
 //	@Router		/api/dashboards/{id} [put]
 func (a *API) updateDashboard(c echo.Context) error {
 	dashboard := c.Get(dashboardContextKey).(*models.Dashboard)
@@ -110,7 +114,8 @@ func (a *API) updateDashboard(c echo.Context) error {
 //	@Summary	Delete Dashboard
 //	@Tags		dashboard
 //	@Accept		json
-//	@Param		id	path	string	true	"Dashboard ID"
+//	@Param		id				path	string	true	"Dashboard ID"
+//	@Param		Authorization	header	string	true	"Bearer <Access Token>"
 //	@Success	204
 //	@Router		/api/dashboards/{id} [delete]
 func (a *API) deleteDashboard(c echo.Context) error {
@@ -128,8 +133,9 @@ func (a *API) deleteDashboard(c echo.Context) error {
 //	@Summary	Run Dashboard
 //	@Tags		dashboard
 //	@Accept		json
-//	@Param		id	path		string	true	"Dashboard ID"
-//	@Success	200	{object}	queue.TaskResult
+//	@Param		id				path		string	true	"Dashboard ID"
+//	@Param		Authorization	header		string	true	"Bearer <Access Token>"
+//	@Success	200				{object}	queue.TaskResult
 //	@Router		/api/dashboards/{id}/run [post]
 func (a *API) runDashboard(c echo.Context) error {
 	dashboard := c.Get(dashboardContextKey).(*models.Dashboard)
@@ -170,8 +176,9 @@ func (a *API) runDashboard(c echo.Context) error {
 //	@Tags		dashboard
 //	@Accept		json
 //	@Produce	json
-//	@Param		id	path		string	true	"Dashboard ID"
-//	@Success	200	{object}	PaginatedResponse{Results=[]models.Component, count=int}
+//	@Param		id				path		string	true	"Dashboard ID"
+//	@Param		Authorization	header		string	true	"Bearer <Access Token>"
+//	@Success	200				{object}	PaginatedResponse{Results=[]models.Component, count=int}
 //	@Router		/api/dashboards/{id}/components [get]
 func (a *API) getDashboardComponents(c echo.Context) error {
 	dashboard := c.Get(dashboardContextKey).(*models.Dashboard)
@@ -193,9 +200,10 @@ func (a *API) getDashboardComponents(c echo.Context) error {
 //	@Tags		dashboard
 //	@Accept		json
 //	@Produce	json
-//	@Success	201		{object}	models.Component
-//	@Param		id		path		string								true	"Dashboard ID"
-//	@Param		input	body		api.createComponent.componentInput	true	"Component Input"
+//	@Success	201				{object}	models.Component
+//	@Param		id				path		string								true	"Dashboard ID"
+//	@Param		Authorization	header		string								true	"Bearer <Access Token>"
+//	@Param		input			body		api.createComponent.componentInput	true	"Component Input"
 //	@Router		/api/dashboards/{id}/components [post]
 func (a *API) createComponent(c echo.Context) error {
 	dashboard := c.Get(dashboardContextKey).(*models.Dashboard)
@@ -226,10 +234,11 @@ func (a *API) createComponent(c echo.Context) error {
 //	@Tags		dashboard
 //	@Accept		json
 //	@Produce	json
-//	@Success	200		{object}	models.Component
-//	@Param		id		path		string								true	"Dashboard ID"
-//	@Param		cpid	path		string								true	"Component ID"
-//	@Param		input	body		api.updateComponent.componentInput	true	"Component Input"
+//	@Success	200				{object}	models.Component
+//	@Param		id				path		string								true	"Dashboard ID"
+//	@Param		cpid			path		string								true	"Component ID"
+//	@Param		input			body		api.updateComponent.componentInput	true	"Component Input"
+//	@Param		Authorization	header		string								true	"Bearer <Access Token>"
 //	@Router		/api/dashboards/{id}/components/{cpid} [put]
 func (a *API) updateComponent(c echo.Context) error {
 	component := c.Get(componentContextKey).(*models.Component)
@@ -274,8 +283,9 @@ func (a *API) updateComponent(c echo.Context) error {
 //	@Accept		json
 //	@Produce	json
 //	@Success	204
-//	@Param		id		path	string	true	"Dashboard ID"
-//	@Param		cpid	path	string	true	"Component ID"
+//	@Param		id				path	string	true	"Dashboard ID"
+//	@Param		cpid			path	string	true	"Component ID"
+//	@Param		Authorization	header	string	true	"Bearer <Access Token>"
 //	@Router		/api/dashboards/{id}/components/{cpid} [delete]
 func (a *API) deleteComponent(c echo.Context) error {
 	component := c.Get(componentContextKey).(*models.Component)
@@ -293,9 +303,10 @@ func (a *API) deleteComponent(c echo.Context) error {
 //	@Tags		dashboard
 //	@Accept		json
 //	@Produce	json
-//	@Success	200		{object}	queue.TaskResult
-//	@Param		id		path		string	true	"Dashboard ID"
-//	@Param		cpid	path		string	true	"Component ID"
+//	@Success	200				{object}	queue.TaskResult
+//	@Param		id				path		string	true	"Dashboard ID"
+//	@Param		cpid			path		string	true	"Component ID"
+//	@Param		Authorization	header		string	true	"Bearer <Access Token>"
 //	@Router		/api/dashboards/{id}/components/{cpid}/run [post]
 func (a *API) runComponent(c echo.Context) error {
 	component := c.Get(componentContextKey).(*models.Component)

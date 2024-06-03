@@ -39,6 +39,13 @@ const docTemplate = `{
                         "description": "active page",
                         "name": "page",
                         "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Bearer \u003cAccess Token\u003e",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -85,6 +92,13 @@ const docTemplate = `{
                         "name": "id",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Bearer \u003cAccess Token\u003e",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -121,6 +135,13 @@ const docTemplate = `{
                         "description": "active page",
                         "name": "page",
                         "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Bearer \u003cAccess Token\u003e",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -167,6 +188,13 @@ const docTemplate = `{
                         "name": "id",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Bearer \u003cAccess Token\u003e",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -179,15 +207,57 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/auth/token": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Login",
+                "parameters": [
+                    {
+                        "description": "Login Input",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.login.loginInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/config": {
             "get": {
                 "consumes": [
                     "application/json"
                 ],
                 "tags": [
-                    "user"
+                    "config"
                 ],
                 "summary": "Get Application Config",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer \u003cAccess Token\u003e",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -202,7 +272,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "user"
+                    "config"
                 ],
                 "summary": "Upsert Application Config",
                 "parameters": [
@@ -214,6 +284,13 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/models.Config"
                         }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Bearer \u003cAccess Token\u003e",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -221,6 +298,59 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/models.Config"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/config/setup": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "config"
+                ],
+                "summary": "Check Application Setup completed",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "boolean"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "config"
+                ],
+                "summary": "Complete Application Setup",
+                "parameters": [
+                    {
+                        "description": "Setup Input",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.completeSetup.setupInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "boolean"
+                            }
                         }
                     }
                 }
@@ -250,6 +380,13 @@ const docTemplate = `{
                         "description": "active page",
                         "name": "page",
                         "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Bearer \u003cAccess Token\u003e",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -299,6 +436,13 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/api.createDashboard.dashboardInput"
                         }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Bearer \u003cAccess Token\u003e",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -326,6 +470,13 @@ const docTemplate = `{
                         "description": "Dashboard ID",
                         "name": "id",
                         "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Bearer \u003cAccess Token\u003e",
+                        "name": "Authorization",
+                        "in": "header",
                         "required": true
                     }
                 ],
@@ -362,6 +513,13 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/api.updateDashboard.dashboardInput"
                         }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Bearer \u003cAccess Token\u003e",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -387,6 +545,13 @@ const docTemplate = `{
                         "description": "Dashboard ID",
                         "name": "id",
                         "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Bearer \u003cAccess Token\u003e",
+                        "name": "Authorization",
+                        "in": "header",
                         "required": true
                     }
                 ],
@@ -415,6 +580,13 @@ const docTemplate = `{
                         "description": "Dashboard ID",
                         "name": "id",
                         "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Bearer \u003cAccess Token\u003e",
+                        "name": "Authorization",
+                        "in": "header",
                         "required": true
                     }
                 ],
@@ -462,6 +634,13 @@ const docTemplate = `{
                         "description": "Dashboard ID",
                         "name": "id",
                         "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Bearer \u003cAccess Token\u003e",
+                        "name": "Authorization",
+                        "in": "header",
                         "required": true
                     },
                     {
@@ -519,6 +698,13 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/api.updateComponent.componentInput"
                         }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Bearer \u003cAccess Token\u003e",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -555,6 +741,13 @@ const docTemplate = `{
                         "name": "cpid",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Bearer \u003cAccess Token\u003e",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -590,6 +783,13 @@ const docTemplate = `{
                         "name": "cpid",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Bearer \u003cAccess Token\u003e",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -617,6 +817,13 @@ const docTemplate = `{
                         "description": "Dashboard ID",
                         "name": "id",
                         "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Bearer \u003cAccess Token\u003e",
+                        "name": "Authorization",
+                        "in": "header",
                         "required": true
                     }
                 ],
@@ -654,6 +861,13 @@ const docTemplate = `{
                         "description": "active page",
                         "name": "page",
                         "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Bearer \u003cAccess Token\u003e",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -699,6 +913,13 @@ const docTemplate = `{
                         "description": "Gear ID",
                         "name": "id",
                         "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Bearer \u003cAccess Token\u003e",
+                        "name": "Authorization",
+                        "in": "header",
                         "required": true
                     }
                 ],
@@ -932,6 +1153,13 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/api.runQuery.queryInput"
                         }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Bearer \u003cAccess Token\u003e",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -960,6 +1188,13 @@ const docTemplate = `{
                         "name": "id",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Bearer \u003cAccess Token\u003e",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -981,6 +1216,26 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "results": {}
+            }
+        },
+        "api.completeSetup.setupInput": {
+            "type": "object",
+            "properties": {
+                "client_id": {
+                    "type": "integer"
+                },
+                "client_secret": {
+                    "type": "string"
+                },
+                "login_password": {
+                    "type": "string"
+                },
+                "login_type": {
+                    "$ref": "#/definitions/models.LoginType"
+                },
+                "login_username": {
+                    "type": "string"
+                }
             }
         },
         "api.createComponent.componentInput": {
@@ -1010,6 +1265,17 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "code": {
+                    "type": "string"
+                }
+            }
+        },
+        "api.login.loginInput": {
+            "type": "object",
+            "properties": {
+                "password": {
+                    "type": "string"
+                },
+                "username": {
                     "type": "string"
                 }
             }
@@ -1362,6 +1628,17 @@ const docTemplate = `{
                     "type": "boolean"
                 }
             }
+        },
+        "models.LoginType": {
+            "type": "string",
+            "enum": [
+                "anonymous",
+                "protected"
+            ],
+            "x-enum-varnames": [
+                "AnonymousLoginType",
+                "ProtectedLoginType"
+            ]
         },
         "queue.TaskResult": {
             "type": "object",

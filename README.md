@@ -81,15 +81,17 @@ If you need to override the configuration, create a `.env` file.
 
 ## Environment Variables
 
-| Field Name            | Type    | Default    | Options/Examples                                                                           |
-|-----------------------|---------|------------|--------------------------------------------------------------------------------------------|
-| ENV                   | string  | local      | - local<br/>- production                                                                   |
-| LOG_LEVEL             | string  | debug      | - debug<br/>- info<br/>- warn<br/>- error<br/>- panic<br/>- fatal                          |
-| LOG_OUTPUT            | string  | stdout     | - stdout<br/>- /foo/bar/fitwave.log                                                        |
-| DATABASE_DSN          | string  | fitWave.db | - fitWave.db<br/>- host=localhost user=postgres password=postgres dbname=fitwave port=5432 |
-| DATABASE_TYPE         | string  | sqlite     | - mysql<br/>- postgresql<br/>- sqlite                                                      |
-| DATABASE_AUTO_MIGRATE | boolean | true       | - true<br/>- false                                                                         |
-| API_PORT              | integer | 9000       |                                                                                            |
+| Field Name            | Type    | Default             | Options/Examples                                                                           |
+|-----------------------|---------|---------------------|--------------------------------------------------------------------------------------------|
+| ENV                   | string  | local               | - local<br/>- production                                                                   |
+| LOG_LEVEL             | string  | debug               | - debug<br/>- info<br/>- warn<br/>- error<br/>- panic<br/>- fatal                          |
+| LOG_OUTPUT            | string  | stdout              | - stdout<br/>- /foo/bar/fitwave.log                                                        |
+| DATABASE_DSN          | string  | fitWave.db          | - fitWave.db<br/>- host=localhost user=postgres password=postgres dbname=fitwave port=5432 |
+| DATABASE_TYPE         | string  | sqlite              | - mysql<br/>- postgresql<br/>- sqlite                                                      |
+| DATABASE_AUTO_MIGRATE | boolean | true                | - true<br/>- false                                                                         |
+| API_PORT              | integer | 9000                |                                                                                            |
+| API_SECRET_KEY        | string  | PBU_gha4zfk!rwj8axv |                                                                                            |
+| API_TOKEN_EXPIRY_HOUR | int     | 24                  |                                                                                            | 
 
 ## Production Build
 

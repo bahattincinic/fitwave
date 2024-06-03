@@ -12,9 +12,10 @@ import (
 //	@Tags		athlete
 //	@Accept		json
 //	@Produce	json
-//	@Param		limit	query		string	false	"pagination limit"
-//	@Param		page	query		string	false	"active page"
-//	@Success	200		{object}	PaginatedResponse{Results=[]models.Athlete, count=int}
+//	@Param		limit			query		string	false	"pagination limit"
+//	@Param		page			query		string	false	"active page"
+//	@Param		Authorization	header		string	true	"Bearer <Access Token>"
+//	@Success	200				{object}	PaginatedResponse{Results=[]models.Athlete, count=int}
 //	@Router		/api/athletes [get]
 func (a *API) listAthletes(c echo.Context) error {
 	offset, limit, err := a.GetPageAndSize(c, 20)
@@ -38,8 +39,9 @@ func (a *API) listAthletes(c echo.Context) error {
 //	@Summary	Get Athlete
 //	@Tags		athlete
 //	@Accept		json
-//	@Param		id	path		string	true	"Athlete ID"
-//	@Success	200	{object}	models.Athlete
+//	@Param		id				path		string	true	"Athlete ID"
+//	@Param		Authorization	header		string	true	"Bearer <Access Token>"
+//	@Success	200				{object}	models.Athlete
 //	@Router		/api/athletes/{id} [get]
 func (a *API) getAthlete(c echo.Context) error {
 	ath, err := a.db.GetAthlete(c.Param("id"))

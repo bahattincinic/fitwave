@@ -13,9 +13,10 @@ import (
 //	@Tags		activity
 //	@Accept		json
 //	@Produce	json
-//	@Param		limit	query		string	false	"pagination limit"
-//	@Param		page	query		string	false	"active page"
-//	@Success	200		{object}	PaginatedResponse{Results=[]models.Activity, count=int}
+//	@Param		limit			query		string	false	"pagination limit"
+//	@Param		page			query		string	false	"active page"
+//	@Param		Authorization	header		string	true	"Bearer <Access Token>"
+//	@Success	200				{object}	PaginatedResponse{Results=[]models.Activity, count=int}
 //	@Router		/api/activities [get]
 func (a *API) listActivities(c echo.Context) error {
 	offset, limit, err := a.GetPageAndSize(c, 20)
@@ -39,8 +40,9 @@ func (a *API) listActivities(c echo.Context) error {
 //	@Summary	Get Activity
 //	@Tags		activity
 //	@Accept		json
-//	@Param		id	path		string	true	"Activity ID"
-//	@Success	200	{object}	models.Activity
+//	@Param		id				path		string	true	"Activity ID"
+//	@Param		Authorization	header		string	true	"Bearer <Access Token>"
+//	@Success	200				{object}	models.Activity
 //	@Router		/api/activities/{id} [get]
 func (a *API) getActivity(c echo.Context) error {
 	act := c.Get(activityContextKey).(*models.Activity)

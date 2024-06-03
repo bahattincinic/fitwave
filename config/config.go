@@ -42,7 +42,9 @@ type Database struct {
 }
 
 type API struct {
-	PORT int `env:"API_PORT" envDefault:"9000"`
+	PORT            int    `env:"API_PORT" envDefault:"9000"`
+	SecretKey       string `env:"API_SECRET_KEY" envDefault:"PBU_gha4zfk!rwj8axv"`
+	TokenExpiryHour int    `env:"API_TOKEN_EXPIRY_HOUR" envDefault:"24"`
 }
 
 func Production() bool {

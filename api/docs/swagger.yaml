@@ -5,6 +5,19 @@ definitions:
         type: integer
       results: {}
     type: object
+  api.completeSetup.setupInput:
+    properties:
+      client_id:
+        type: integer
+      client_secret:
+        type: string
+      login_password:
+        type: string
+      login_type:
+        $ref: '#/definitions/models.LoginType'
+      login_username:
+        type: string
+    type: object
   api.createComponent.componentInput:
     properties:
       configs: {}
@@ -23,6 +36,13 @@ definitions:
   api.getStravaAccessToken.tokenRequestInput:
     properties:
       code:
+        type: string
+    type: object
+  api.login.loginInput:
+    properties:
+      password:
+        type: string
+      username:
         type: string
     type: object
   api.runQuery.queryInput:
@@ -261,6 +281,14 @@ definitions:
       primary:
         type: boolean
     type: object
+  models.LoginType:
+    enum:
+    - anonymous
+    - protected
+    type: string
+    x-enum-varnames:
+    - AnonymousLoginType
+    - ProtectedLoginType
   queue.TaskResult:
     properties:
       completion_time:
@@ -457,6 +485,11 @@ paths:
         in: query
         name: page
         type: string
+      - description: Bearer <Access Token>
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -486,6 +519,11 @@ paths:
         name: id
         required: true
         type: string
+      - description: Bearer <Access Token>
+        in: header
+        name: Authorization
+        required: true
+        type: string
       responses:
         "200":
           description: OK
@@ -506,6 +544,11 @@ paths:
       - description: active page
         in: query
         name: page
+        type: string
+      - description: Bearer <Access Token>
+        in: header
+        name: Authorization
+        required: true
         type: string
       produces:
       - application/json
@@ -536,6 +579,11 @@ paths:
         name: id
         required: true
         type: string
+      - description: Bearer <Access Token>
+        in: header
+        name: Authorization
+        required: true
+        type: string
       responses:
         "200":
           description: OK
@@ -544,10 +592,37 @@ paths:
       summary: Get Athlete
       tags:
       - athlete
+  /api/auth/token:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Login Input
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/api.login.loginInput'
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Login
+      tags:
+      - auth
   /api/config:
     get:
       consumes:
       - application/json
+      parameters:
+      - description: Bearer <Access Token>
+        in: header
+        name: Authorization
+        required: true
+        type: string
       responses:
         "200":
           description: OK
@@ -555,7 +630,7 @@ paths:
             $ref: '#/definitions/models.Config'
       summary: Get Application Config
       tags:
-      - user
+      - config
     put:
       consumes:
       - application/json
@@ -566,6 +641,11 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/models.Config'
+      - description: Bearer <Access Token>
+        in: header
+        name: Authorization
+        required: true
+        type: string
       responses:
         "200":
           description: OK
@@ -573,7 +653,41 @@ paths:
             $ref: '#/definitions/models.Config'
       summary: Upsert Application Config
       tags:
-      - user
+      - config
+  /api/config/setup:
+    get:
+      consumes:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: boolean
+            type: object
+      summary: Check Application Setup completed
+      tags:
+      - config
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Setup Input
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/api.completeSetup.setupInput'
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties:
+              type: boolean
+            type: object
+      summary: Complete Application Setup
+      tags:
+      - config
   /api/dashboards:
     get:
       consumes:
@@ -586,6 +700,11 @@ paths:
       - description: active page
         in: query
         name: page
+        type: string
+      - description: Bearer <Access Token>
+        in: header
+        name: Authorization
+        required: true
         type: string
       produces:
       - application/json
@@ -616,6 +735,11 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/api.createDashboard.dashboardInput'
+      - description: Bearer <Access Token>
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -636,6 +760,11 @@ paths:
         name: id
         required: true
         type: string
+      - description: Bearer <Access Token>
+        in: header
+        name: Authorization
+        required: true
+        type: string
       responses:
         "204":
           description: No Content
@@ -649,6 +778,11 @@ paths:
       - description: Dashboard ID
         in: path
         name: id
+        required: true
+        type: string
+      - description: Bearer <Access Token>
+        in: header
+        name: Authorization
         required: true
         type: string
       responses:
@@ -674,6 +808,11 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/api.updateDashboard.dashboardInput'
+      - description: Bearer <Access Token>
+        in: header
+        name: Authorization
+        required: true
+        type: string
       responses:
         "200":
           description: OK
@@ -690,6 +829,11 @@ paths:
       - description: Dashboard ID
         in: path
         name: id
+        required: true
+        type: string
+      - description: Bearer <Access Token>
+        in: header
+        name: Authorization
         required: true
         type: string
       produces:
@@ -718,6 +862,11 @@ paths:
       - description: Dashboard ID
         in: path
         name: id
+        required: true
+        type: string
+      - description: Bearer <Access Token>
+        in: header
+        name: Authorization
         required: true
         type: string
       - description: Component Input
@@ -751,6 +900,11 @@ paths:
         name: cpid
         required: true
         type: string
+      - description: Bearer <Access Token>
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -779,6 +933,11 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/api.updateComponent.componentInput'
+      - description: Bearer <Access Token>
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -804,6 +963,11 @@ paths:
         name: cpid
         required: true
         type: string
+      - description: Bearer <Access Token>
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -822,6 +986,11 @@ paths:
       - description: Dashboard ID
         in: path
         name: id
+        required: true
+        type: string
+      - description: Bearer <Access Token>
+        in: header
+        name: Authorization
         required: true
         type: string
       responses:
@@ -844,6 +1013,11 @@ paths:
       - description: active page
         in: query
         name: page
+        type: string
+      - description: Bearer <Access Token>
+        in: header
+        name: Authorization
+        required: true
         type: string
       produces:
       - application/json
@@ -872,6 +1046,11 @@ paths:
       - description: Gear ID
         in: path
         name: id
+        required: true
+        type: string
+      - description: Bearer <Access Token>
+        in: header
+        name: Authorization
         required: true
         type: string
       responses:
@@ -1021,6 +1200,11 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/api.runQuery.queryInput'
+      - description: Bearer <Access Token>
+        in: header
+        name: Authorization
+        required: true
+        type: string
       responses:
         "200":
           description: OK
@@ -1037,6 +1221,11 @@ paths:
       - description: Task ID
         in: path
         name: id
+        required: true
+        type: string
+      - description: Bearer <Access Token>
+        in: header
+        name: Authorization
         required: true
         type: string
       responses:
