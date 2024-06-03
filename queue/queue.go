@@ -2,11 +2,11 @@ package queue
 
 import (
 	"context"
-	"errors"
 	"sync"
 	"time"
 
 	"github.com/google/uuid"
+	pkgerrors "github.com/pkg/errors"
 	"go.uber.org/zap"
 )
 
@@ -124,7 +124,7 @@ func (q *Queue) GetResult(id string) (*TaskResult, error) {
 			}, nil
 		}
 	}
-	return nil, errors.New("task not found")
+	return nil, pkgerrors.New("task not found")
 }
 
 // cleanupWorker periodically cleans up old task results.

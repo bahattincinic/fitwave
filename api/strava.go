@@ -57,8 +57,7 @@ func (a *API) getStravaAuthorizationURL(c echo.Context) error {
 
 	callbackURL := c.QueryParam("callback_url")
 	if callbackURL == "" {
-		return echo.NewHTTPError(http.StatusBadRequest,
-			fmt.Errorf("callback_url should be provided"))
+		return echo.NewHTTPError(http.StatusBadRequest, "callback_url should be provided")
 	}
 
 	url := a.st.GetAuthorizationURL(cfg, callbackURL)

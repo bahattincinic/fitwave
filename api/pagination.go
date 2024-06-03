@@ -1,7 +1,6 @@
 package api
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -25,7 +24,7 @@ func (a *API) GetPageAndSize(c echo.Context, defaultPageSize int64) (int64, int6
 	if tmp := c.QueryParam("limit"); tmp != "" {
 		i, _ := strconv.ParseInt(tmp, 10, 64)
 		if i < 1 {
-			return 0, 0, echo.NewHTTPError(http.StatusBadRequest, fmt.Errorf("invalid page_size"))
+			return 0, 0, echo.NewHTTPError(http.StatusBadRequest, "invalid page_size")
 		}
 
 		if i < maxPageSize {
@@ -39,7 +38,7 @@ func (a *API) GetPageAndSize(c echo.Context, defaultPageSize int64) (int64, int6
 	if tmp := c.QueryParam("page"); tmp != "" {
 		i, _ := strconv.ParseInt(tmp, 10, 64)
 		if i < 1 {
-			return 0, 0, echo.NewHTTPError(http.StatusBadRequest, fmt.Errorf("invalid page"))
+			return 0, 0, echo.NewHTTPError(http.StatusBadRequest, "invalid page")
 		}
 		page = i
 	}

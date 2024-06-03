@@ -101,8 +101,11 @@ func (a *API) completeSetup(c echo.Context) error {
 	cfg.ClientId = in.ClientId
 	cfg.ClientSecret = in.ClientSecret
 	cfg.LoginType = in.LoginType
-	cfg.LoginUsername = in.LoginUsername
-	cfg.LoginPassword = in.LoginPassword
+
+	if in.LoginType == models.ProtectedLoginType {
+		cfg.LoginUsername = in.LoginUsername
+		cfg.SetPassword(in.LoginPassword, a.cfg.API.SecretKey)
+	}
 
 	cfg, err = a.db.UpsertConfig(*cfg)
 	if err != nil {

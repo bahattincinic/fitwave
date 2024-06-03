@@ -78,7 +78,7 @@ func (a *API) login(c echo.Context) error {
 			pkgerrors.New("Only protected login needs access token"))
 	}
 
-	if cfg.LoginUsername != in.Username || cfg.LoginPassword != in.Password {
+	if !cfg.CheckLogin(in.Username, in.Password, a.cfg.API.SecretKey) {
 		return echo.NewHTTPError(http.StatusBadRequest,
 			pkgerrors.New("username or password is invalid"))
 	}
