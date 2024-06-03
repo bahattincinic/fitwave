@@ -16,7 +16,7 @@ import (
 )
 
 func (a *API) setupHandlers() {
-	requireAuth := a.requireAuthMiddleware()
+	requireStravaAuth := a.requireStravaAuthMiddleware()
 	api := a.ec.Group("/api")
 
 	api.GET("/", a.serveOK)
@@ -30,11 +30,19 @@ func (a *API) setupHandlers() {
 	}
 
 	{
+		str := api.Group("/strava", requireStravaAuth)
+		str.GET("/activities/:id/gpx", a.exportActivityGPS, a.setActivityMiddleware(), requireStravaAuth)
+		str.GET("/activities/:id/laps", a.getActivityLaps, a.setActivityMiddleware(), requireStravaAuth)
+		str.POST("/sync", a.syncData, requireStravaAuth)
+		str.GET("/me", a.getStravaMe, requireStravaAuth)
+		str.POST("/token", a.getStravaAccessToken)
+		str.GET("/authorization-url", a.getStravaAuthorizationURL)
+	}
+
+	{
 		act := api.Group("/activities")
 		act.GET("", a.listActivities)
 		act.GET("/:id", a.getActivity, a.setActivityMiddleware())
-		act.GET("/:id/gpx", a.exportActivityGPS, a.setActivityMiddleware(), requireAuth)
-		act.GET("/:id/laps", a.getActivityLaps, a.setActivityMiddleware(), requireAuth)
 	}
 
 	{
@@ -44,18 +52,14 @@ func (a *API) setupHandlers() {
 	}
 
 	{
-		auth := api.Group("/auth")
-		auth.POST("/token", a.getAccessToken)
-		auth.GET("/authorization-url", a.getAuthorizationURL)
+		cfg := api.Group("/config")
+		cfg.GET("", a.getConfig)
+		cfg.PUT("", a.upsertConfig)
 	}
 
 	{
 		usr := api.Group("/user")
-		usr.POST("/sync", a.syncData, requireAuth)
-		usr.GET("/me", a.getMe, requireAuth)
 		usr.GET("/task/:id", a.getTask)
-		usr.GET("/config", a.getConfig)
-		usr.PUT("/config", a.upsertConfig)
 		usr.POST("/query", a.runQuery)
 	}
 

@@ -20,7 +20,7 @@ definitions:
       name:
         type: string
     type: object
-  api.getAccessToken.tokenRequestInput:
+  api.getStravaAccessToken.tokenRequestInput:
     properties:
       code:
         type: string
@@ -494,59 +494,6 @@ paths:
       summary: Get Activity
       tags:
       - activity
-  /api/activities/{id}/gpx:
-    get:
-      consumes:
-      - application/json
-      parameters:
-      - description: Activity ID
-        in: path
-        name: id
-        required: true
-        type: string
-      - description: Strava Access Token
-        in: header
-        name: Authorization
-        required: true
-        type: string
-      responses:
-        "200":
-          description: OK
-      summary: Export Activity GPX
-      tags:
-      - activity
-  /api/activities/{id}/laps:
-    get:
-      consumes:
-      - application/json
-      parameters:
-      - description: Activity ID
-        in: path
-        name: id
-        required: true
-        type: string
-      - description: Strava Access Token
-        in: header
-        name: Authorization
-        required: true
-        type: string
-      responses:
-        "200":
-          description: OK
-          schema:
-            allOf:
-            - $ref: '#/definitions/api.PaginatedResponse'
-            - properties:
-                ' count':
-                  type: integer
-                Results:
-                  items:
-                    $ref: '#/definitions/strava.LapEffortSummary'
-                  type: array
-              type: object
-      summary: Get Activity Laps
-      tags:
-      - activity
   /api/athletes:
     get:
       consumes:
@@ -597,45 +544,36 @@ paths:
       summary: Get Athlete
       tags:
       - athlete
-  /api/auth/authorization-url:
+  /api/config:
     get:
       consumes:
       - application/json
-      parameters:
-      - description: Callback URL
-        in: query
-        name: callback_url
-        required: true
-        type: string
       responses:
         "200":
           description: OK
           schema:
-            additionalProperties:
-              type: string
-            type: object
-      summary: Get Access Token from Auth Code
+            $ref: '#/definitions/models.Config'
+      summary: Get Application Config
       tags:
-      - auth
-  /api/auth/token:
-    post:
+      - user
+    put:
       consumes:
       - application/json
       parameters:
-      - description: Access Token Input
+      - description: Config Input
         in: body
-        name: auth
+        name: config
         required: true
         schema:
-          $ref: '#/definitions/api.getAccessToken.tokenRequestInput'
+          $ref: '#/definitions/models.Config'
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/strava.AuthorizationResponse'
-      summary: Get Access Token from Auth Code
+            $ref: '#/definitions/models.Config'
+      summary: Upsert Application Config
       tags:
-      - auth
+      - user
   /api/dashboards:
     get:
       consumes:
@@ -944,48 +882,134 @@ paths:
       summary: Get Gear
       tags:
       - gear
-  /api/user/config:
+  /api/strava/activities/{id}/gpx:
     get:
-      consumes:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.Config'
-      summary: Get Application Config
-      tags:
-      - user
-    put:
       consumes:
       - application/json
       parameters:
-      - description: Config Input
-        in: body
-        name: config
+      - description: Activity ID
+        in: path
+        name: id
         required: true
-        schema:
-          $ref: '#/definitions/models.Config'
+        type: string
+      - description: Strava Access Token
+        in: header
+        name: X-Strava-Authorization
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: Export Activity GPX
+      tags:
+      - strava
+  /api/strava/activities/{id}/laps:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Activity ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Strava Access Token
+        in: header
+        name: X-Strava-Authorization
+        required: true
+        type: string
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.Config'
-      summary: Upsert Application Config
+            allOf:
+            - $ref: '#/definitions/api.PaginatedResponse'
+            - properties:
+                ' count':
+                  type: integer
+                Results:
+                  items:
+                    $ref: '#/definitions/strava.LapEffortSummary'
+                  type: array
+              type: object
+      summary: Get Activity Laps
       tags:
-      - user
-  /api/user/me:
+      - strava
+  /api/strava/authorization-url:
     get:
       consumes:
       - application/json
+      parameters:
+      - description: Callback URL
+        in: query
+        name: callback_url
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get Authorization URL for Strava Login
+      tags:
+      - strava
+  /api/strava/me:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Strava Access Token
+        in: header
+        name: X-Strava-Authorization
+        required: true
+        type: string
       responses:
         "200":
           description: OK
           schema:
             $ref: '#/definitions/strava.User'
-      summary: Get Current User Details
+      summary: Get Current Strava User Details
       tags:
-      - user
+      - strava
+  /api/strava/sync:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Strava Access Token
+        in: header
+        name: X-Strava-Authorization
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/queue.TaskResult'
+      summary: Sync Strava data
+      tags:
+      - strava
+  /api/strava/token:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Access Token Input
+        in: body
+        name: auth
+        required: true
+        schema:
+          $ref: '#/definitions/api.getStravaAccessToken.tokenRequestInput'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/strava.AuthorizationResponse'
+      summary: Get Strava Access Token from Auth Code
+      tags:
+      - strava
   /api/user/query:
     post:
       consumes:
@@ -1003,24 +1027,6 @@ paths:
           schema:
             $ref: '#/definitions/queue.TaskResult'
       summary: Run Query
-      tags:
-      - user
-  /api/user/sync:
-    post:
-      consumes:
-      - application/json
-      parameters:
-      - description: Strava Access Token
-        in: header
-        name: Authorization
-        required: true
-        type: string
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/queue.TaskResult'
-      summary: Sync Strava data
       tags:
       - user
   /api/user/task/{id}:

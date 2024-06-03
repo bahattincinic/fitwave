@@ -2,7 +2,7 @@ import { getDomain, getApiBaseURL } from './api';
 
 export async function getAuthorizationURL() {
   const callbackURL = `${getDomain()}/app/login`;
-  const endpoint = `${getApiBaseURL()}/auth/authorization-url?callback_url=${callbackURL}`;
+  const endpoint = `${getApiBaseURL()}/strava/authorization-url?callback_url=${callbackURL}`;
 
   const response = await fetch(endpoint, {
     method: 'GET',
@@ -19,7 +19,7 @@ export async function getAuthorizationURL() {
 }
 
 export async function getAccessToken(code) {
-  const endpoint = `${getApiBaseURL()}/auth/token`;
+  const endpoint = `${getApiBaseURL()}/strava/token`;
 
   const response = await fetch(endpoint, {
     method: 'POST',

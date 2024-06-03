@@ -8,7 +8,7 @@ export const taskStatusEnum = {
 };
 
 export async function getUserConfig() {
-  const endpoint = `${getApiBaseURL()}/user/config`;
+  const endpoint = `${getApiBaseURL()}/config`;
 
   const response = await fetch(endpoint, {
     method: 'GET',
@@ -25,13 +25,13 @@ export async function getUserConfig() {
 }
 
 export async function getUserMe(accessToken) {
-  const endpoint = `${getApiBaseURL()}/user/me`;
+  const endpoint = `${getApiBaseURL()}/strava/me`;
 
   const response = await fetch(endpoint, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${accessToken}`,
+      'X-Strava-Authorization': accessToken,
     },
   });
 
@@ -60,13 +60,13 @@ export async function getTaskDetail(id) {
 }
 
 export async function triggerSync(accessToken) {
-  const endpoint = `${getApiBaseURL()}/user/sync`;
+  const endpoint = `${getApiBaseURL()}/strava/sync`;
 
   const response = await fetch(endpoint, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${accessToken}`,
+      'X-Strava-Authorization': accessToken,
     },
   });
 
@@ -78,7 +78,7 @@ export async function triggerSync(accessToken) {
 }
 
 export async function saveUserConfig(config) {
-  const endpoint = `${getApiBaseURL()}/user/config`;
+  const endpoint = `${getApiBaseURL()}/config`;
 
   const response = await fetch(endpoint, {
     method: 'PUT',

@@ -3,30 +3,8 @@ package api
 import (
 	"net/http"
 
-	"github.com/bahattincinic/fitwave/strava"
 	"github.com/labstack/echo/v4"
 )
-
-// syncData godoc
-//
-//	@Summary	Sync Strava data
-//	@Tags		user
-//	@Accept		json
-//	@Param		Authorization	header		string	true	"Strava Access Token"
-//	@Success	200				{object}	queue.TaskResult
-//	@Router		/api/user/sync [post]
-func (a *API) syncData(c echo.Context) error {
-	user := c.Get(userContextKey).(*strava.User)
-
-	task := a.q.AddTask(func() (interface{}, error) {
-		if err := a.im.Import(user); err != nil {
-			return nil, err
-		}
-		return nil, nil
-	})
-
-	return c.JSON(http.StatusOK, task)
-}
 
 // getTask godoc
 //
@@ -43,18 +21,6 @@ func (a *API) getTask(c echo.Context) error {
 		return c.JSON(http.StatusNotFound, err)
 	}
 	return c.JSON(http.StatusOK, task)
-}
-
-// getMe godoc
-//
-//	@Summary	Get Current User Details
-//	@Tags		user
-//	@Accept		json
-//	@Success	200	{object}	strava.User
-//	@Router		/api/user/me [get]
-func (a *API) getMe(c echo.Context) error {
-	user := c.Get(userContextKey).(*strava.User)
-	return c.JSON(http.StatusOK, user)
 }
 
 // runQuery godoc

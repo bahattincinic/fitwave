@@ -97,91 +97,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/activities/{id}/gpx": {
-            "get": {
-                "consumes": [
-                    "application/json"
-                ],
-                "tags": [
-                    "activity"
-                ],
-                "summary": "Export Activity GPX",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Activity ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Strava Access Token",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    }
-                }
-            }
-        },
-        "/api/activities/{id}/laps": {
-            "get": {
-                "consumes": [
-                    "application/json"
-                ],
-                "tags": [
-                    "activity"
-                ],
-                "summary": "Get Activity Laps",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Activity ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Strava Access Token",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/api.PaginatedResponse"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        " count": {
-                                            "type": "integer"
-                                        },
-                                        "Results": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/definitions/strava.LapEffortSummary"
-                                            }
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    }
-                }
-            }
-        },
         "/api/athletes": {
             "get": {
                 "consumes": [
@@ -264,54 +179,40 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/auth/authorization-url": {
+        "/api/config": {
             "get": {
                 "consumes": [
                     "application/json"
                 ],
                 "tags": [
-                    "auth"
+                    "user"
                 ],
-                "summary": "Get Access Token from Auth Code",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Callback URL",
-                        "name": "callback_url",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
+                "summary": "Get Application Config",
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/models.Config"
                         }
                     }
                 }
-            }
-        },
-        "/api/auth/token": {
-            "post": {
+            },
+            "put": {
                 "consumes": [
                     "application/json"
                 ],
                 "tags": [
-                    "auth"
+                    "user"
                 ],
-                "summary": "Get Access Token from Auth Code",
+                "summary": "Upsert Application Config",
                 "parameters": [
                     {
-                        "description": "Access Token Input",
-                        "name": "auth",
+                        "description": "Config Input",
+                        "name": "config",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/api.getAccessToken.tokenRequestInput"
+                            "$ref": "#/definitions/models.Config"
                         }
                     }
                 ],
@@ -319,7 +220,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/strava.AuthorizationResponse"
+                            "$ref": "#/definitions/models.Config"
                         }
                     }
                 }
@@ -811,67 +712,203 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/user/config": {
+        "/api/strava/activities/{id}/gpx": {
             "get": {
                 "consumes": [
                     "application/json"
                 ],
                 "tags": [
-                    "user"
+                    "strava"
                 ],
-                "summary": "Get Application Config",
+                "summary": "Export Activity GPX",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Activity ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Strava Access Token",
+                        "name": "X-Strava-Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.Config"
-                        }
+                        "description": "OK"
                     }
                 }
-            },
-            "put": {
+            }
+        },
+        "/api/strava/activities/{id}/laps": {
+            "get": {
                 "consumes": [
                     "application/json"
                 ],
                 "tags": [
-                    "user"
+                    "strava"
                 ],
-                "summary": "Upsert Application Config",
+                "summary": "Get Activity Laps",
                 "parameters": [
                     {
-                        "description": "Config Input",
-                        "name": "config",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.Config"
-                        }
+                        "type": "string",
+                        "description": "Activity ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Strava Access Token",
+                        "name": "X-Strava-Authorization",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.Config"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/api.PaginatedResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        " count": {
+                                            "type": "integer"
+                                        },
+                                        "Results": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/strava.LapEffortSummary"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     }
                 }
             }
         },
-        "/api/user/me": {
+        "/api/strava/authorization-url": {
             "get": {
                 "consumes": [
                     "application/json"
                 ],
                 "tags": [
-                    "user"
+                    "strava"
                 ],
-                "summary": "Get Current User Details",
+                "summary": "Get Authorization URL for Strava Login",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Callback URL",
+                        "name": "callback_url",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/strava/me": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "strava"
+                ],
+                "summary": "Get Current Strava User Details",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Strava Access Token",
+                        "name": "X-Strava-Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/strava.User"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/strava/sync": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "strava"
+                ],
+                "summary": "Sync Strava data",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Strava Access Token",
+                        "name": "X-Strava-Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/queue.TaskResult"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/strava/token": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "strava"
+                ],
+                "summary": "Get Strava Access Token from Auth Code",
+                "parameters": [
+                    {
+                        "description": "Access Token Input",
+                        "name": "auth",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.getStravaAccessToken.tokenRequestInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/strava.AuthorizationResponse"
                         }
                     }
                 }
@@ -895,34 +932,6 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/api.runQuery.queryInput"
                         }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/queue.TaskResult"
-                        }
-                    }
-                }
-            }
-        },
-        "/api/user/sync": {
-            "post": {
-                "consumes": [
-                    "application/json"
-                ],
-                "tags": [
-                    "user"
-                ],
-                "summary": "Sync Strava data",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Strava Access Token",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
                     }
                 ],
                 "responses": {
@@ -997,7 +1006,7 @@ const docTemplate = `{
                 }
             }
         },
-        "api.getAccessToken.tokenRequestInput": {
+        "api.getStravaAccessToken.tokenRequestInput": {
             "type": "object",
             "properties": {
                 "code": {

@@ -35,13 +35,13 @@ export async function getActivity(id) {
 }
 
 export async function getActivityGPX(id, accessToken) {
-  const endpoint = `${getApiBaseURL()}/activities/${id}/gpx`;
+  const endpoint = `${getApiBaseURL()}/strava/activities/${id}/gpx`;
 
   const response = await fetch(endpoint, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${accessToken}`,
+      'X-Strava-Authorization': accessToken,
     },
   });
 
@@ -53,13 +53,13 @@ export async function getActivityGPX(id, accessToken) {
 }
 
 export async function getActivityLaps(id, accessToken) {
-  const endpoint = `${getApiBaseURL()}/activities/${id}/laps`;
+  const endpoint = `${getApiBaseURL()}/strava/activities/${id}/laps`;
 
   const response = await fetch(endpoint, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${accessToken}`,
+      'X-Strava-Authorization': accessToken,
     },
   });
 
