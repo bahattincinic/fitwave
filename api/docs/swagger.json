@@ -225,6 +225,12 @@
                                 "type": "string"
                             }
                         }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
                     }
                 }
             }
@@ -271,7 +277,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.Config"
+                            "$ref": "#/definitions/api.updateConfig.updateInput"
                         }
                     },
                     {
@@ -287,6 +293,12 @@
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/models.Config"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
                         }
                     }
                 }
@@ -340,6 +352,12 @@
                             "additionalProperties": {
                                 "type": "boolean"
                             }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
                         }
                     }
                 }
@@ -440,6 +458,12 @@
                         "schema": {
                             "$ref": "#/definitions/models.Dashboard"
                         }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
                     }
                 }
             }
@@ -516,6 +540,12 @@
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/models.Dashboard"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
                         }
                     }
                 }
@@ -648,6 +678,12 @@
                         "schema": {
                             "$ref": "#/definitions/models.Component"
                         }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
                     }
                 }
             }
@@ -701,6 +737,12 @@
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/models.Component"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
                         }
                     }
                 }
@@ -1157,6 +1199,12 @@
                         "schema": {
                             "$ref": "#/definitions/queue.TaskResult"
                         }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
                     }
                 }
             }
@@ -1198,6 +1246,17 @@
         }
     },
     "definitions": {
+        "api.ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "errors": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
         "api.PaginatedResponse": {
             "type": "object",
             "properties": {
@@ -1209,9 +1268,13 @@
         },
         "api.completeSetup.setupInput": {
             "type": "object",
+            "required": [
+                "client_secret"
+            ],
             "properties": {
                 "client_id": {
-                    "type": "integer"
+                    "type": "integer",
+                    "minimum": 1
                 },
                 "client_secret": {
                     "type": "string"
@@ -1220,7 +1283,15 @@
                     "type": "string"
                 },
                 "login_type": {
-                    "$ref": "#/definitions/models.LoginType"
+                    "enum": [
+                        "anonymous",
+                        "protected"
+                    ],
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/models.LoginType"
+                        }
+                    ]
                 },
                 "login_username": {
                     "type": "string"
@@ -1229,6 +1300,10 @@
         },
         "api.createComponent.componentInput": {
             "type": "object",
+            "required": [
+                "name",
+                "query"
+            ],
             "properties": {
                 "configs": {},
                 "name": {
@@ -1244,6 +1319,9 @@
         },
         "api.createDashboard.dashboardInput": {
             "type": "object",
+            "required": [
+                "name"
+            ],
             "properties": {
                 "name": {
                     "type": "string"
@@ -1260,6 +1338,10 @@
         },
         "api.login.loginInput": {
             "type": "object",
+            "required": [
+                "password",
+                "username"
+            ],
             "properties": {
                 "password": {
                     "type": "string"
@@ -1271,6 +1353,9 @@
         },
         "api.runQuery.queryInput": {
             "type": "object",
+            "required": [
+                "query"
+            ],
             "properties": {
                 "query": {
                     "type": "string"
@@ -1279,6 +1364,11 @@
         },
         "api.updateComponent.componentInput": {
             "type": "object",
+            "required": [
+                "name",
+                "query",
+                "type"
+            ],
             "properties": {
                 "configs": {},
                 "name": {
@@ -1292,8 +1382,26 @@
                 }
             }
         },
+        "api.updateConfig.updateInput": {
+            "type": "object",
+            "required": [
+                "client_secret"
+            ],
+            "properties": {
+                "client_id": {
+                    "type": "integer",
+                    "minimum": 1
+                },
+                "client_secret": {
+                    "type": "string"
+                }
+            }
+        },
         "api.updateDashboard.dashboardInput": {
             "type": "object",
+            "required": [
+                "name"
+            ],
             "properties": {
                 "name": {
                     "type": "string"
@@ -1559,6 +1667,7 @@
             "type": "object",
             "properties": {
                 "client_id": {
+                    "description": "Strava APP Credentials",
                     "type": "integer"
                 },
                 "client_secret": {

@@ -2,8 +2,10 @@ package api
 
 import (
 	"net/http"
+	"reflect"
 	"strconv"
 
+	"github.com/go-playground/validator"
 	"github.com/labstack/echo/v4"
 )
 
@@ -12,8 +14,13 @@ type PaginatedResponse struct {
 	Count   int64       `json:"count"`
 }
 
+type ErrorResponse struct {
+	Errors map[string]string `json:"errors"`
+}
+
 const (
 	maxPageSize = int64(100)
+	errTag      = "err"
 )
 
 // GetPageAndSize retrieves the pagination parameters (page and page size) from the query parameters of the request context.
@@ -45,4 +52,25 @@ func (a *API) GetPageAndSize(c echo.Context, defaultPageSize int64) (int64, int6
 	offset := (page - 1) * pageSize
 
 	return offset, pageSize, nil
+}
+
+// bindAndValidate binds the data from the request to the provided target interface
+// and validates it using the validator.
+func (a *API) bindAndValidate(c echo.Context, target interface{}) error {
+	if err := c.Bind(target); err != nil {
+		return err
+	}
+
+	if err := a.val.Struct(target); err != nil {
+		errorMessages := make(map[string]string)
+		for _, vErr := range err.(validator.ValidationErrors) {
+			fieldName := vErr.Field()
+			s := reflect.ValueOf(target).Elem().Interface()
+			field, _ := reflect.TypeOf(s).FieldByName(fieldName)
+			errorMessages[field.Tag.Get("json")] = field.Tag.Get(errTag)
+		}
+		errorResponse := ErrorResponse{Errors: errorMessages}
+		return echo.NewHTTPError(http.StatusBadRequest, errorResponse)
+	}
+	return nil
 }

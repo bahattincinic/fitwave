@@ -1,4 +1,11 @@
 definitions:
+  api.ErrorResponse:
+    properties:
+      errors:
+        additionalProperties:
+          type: string
+        type: object
+    type: object
   api.PaginatedResponse:
     properties:
       count:
@@ -8,15 +15,22 @@ definitions:
   api.completeSetup.setupInput:
     properties:
       client_id:
+        minimum: 1
         type: integer
       client_secret:
         type: string
       login_password:
         type: string
       login_type:
-        $ref: '#/definitions/models.LoginType'
+        allOf:
+        - $ref: '#/definitions/models.LoginType'
+        enum:
+        - anonymous
+        - protected
       login_username:
         type: string
+    required:
+    - client_secret
     type: object
   api.createComponent.componentInput:
     properties:
@@ -27,11 +41,16 @@ definitions:
         type: string
       type:
         $ref: '#/definitions/models.ComponentType'
+    required:
+    - name
+    - query
     type: object
   api.createDashboard.dashboardInput:
     properties:
       name:
         type: string
+    required:
+    - name
     type: object
   api.getStravaAccessToken.tokenRequestInput:
     properties:
@@ -44,11 +63,16 @@ definitions:
         type: string
       username:
         type: string
+    required:
+    - password
+    - username
     type: object
   api.runQuery.queryInput:
     properties:
       query:
         type: string
+    required:
+    - query
     type: object
   api.updateComponent.componentInput:
     properties:
@@ -59,11 +83,27 @@ definitions:
         type: string
       type:
         $ref: '#/definitions/models.ComponentType'
+    required:
+    - name
+    - query
+    - type
+    type: object
+  api.updateConfig.updateInput:
+    properties:
+      client_id:
+        minimum: 1
+        type: integer
+      client_secret:
+        type: string
+    required:
+    - client_secret
     type: object
   api.updateDashboard.dashboardInput:
     properties:
       name:
         type: string
+    required:
+    - name
     type: object
   models.Activity:
     properties:
@@ -243,6 +283,7 @@ definitions:
   models.Config:
     properties:
       client_id:
+        description: Strava APP Credentials
         type: integer
       client_secret:
         type: string
@@ -610,6 +651,10 @@ paths:
             additionalProperties:
               type: string
             type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
       summary: Login
       tags:
       - auth
@@ -640,7 +685,7 @@ paths:
         name: config
         required: true
         schema:
-          $ref: '#/definitions/models.Config'
+          $ref: '#/definitions/api.updateConfig.updateInput'
       - description: Bearer <Access Token>
         in: header
         name: Authorization
@@ -651,6 +696,10 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/models.Config'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
       summary: Upsert Application Config
       tags:
       - config
@@ -685,6 +734,10 @@ paths:
             additionalProperties:
               type: boolean
             type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
       summary: Complete Application Setup
       tags:
       - config
@@ -747,6 +800,10 @@ paths:
           description: Created
           schema:
             $ref: '#/definitions/models.Dashboard'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
       summary: Create Dashboard
       tags:
       - dashboard
@@ -818,6 +875,10 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/models.Dashboard'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
       summary: Update Dashboard
       tags:
       - dashboard
@@ -882,6 +943,10 @@ paths:
           description: Created
           schema:
             $ref: '#/definitions/models.Component'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
       summary: Create Dashboard Components
       tags:
       - dashboard
@@ -945,6 +1010,10 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/models.Component'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
       summary: Update Dashboard Component
       tags:
       - dashboard
@@ -1210,6 +1279,10 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/queue.TaskResult'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
       summary: Run Query
       tags:
       - user

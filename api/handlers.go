@@ -55,7 +55,7 @@ func (a *API) setupHandlers() {
 	{
 		cfg := api.Group("/config")
 		cfg.GET("", a.getConfig, requireAppAuth)
-		cfg.PUT("", a.upsertConfig, requireAppAuth)
+		cfg.PUT("", a.updateConfig, requireAppAuth)
 		cfg.GET("/setup", a.checkSetupCompleted)
 		cfg.POST("/setup", a.completeSetup)
 	}

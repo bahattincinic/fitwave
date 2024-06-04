@@ -5,7 +5,6 @@ import (
 
 	"github.com/bahattincinic/fitwave/models"
 	"github.com/labstack/echo/v4"
-	pkgerrors "github.com/pkg/errors"
 )
 
 // getConfig godoc
@@ -25,23 +24,36 @@ func (a *API) getConfig(c echo.Context) error {
 	return c.JSON(http.StatusOK, cfg)
 }
 
-// upsertConfig godoc
+// updateConfig godoc
 //
 //	@Summary	Upsert Application Config
 //	@Tags		config
 //	@Accept		json
-//	@Param		config			body		models.Config	true	"Config Input"
-//	@Param		Authorization	header		string			true	"Bearer <Access Token>"
+//	@Param		config			body		api.updateConfig.updateInput	true	"Config Input"
+//	@Param		Authorization	header		string							true	"Bearer <Access Token>"
 //	@Success	200				{object}	models.Config
+//	@Failure	400				{object}	ErrorResponse
 //	@Router		/api/config [put]
-func (a *API) upsertConfig(c echo.Context) error {
-	var in models.Config
-	if err := c.Bind(&in); err != nil {
+func (a *API) updateConfig(c echo.Context) error {
+	type updateInput struct {
+		ClientId     int    `json:"client_id" validate:"min=1" err:"client_id is required"`
+		ClientSecret string `json:"client_secret" validate:"required" err:"client_secret is required"`
+	}
+
+	var in updateInput
+	if err := a.bindAndValidate(c, &in); err != nil {
 		return err
 	}
 
-	cfg, err := a.db.UpsertConfig(in)
+	cfg, err := a.db.GetCurrentConfig()
 	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err)
+	}
+
+	cfg.ClientId = in.ClientId
+	cfg.ClientSecret = in.ClientSecret
+
+	if _, err = a.db.UpsertConfig(*cfg); err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err)
 	}
 
@@ -73,19 +85,26 @@ func (a *API) checkSetupCompleted(c echo.Context) error {
 //	@Accept		json
 //	@Param		input	body		api.completeSetup.setupInput	true	"Setup Input"
 //	@Success	201		{object}	map[string]bool
+//	@Failure	400		{object}	ErrorResponse
 //	@Router		/api/config/setup [post]
 func (a *API) completeSetup(c echo.Context) error {
 	type setupInput struct {
-		ClientId      int              `json:"client_id"`
-		ClientSecret  string           `json:"client_secret"`
+		ClientId      int              `json:"client_id" validate:"min=1" err:"client_id is required"`
+		ClientSecret  string           `json:"client_secret" validate:"required" err:"client_secret is required"`
 		LoginUsername string           `json:"login_username"`
 		LoginPassword string           `json:"login_password"`
-		LoginType     models.LoginType `json:"login_type"`
+		LoginType     models.LoginType `json:"login_type" validate:"oneof=anonymous protected" err:"login_type is required"`
 	}
 
 	var in setupInput
-	if err := c.Bind(&in); err != nil {
+	if err := a.bindAndValidate(c, &in); err != nil {
 		return err
+	}
+
+	if in.LoginType == models.ProtectedLoginType &&
+		(in.LoginUsername == "" || in.LoginPassword == "") {
+		return echo.NewHTTPError(http.StatusBadRequest,
+			"username and password are required for protected login")
 	}
 
 	cfg, err := a.db.GetCurrentConfig()
@@ -94,8 +113,7 @@ func (a *API) completeSetup(c echo.Context) error {
 	}
 
 	if cfg.SetupCompleted() {
-		return echo.NewHTTPError(http.StatusBadRequest,
-			pkgerrors.New("setup is already completed"))
+		return echo.NewHTTPError(http.StatusBadRequest, "setup is already completed")
 	}
 
 	cfg.ClientId = in.ClientId

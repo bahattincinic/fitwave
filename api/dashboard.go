@@ -45,14 +45,15 @@ func (a *API) listDashboards(c echo.Context) error {
 //	@Param		input			body		api.createDashboard.dashboardInput	true	"Dashboard Input"
 //	@Param		Authorization	header		string								true	"Bearer <Access Token>"
 //	@Success	201				{object}	models.Dashboard
+//	@Failure	400				{object}	ErrorResponse
 //	@Router		/api/dashboards [post]
 func (a *API) createDashboard(c echo.Context) error {
 	type dashboardInput struct {
-		Name string `json:"name"`
+		Name string `json:"name" validate:"required" err:"name is required"`
 	}
 
 	var in dashboardInput
-	if err := c.Bind(&in); err != nil {
+	if err := a.bindAndValidate(c, &in); err != nil {
 		return err
 	}
 
@@ -88,16 +89,17 @@ func (a *API) getDashboard(c echo.Context) error {
 //	@Success	200				{object}	models.Dashboard
 //	@Param		input			body		api.updateDashboard.dashboardInput	true	"Dashboard Input"
 //	@Param		Authorization	header		string								true	"Bearer <Access Token>"
+//	@Failure	400				{object}	ErrorResponse
 //	@Router		/api/dashboards/{id} [put]
 func (a *API) updateDashboard(c echo.Context) error {
 	dashboard := c.Get(dashboardContextKey).(*models.Dashboard)
 
 	type dashboardInput struct {
-		Name string `json:"name"`
+		Name string `json:"name" validate:"required" err:"name is required"`
 	}
 
 	var in dashboardInput
-	if err := c.Bind(&in); err != nil {
+	if err := a.bindAndValidate(c, &in); err != nil {
 		return err
 	}
 
@@ -201,6 +203,7 @@ func (a *API) getDashboardComponents(c echo.Context) error {
 //	@Accept		json
 //	@Produce	json
 //	@Success	201				{object}	models.Component
+//	@Failure	400				{object}	ErrorResponse
 //	@Param		id				path		string								true	"Dashboard ID"
 //	@Param		Authorization	header		string								true	"Bearer <Access Token>"
 //	@Param		input			body		api.createComponent.componentInput	true	"Component Input"
@@ -209,14 +212,14 @@ func (a *API) createComponent(c echo.Context) error {
 	dashboard := c.Get(dashboardContextKey).(*models.Dashboard)
 
 	type componentInput struct {
-		Name    string               `json:"name"`
-		Type    models.ComponentType `json:"type"`
+		Name    string               `json:"name" validate:"required" err:"name is required"`
+		Type    models.ComponentType `json:"type" validate:"type" err:"name is required"`
 		Configs interface{}          `json:"configs"`
-		Query   string               `json:"query"`
+		Query   string               `json:"query" validate:"required" err:"query is required"`
 	}
 
 	var in componentInput
-	if err := c.Bind(&in); err != nil {
+	if err := a.bindAndValidate(c, &in); err != nil {
 		return err
 	}
 
@@ -235,6 +238,7 @@ func (a *API) createComponent(c echo.Context) error {
 //	@Accept		json
 //	@Produce	json
 //	@Success	200				{object}	models.Component
+//	@Failure	400				{object}	ErrorResponse
 //	@Param		id				path		string								true	"Dashboard ID"
 //	@Param		cpid			path		string								true	"Component ID"
 //	@Param		input			body		api.updateComponent.componentInput	true	"Component Input"
@@ -244,14 +248,14 @@ func (a *API) updateComponent(c echo.Context) error {
 	component := c.Get(componentContextKey).(*models.Component)
 
 	type componentInput struct {
-		Name    string               `json:"name"`
-		Type    models.ComponentType `json:"type"`
+		Name    string               `json:"name" validate:"required" err:"name is required"`
+		Type    models.ComponentType `json:"type" validate:"required" err:"type is required"`
 		Configs interface{}          `json:"configs"`
-		Query   string               `json:"query"`
+		Query   string               `json:"query" validate:"required" err:"query is required"`
 	}
 
 	var in componentInput
-	if err := c.Bind(&in); err != nil {
+	if err := a.bindAndValidate(c, &in); err != nil {
 		return err
 	}
 

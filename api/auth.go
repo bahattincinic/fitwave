@@ -49,17 +49,18 @@ func (a *API) createToken() (string, error) {
 //	@Summary	Login
 //	@Tags		auth
 //	@Accept		json
-//	@Param		input	body		api.login.loginInput true "Login Input"
+//	@Param		input	body		api.login.loginInput	true	"Login Input"
 //	@Success	201		{object}	map[string]string
+//	@Failure	400		{object}	ErrorResponse
 //	@Router		/api/auth/token [post]
 func (a *API) login(c echo.Context) error {
 	type loginInput struct {
-		Username string `json:"username"`
-		Password string `json:"password"`
+		Username string `json:"username" validate:"required" err:"username is required"`
+		Password string `json:"password" validate:"required" err:"password is required"`
 	}
 
 	var in loginInput
-	if err := c.Bind(&in); err != nil {
+	if err := a.bindAndValidate(c, &in); err != nil {
 		return err
 	}
 

@@ -32,14 +32,15 @@ func (a *API) getTask(c echo.Context) error {
 //	@Param		input			body		api.runQuery.queryInput	true	"Query Input"
 //	@Param		Authorization	header		string					true	"Bearer <Access Token>"
 //	@Success	200				{object}	queue.TaskResult
+//	@Failure	400				{object}	ErrorResponse
 //	@Router		/api/user/query [post]
 func (a *API) runQuery(c echo.Context) error {
 	type queryInput struct {
-		Query string `json:"query"`
+		Query string `json:"query"  validate:"required" err:"query is required"`
 	}
 
 	var in queryInput
-	if err := c.Bind(&in); err != nil {
+	if err := a.bindAndValidate(c, &in); err != nil {
 		return err
 	}
 

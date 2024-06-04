@@ -14,6 +14,7 @@ import (
 	"github.com/bahattincinic/fitwave/importer"
 	"github.com/bahattincinic/fitwave/queue"
 	"github.com/bahattincinic/fitwave/strava"
+	"github.com/go-playground/validator"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"go.uber.org/zap"
@@ -28,6 +29,7 @@ type API struct {
 	st  *strava.Strava
 	im  *importer.Importer
 	q   *queue.Queue
+	val *validator.Validate
 }
 
 var uiFS fs.FS
@@ -42,6 +44,7 @@ func RunAPI(ctx context.Context, wg *sync.WaitGroup, log *zap.Logger, db *databa
 		st:  st,
 		im:  im,
 		q:   q,
+		val: validator.New(),
 	}
 	srv.ec.Server.IdleTimeout = 120 * time.Second
 

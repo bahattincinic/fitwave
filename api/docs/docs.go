@@ -236,6 +236,12 @@ const docTemplate = `{
                                 "type": "string"
                             }
                         }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
                     }
                 }
             }
@@ -282,7 +288,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.Config"
+                            "$ref": "#/definitions/api.updateConfig.updateInput"
                         }
                     },
                     {
@@ -298,6 +304,12 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/models.Config"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
                         }
                     }
                 }
@@ -351,6 +363,12 @@ const docTemplate = `{
                             "additionalProperties": {
                                 "type": "boolean"
                             }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
                         }
                     }
                 }
@@ -451,6 +469,12 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/models.Dashboard"
                         }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
                     }
                 }
             }
@@ -527,6 +551,12 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/models.Dashboard"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
                         }
                     }
                 }
@@ -659,6 +689,12 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/models.Component"
                         }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
                     }
                 }
             }
@@ -712,6 +748,12 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/models.Component"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
                         }
                     }
                 }
@@ -1168,6 +1210,12 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/queue.TaskResult"
                         }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
                     }
                 }
             }
@@ -1209,6 +1257,17 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "api.ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "errors": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
         "api.PaginatedResponse": {
             "type": "object",
             "properties": {
@@ -1220,9 +1279,13 @@ const docTemplate = `{
         },
         "api.completeSetup.setupInput": {
             "type": "object",
+            "required": [
+                "client_secret"
+            ],
             "properties": {
                 "client_id": {
-                    "type": "integer"
+                    "type": "integer",
+                    "minimum": 1
                 },
                 "client_secret": {
                     "type": "string"
@@ -1231,7 +1294,15 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "login_type": {
-                    "$ref": "#/definitions/models.LoginType"
+                    "enum": [
+                        "anonymous",
+                        "protected"
+                    ],
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/models.LoginType"
+                        }
+                    ]
                 },
                 "login_username": {
                     "type": "string"
@@ -1240,6 +1311,10 @@ const docTemplate = `{
         },
         "api.createComponent.componentInput": {
             "type": "object",
+            "required": [
+                "name",
+                "query"
+            ],
             "properties": {
                 "configs": {},
                 "name": {
@@ -1255,6 +1330,9 @@ const docTemplate = `{
         },
         "api.createDashboard.dashboardInput": {
             "type": "object",
+            "required": [
+                "name"
+            ],
             "properties": {
                 "name": {
                     "type": "string"
@@ -1271,6 +1349,10 @@ const docTemplate = `{
         },
         "api.login.loginInput": {
             "type": "object",
+            "required": [
+                "password",
+                "username"
+            ],
             "properties": {
                 "password": {
                     "type": "string"
@@ -1282,6 +1364,9 @@ const docTemplate = `{
         },
         "api.runQuery.queryInput": {
             "type": "object",
+            "required": [
+                "query"
+            ],
             "properties": {
                 "query": {
                     "type": "string"
@@ -1290,6 +1375,11 @@ const docTemplate = `{
         },
         "api.updateComponent.componentInput": {
             "type": "object",
+            "required": [
+                "name",
+                "query",
+                "type"
+            ],
             "properties": {
                 "configs": {},
                 "name": {
@@ -1303,8 +1393,26 @@ const docTemplate = `{
                 }
             }
         },
+        "api.updateConfig.updateInput": {
+            "type": "object",
+            "required": [
+                "client_secret"
+            ],
+            "properties": {
+                "client_id": {
+                    "type": "integer",
+                    "minimum": 1
+                },
+                "client_secret": {
+                    "type": "string"
+                }
+            }
+        },
         "api.updateDashboard.dashboardInput": {
             "type": "object",
+            "required": [
+                "name"
+            ],
             "properties": {
                 "name": {
                     "type": "string"
@@ -1570,6 +1678,7 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "client_id": {
+                    "description": "Strava APP Credentials",
                     "type": "integer"
                 },
                 "client_secret": {
