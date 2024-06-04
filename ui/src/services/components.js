@@ -1,4 +1,4 @@
-import { getApiBaseURL } from './api';
+import { makeRequest } from './api';
 
 export const componentTypeEnum = {
   table: 'table',
@@ -14,87 +14,52 @@ export const componentTypes = [
   { name: 'Line Chart', code: componentTypeEnum.lineChart },
 ];
 
-export async function fetchComponents(dashId) {
-  const endpoint = `${getApiBaseURL()}/dashboards/${dashId}/components`;
-
-  const response = await fetch(endpoint, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
+export async function fetchComponents(accessToken, dashId) {
+  return await makeRequest({
+    endpoint: `/dashboards/${dashId}/components`,
+    json: true,
+    error: 'Could not fetch dashboard components',
+    accessToken,
   });
-
-  if (!response.ok) {
-    throw new Error('Could not fetch dashboard components');
-  }
-
-  return await response.json();
 }
 
-export async function createComponent(dashId, data) {
-  const endpoint = `${getApiBaseURL()}/dashboards/${dashId}/components`;
-
-  const response = await fetch(endpoint, {
+export async function createComponent(accessToken, dashId, data) {
+  return await makeRequest({
+    endpoint: `/dashboards/${dashId}/components`,
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(data),
+    body: data,
+    json: true,
+    error: 'Could not create a component',
+    accessToken,
   });
-
-  if (!response.ok) {
-    throw new Error('Could not create a component');
-  }
-
-  return await response.json();
 }
 
-export async function updateComponent(dashId, compId, data) {
-  const endpoint = `${getApiBaseURL()}/dashboards/${dashId}/components/${compId}`;
-
-  const response = await fetch(endpoint, {
+export async function updateComponent(accessToken, dashId, compId, data) {
+  return await makeRequest({
+    endpoint: `/dashboards/${dashId}/components/${compId}`,
     method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(data),
+    body: data,
+    json: true,
+    error: 'Could not create a component',
+    accessToken,
   });
-
-  if (!response.ok) {
-    throw new Error('Could not create a component');
-  }
-
-  return await response.json();
 }
 
-export async function deleteComponent(dashId, compId) {
-  const endpoint = `${getApiBaseURL()}/dashboards/${dashId}/components/${compId}`;
-
-  const response = await fetch(endpoint, {
+export async function deleteComponent(accessToken, dashId, compId) {
+  return await makeRequest({
+    endpoint: `/dashboards/${dashId}/components/${compId}`,
     method: 'DELETE',
-    headers: {
-      'Content-Type': 'application/json',
-    },
+    error: 'Could not delete a component',
+    accessToken,
   });
-
-  if (!response.ok) {
-    throw new Error('Could not delete a component');
-  }
 }
 
-export async function runComponent(dashId, compId) {
-  const endpoint = `${getApiBaseURL()}/dashboards/${dashId}/components/${compId}/run`;
-
-  const response = await fetch(endpoint, {
+export async function runComponent(accessToken, dashId, compId) {
+  return await makeRequest({
+    endpoint: `/dashboards/${dashId}/components/${compId}/run`,
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
+    json: true,
+    error: 'Could not run component',
+    accessToken,
   });
-
-  if (!response.ok) {
-    throw new Error('Could not run component');
-  }
-
-  return await response.json();
 }

@@ -47,6 +47,7 @@
       :visible="modal.showComponent"
       :loading="modal.loading"
       :row="modal.form"
+      :access-token="user.accessToken"
       @save="onSaveComponent"
       @close="closeModal"
       @set-loading="(v) => (this.modal.loading = v)"
@@ -77,6 +78,7 @@ import { useHead } from '@unhead/vue';
 import ComponentGrid from '@/components/ComponentGrid';
 import DashboardModal from '@/components/DashboardModal';
 import ComponentModal from '@/components/ComponentModal';
+import { useUserStore } from '@/store/user';
 
 export default {
   name: 'DashboardDetail',
@@ -87,6 +89,13 @@ export default {
     Skeleton,
     DashboardModal,
     ComponentModal,
+  },
+  setup() {
+    useHead({ title: 'Dashboard' });
+
+    return {
+      user: useUserStore(),
+    };
   },
   data() {
     return {
@@ -145,10 +154,10 @@ export default {
       const dashId = this.$route.params.id;
       try {
         this.loading = true;
-        this.dashboard = await getDashboard(dashId);
+        this.dashboard = await getDashboard(this.user.accessToken, dashId);
         useHead({ title: this.dashboard.name });
 
-        const resp = await fetchComponents(dashId);
+        const resp = await fetchComponents(this.user.accessToken, dashId);
         this.components = resp.results;
       } catch (error) {
         this.$router.push('/');
@@ -164,13 +173,21 @@ export default {
       try {
         this.loading = true;
 
-        const task = await waitAsyncTask(await runDashboard(this.dashboard.id));
-        task.result.map((row) => {
-          const component = this.components.find((comp) => comp.id === row.id);
-          if (component) {
-            component.results = row.results;
-          }
-        });
+        const task = await waitAsyncTask(
+          this.user.accessToken,
+          await runDashboard(this.user.accessToken, this.dashboard.id)
+        );
+
+        if (task.result) {
+          task.result.map((row) => {
+            const component = this.components.find(
+              (comp) => comp.id === row.id
+            );
+            if (component) {
+              component.results = row.results;
+            }
+          });
+        }
       } catch (error) {
         this.onError(error);
       } finally {
@@ -189,7 +206,7 @@ export default {
         accept: async () => {
           try {
             this.loading = true;
-            await deleteDashboard(this.dashboard.id);
+            await deleteDashboard(this.user.accessToken, this.dashboard.id);
             this.$router.push('/');
           } catch (error) {
             this.onError(error);
@@ -203,7 +220,7 @@ export default {
       try {
         this.modal.loading = true;
 
-        await updateDashboard(this.dashboard.id, {
+        await updateDashboard(this.user.accessToken, this.dashboard.id, {
           name: form.name,
         });
 
@@ -233,9 +250,14 @@ export default {
 
       try {
         if (form.id) {
-          await updateComponent(this.dashboard.id, form.id, data);
+          await updateComponent(
+            this.user.accessToken,
+            this.dashboard.id,
+            form.id,
+            data
+          );
         } else {
-          await createComponent(this.dashboard.id, data);
+          await createComponent(this.user.accessToken, this.dashboard.id, data);
         }
 
         this.$toast.add({
@@ -257,7 +279,12 @@ export default {
         comp.loading = true;
 
         const task = await waitAsyncTask(
-          await runComponent(this.dashboard.id, component.id)
+          this.user.accessToken,
+          await runComponent(
+            this.user.accessToken,
+            this.dashboard.id,
+            component.id
+          )
         );
         const cmp = this.components.find((comp) => comp.id === component.id);
         if (cmp) {
@@ -285,7 +312,11 @@ export default {
         accept: async () => {
           try {
             this.loading = true;
-            await deleteComponent(this.dashboard.id, component.id);
+            await deleteComponent(
+              this.user.accessToken,
+              this.dashboard.id,
+              component.id
+            );
           } catch (error) {
             this.onError(error);
           } finally {

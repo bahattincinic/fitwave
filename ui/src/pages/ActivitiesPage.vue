@@ -36,15 +36,15 @@
       :style="{ width: '50rem' }"
     >
       <div class="mb-3">
+        <Message v-if="!strava.accessToken" severity="info">
+          To download GPX file, you need to logged in to with Strava
+        </Message>
         <Button
-          :disabled="!accessToken || loading"
+          :disabled="!strava.accessToken || loading || modal.loading"
           type="button"
           label="Download GPX"
           severity="secondary"
           @click="downloadGPXFile"
-          v-tooltip.right="
-            'To download GPX file, you need to logged in to with Strava'
-          "
         />
       </div>
       <div>
@@ -63,8 +63,9 @@ import Skeleton from 'primevue/skeleton';
 import VueJsonPretty from 'vue-json-pretty';
 import Dialog from 'primevue/dialog';
 import Button from 'primevue/button';
+import Message from 'primevue/message';
 import { useHead } from '@unhead/vue';
-import { mapState } from 'pinia';
+import { useStravaStore } from '@/store/strava';
 import { useUserStore } from '@/store/user';
 
 export default {
@@ -77,9 +78,15 @@ export default {
     Button,
     VueJsonPretty,
     Skeleton,
+    Message,
   },
   setup() {
     useHead({ title: 'Activities' });
+
+    return {
+      strava: useStravaStore(),
+      user: useUserStore(),
+    };
   },
   data() {
     return {
@@ -88,6 +95,7 @@ export default {
       currentPage: 1,
       count: 0,
       modal: {
+        loading: false,
         show: false,
         data: {},
       },
@@ -95,9 +103,6 @@ export default {
   },
   mounted() {
     this.fetch();
-  },
-  computed: {
-    ...mapState(useUserStore, ['accessToken']),
   },
   methods: {
     athleteName(row) {
@@ -110,7 +115,10 @@ export default {
     async fetch() {
       try {
         this.loading = true;
-        const response = await fetchActivities(this.currentPage);
+        const response = await fetchActivities(
+          this.user.accessToken,
+          this.currentPage
+        );
         this.activities = response.results;
         this.count = response.count;
       } catch (error) {
@@ -121,11 +129,17 @@ export default {
     },
     async downloadGPXFile() {
       try {
-        this.loading = true;
-        const fileName = `activity_${this.modal.data.id}.gpx`;
+        this.modal.loading = true;
 
-        const blob = await getActivityGPX(this.modal.data.id, this.accessToken);
+        const blob = await getActivityGPX(
+          this.modal.data.id,
+          this.strava.accessToken,
+          this.user.accessToken
+        );
+
+        const fileName = `activity_${this.modal.data.id}.gpx`;
         const url = window.URL.createObjectURL(blob);
+
         const link = document.createElement('a');
         link.href = url;
         link.setAttribute('download', fileName);
@@ -135,7 +149,7 @@ export default {
       } catch (error) {
         this.onError(error);
       } finally {
-        this.loading = false;
+        this.modal.loading = false;
       }
     },
     onError(err) {
@@ -149,6 +163,7 @@ export default {
     onRowSelect(event) {
       this.modal.data = event.data;
       this.modal.show = true;
+      this.modal.loading = false;
     },
   },
 };

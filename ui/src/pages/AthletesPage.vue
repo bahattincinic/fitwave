@@ -49,6 +49,7 @@ import VueJsonPretty from 'vue-json-pretty';
 import Dialog from 'primevue/dialog';
 import { useHead } from '@unhead/vue';
 import Skeleton from 'primevue/skeleton';
+import { useUserStore } from '@/store/user';
 
 export default {
   name: 'AthletesPage',
@@ -62,6 +63,10 @@ export default {
   },
   setup() {
     useHead({ title: 'Athletes' });
+
+    return {
+      user: useUserStore(),
+    };
   },
   data() {
     return {
@@ -86,7 +91,10 @@ export default {
     async fetch() {
       try {
         this.loading = true;
-        const response = await fetchAthletes(this.currentPage);
+        const response = await fetchAthletes(
+          this.user.accessToken,
+          this.currentPage
+        );
         this.athletes = response.results;
         this.count = response.count;
       } catch (error) {

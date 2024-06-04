@@ -1,103 +1,60 @@
-import { getApiBaseURL } from './api';
+import { makeRequest } from './api';
 
-export async function fetchDashboards() {
-  const endpoint = `${getApiBaseURL()}/dashboards`;
-
-  const response = await fetch(endpoint, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
+export async function fetchDashboards(accessToken) {
+  return await makeRequest({
+    endpoint: '/dashboards',
+    json: true,
+    error: 'Could not fetch dashboards',
+    accessToken,
   });
-
-  if (!response.ok) {
-    throw new Error('Could not fetch dashboards');
-  }
-
-  return await response.json();
 }
 
-export async function getDashboard(id) {
-  const endpoint = `${getApiBaseURL()}/dashboards/${id}`;
-
-  const response = await fetch(endpoint, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
+export async function getDashboard(accessToken, id) {
+  return await makeRequest({
+    endpoint: `/dashboards/${id}`,
+    json: true,
+    error: 'Could not get dashboard',
+    accessToken,
   });
-
-  if (!response.ok) {
-    throw new Error('Could not get dashboard');
-  }
-
-  return await response.json();
 }
 
-export async function createDashboard(data) {
-  const endpoint = `${getApiBaseURL()}/dashboards`;
-
-  const response = await fetch(endpoint, {
+export async function createDashboard(accessToken, data) {
+  return await makeRequest({
+    endpoint: '/dashboards',
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(data),
+    body: data,
+    json: true,
+    error: 'Could not create a dashboard',
+    accessToken,
   });
-
-  if (!response.ok) {
-    throw new Error('Could not create a dashboard');
-  }
-
-  return await response.json();
 }
 
-export async function updateDashboard(id, data) {
-  const endpoint = `${getApiBaseURL()}/dashboards/${id}`;
-
-  const response = await fetch(endpoint, {
+export async function updateDashboard(accessToken, id, data) {
+  return await makeRequest({
+    endpoint: `/dashboards/${id}`,
     method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(data),
+    body: data,
+    json: true,
+    error: 'Could not update a dashboard',
+    accessToken,
   });
-
-  if (!response.ok) {
-    throw new Error('Could not update a dashboard');
-  }
-
-  return await response.json();
 }
 
-export async function deleteDashboard(id) {
-  const endpoint = `${getApiBaseURL()}/dashboards/${id}`;
-
-  const response = await fetch(endpoint, {
+export async function deleteDashboard(accessToken, id) {
+  return await makeRequest({
+    endpoint: `/dashboards/${id}`,
     method: 'DELETE',
-    headers: {
-      'Content-Type': 'application/json',
-    },
+    error: 'Could not delete a dashboard',
+    accessToken,
   });
-
-  if (!response.ok) {
-    throw new Error('Could not delete a dashboard');
-  }
 }
 
-export async function runDashboard(id) {
-  const endpoint = `${getApiBaseURL()}/dashboards/${id}/run`;
-
-  const response = await fetch(endpoint, {
+export async function runDashboard(accessToken, id) {
+  return await makeRequest({
+    endpoint: `/dashboards/${id}/run`,
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
+    json: true,
+    error: 'Could not run dashboard',
+    accessToken,
   });
-
-  if (!response.ok) {
-    throw new Error('Could not run dashboard');
-  }
-
-  return await response.json();
 }

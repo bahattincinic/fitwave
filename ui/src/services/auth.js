@@ -1,37 +1,43 @@
-import { getDomain, getApiBaseURL } from './api';
+import { getDomain, makeRequest } from './api';
 
-export async function getAuthorizationURL() {
-  const callbackURL = `${getDomain()}/app/login`;
-  const endpoint = `${getApiBaseURL()}/strava/authorization-url?callback_url=${callbackURL}`;
+export const loginTypeEnum = {
+  anonymous: 'anonymous',
+  protected: 'protected',
+};
 
-  const response = await fetch(endpoint, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
+export const loginTypes = [
+  { name: 'Anonymous', code: loginTypeEnum.anonymous },
+  { name: 'Protected', code: loginTypeEnum.protected },
+];
+
+export async function getStravaAuthorizationURL(accessToken) {
+  const callbackURL = `${getDomain()}/app/strava-login`;
+
+  return await makeRequest({
+    endpoint: `/strava/authorization-url?callback_url=${callbackURL}`,
+    json: true,
+    error: 'Could not fetch user config',
+    accessToken,
   });
-
-  if (!response.ok) {
-    throw new Error('Could not fetch user config');
-  }
-
-  return await response.json();
 }
 
-export async function getAccessToken(code) {
-  const endpoint = `${getApiBaseURL()}/strava/token`;
-
-  const response = await fetch(endpoint, {
+export async function getStravaAccessToken(accessToken, code) {
+  return await makeRequest({
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ code }),
+    endpoint: `/strava/token`,
+    body: { code },
+    error: 'Could not fetch access token',
+    json: true,
+    accessToken,
   });
+}
 
-  if (!response.ok) {
-    throw new Error('Could not fetch access token');
-  }
-
-  return await response.json();
+export async function login(data) {
+  return await makeRequest({
+    method: 'POST',
+    endpoint: '/auth/token',
+    body: data,
+    error: 'Could not login',
+    json: true,
+  });
 }

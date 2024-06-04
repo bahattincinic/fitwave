@@ -1,35 +1,19 @@
-import { getApiBaseURL } from './api';
+import { makeRequest } from './api';
 
-export async function fetchAthletes(page) {
-  const endpoint = `${getApiBaseURL()}/athletes?page=${page}`;
-
-  const response = await fetch(endpoint, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
+export async function fetchAthletes(accessToken, page) {
+  return await makeRequest({
+    endpoint: `/athletes?page=${page}`,
+    json: true,
+    error: 'Could not fetch athletes',
+    accessToken,
   });
-
-  if (!response.ok) {
-    throw new Error('Could not fetch athletes');
-  }
-
-  return await response.json();
 }
 
-export async function getAthlete(id) {
-  const endpoint = `${getApiBaseURL()}/athletes/${id}`;
-
-  const response = await fetch(endpoint, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
+export async function getAthlete(accessToken, id) {
+  return await makeRequest({
+    endpoint: `/athletes/${id}`,
+    json: true,
+    error: 'Could not get athlete',
+    accessToken,
   });
-
-  if (!response.ok) {
-    throw new Error('Could not get athlete');
-  }
-
-  return await response.json();
 }

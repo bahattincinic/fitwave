@@ -49,6 +49,7 @@ import Column from 'primevue/column';
 import Button from 'primevue/button';
 import Skeleton from 'primevue/skeleton';
 import DashboardModal from '@/components/DashboardModal';
+import { useUserStore } from '@/store/user';
 
 export default {
   name: 'HomePage',
@@ -61,6 +62,10 @@ export default {
   },
   setup() {
     useHead({ title: 'Dashboard' });
+
+    return {
+      user: useUserStore(),
+    };
   },
   mounted() {
     this.fetch();
@@ -76,7 +81,7 @@ export default {
     async fetch() {
       try {
         this.loading = true;
-        const response = await fetchDashboards();
+        const response = await fetchDashboards(this.user.accessToken);
         this.dashboards = response.results;
       } catch (error) {
         this.onError(error);
@@ -86,9 +91,10 @@ export default {
     },
     async onCreateDashboard(form) {
       try {
-        await createDashboard({
+        await createDashboard(this.user.accessToken, {
           name: form.name,
         });
+
         this.$toast.add({
           severity: 'success',
           summary: 'Success',

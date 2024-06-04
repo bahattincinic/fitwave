@@ -1,35 +1,19 @@
-import { getApiBaseURL } from './api';
+import { makeRequest } from './api';
 
-export async function fetchGears(page) {
-  const endpoint = `${getApiBaseURL()}/gears?page=${page}`;
-
-  const response = await fetch(endpoint, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
+export async function fetchGears(accessToken, page) {
+  return await makeRequest({
+    endpoint: `/gears?page=${page}`,
+    json: true,
+    error: 'Could not fetch gears',
+    accessToken,
   });
-
-  if (!response.ok) {
-    throw new Error('Could not fetch gears');
-  }
-
-  return await response.json();
 }
 
-export async function getGear(id) {
-  const endpoint = `${getApiBaseURL()}/gears/${id}`;
-
-  const response = await fetch(endpoint, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
+export async function getGear(accessToken, id) {
+  return await makeRequest({
+    endpoint: `/gears/${id}`,
+    json: true,
+    error: 'Could not get gear',
+    accessToken,
   });
-
-  if (!response.ok) {
-    throw new Error('Could not get gear');
-  }
-
-  return await response.json();
 }

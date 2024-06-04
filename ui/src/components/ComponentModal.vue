@@ -199,6 +199,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    accessToken: {
+      type: String,
+      required: true,
+    },
   },
   components: {
     Dialog,
@@ -303,7 +307,8 @@ export default {
         this.$emit('set-loading', true);
 
         const task = await waitAsyncTask(
-          await runQuery({
+          this.accessToken,
+          await runQuery(this.accessToken, {
             query: this.form.query,
           })
         );

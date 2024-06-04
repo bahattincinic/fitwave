@@ -48,6 +48,7 @@ import Dialog from 'primevue/dialog';
 import Skeleton from 'primevue/skeleton';
 import VueJsonPretty from 'vue-json-pretty';
 import { useHead } from '@unhead/vue';
+import { useUserStore } from '@/store/user';
 
 export default {
   name: 'GearsPage',
@@ -61,6 +62,10 @@ export default {
   },
   setup() {
     useHead({ title: 'Gears' });
+
+    return {
+      user: useUserStore(),
+    };
   },
   data() {
     return {
@@ -91,7 +96,10 @@ export default {
     async fetch() {
       try {
         this.loading = true;
-        const response = await fetchGears(this.currentPage);
+        const response = await fetchGears(
+          this.user.accessToken,
+          this.currentPage
+        );
         this.gears = response.results;
         this.count = response.count;
       } catch (error) {

@@ -6,7 +6,7 @@
 
 <script>
 import Menubar from 'primevue/menubar';
-import { useRouter } from 'vue-router';
+import { useStravaStore } from '@/store/strava';
 import { useUserStore } from '@/store/user';
 
 export default {
@@ -15,26 +15,26 @@ export default {
     Menubar,
   },
   setup() {
-    const router = useRouter();
-    const user = useUserStore();
-
-    return { router, user };
+    return {
+      strava: useStravaStore(),
+      user: useUserStore(),
+    };
   },
   computed: {
     items() {
-      const accessToken = this.user.accessToken;
-      const user = this.user.user;
+      const accessToken = this.strava.accessToken;
+      const user = this.strava.user;
 
       return [
         {
           label: 'Dashboard',
           icon: 'pi pi-fw pi-home',
-          command: () => this.router.push('/'),
+          command: () => this.$router.push('/'),
         },
         {
           label: 'Settings',
           icon: 'pi pi-fw pi-cog',
-          command: () => this.router.push('/app/settings'),
+          command: () => this.$router.push('/app/settings'),
         },
         {
           label: 'Data',
@@ -43,48 +43,54 @@ export default {
             {
               label: 'Activities',
               icon: 'pi pi-fw pi-calendar',
-              command: () => this.router.push('/app/activities'),
+              command: () => this.$router.push('/app/activities'),
             },
             {
               label: 'Gears',
               icon: 'pi pi-fw pi-sitemap',
-              command: () => this.router.push('/app/gears'),
+              command: () => this.$router.push('/app/gears'),
             },
             {
               label: 'Athletes',
               icon: 'pi pi-fw pi-user',
-              command: () => this.router.push('/app/athletes'),
+              command: () => this.$router.push('/app/athletes'),
             },
           ],
         },
         {
-          label: accessToken ? user.firstname : 'Anonymous',
+          label: accessToken ? user.firstname : 'User',
           icon: 'pi pi-fw pi-user',
           items: [
+            ...(this.user.loginNeeded()
+              ? [
+                  {
+                    label: 'Logout App',
+                    icon: 'pi pi-fw pi-sign-out',
+                    command: () => {
+                      this.user.logout();
+                      this.$router.push('/app/login');
+                    },
+                  },
+                ]
+              : []),
             ...(accessToken
               ? [
                   {
-                    label: 'Logout',
+                    label: 'Logout Strava',
                     icon: 'pi pi-fw pi-sign-out',
-                    command: () => this.logout(),
+                    command: () => this.strava.logout(),
                   },
                 ]
               : [
                   {
-                    label: 'Login',
+                    label: 'Login Strava',
                     icon: 'pi pi-fw pi-sign-in',
-                    command: () => this.router.push('/app/login'),
+                    command: () => this.$router.push('/app/strava-login'),
                   },
                 ]),
           ],
         },
       ];
-    },
-  },
-  methods: {
-    logout() {
-      const user = useUserStore();
-      user.logout();
     },
   },
 };

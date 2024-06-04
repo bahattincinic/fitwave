@@ -1,4 +1,4 @@
-import { getApiBaseURL } from './api';
+import { makeRequest } from './api';
 
 export const taskStatusEnum = {
   pending: 'pending',
@@ -7,113 +7,48 @@ export const taskStatusEnum = {
   archived: 'archived',
 };
 
-export async function getUserConfig() {
-  const endpoint = `${getApiBaseURL()}/config`;
-
-  const response = await fetch(endpoint, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
+export async function getStravaUser(accessToken, stravaToken) {
+  return await makeRequest({
+    endpoint: '/strava/me',
+    json: true,
+    error: 'Could not fetch user',
+    stravaToken,
+    accessToken,
   });
-
-  if (!response.ok) {
-    throw new Error('Could not fetch user config');
-  }
-
-  return await response.json();
 }
 
-export async function getUserMe(accessToken) {
-  const endpoint = `${getApiBaseURL()}/strava/me`;
-
-  const response = await fetch(endpoint, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-Strava-Authorization': accessToken,
-    },
+export async function getTaskDetail(accessToken, id) {
+  return await makeRequest({
+    endpoint: `/user/task/${id}`,
+    json: true,
+    error: 'Could not fetch task detail',
+    accessToken,
   });
-
-  if (!response.ok) {
-    throw new Error('Could not fetch user');
-  }
-
-  return await response.json();
 }
 
-export async function getTaskDetail(id) {
-  const endpoint = `${getApiBaseURL()}/user/task/${id}`;
-
-  const response = await fetch(endpoint, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error('Could not fetch task detail');
-  }
-
-  return await response.json();
-}
-
-export async function triggerSync(accessToken) {
-  const endpoint = `${getApiBaseURL()}/strava/sync`;
-
-  const response = await fetch(endpoint, {
+export async function triggerSync(accessToken, stravaToken) {
+  return await makeRequest({
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-Strava-Authorization': accessToken,
-    },
+    endpoint: '/strava/sync',
+    json: true,
+    error: 'Could not trigger a sync task',
+    accessToken,
+    stravaToken,
   });
-
-  if (!response.ok) {
-    throw new Error('Could not fetch task detail');
-  }
-
-  return await response.json();
 }
 
-export async function saveUserConfig(config) {
-  const endpoint = `${getApiBaseURL()}/config`;
-
-  const response = await fetch(endpoint, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(config),
-  });
-
-  if (!response.ok) {
-    throw new Error('Could not save user config');
-  }
-
-  return await response.json();
-}
-
-export async function runQuery(query) {
-  const endpoint = `${getApiBaseURL()}/user/query`;
-
-  const response = await fetch(endpoint, {
+export async function runQuery(accessToken, query) {
+  return await makeRequest({
+    endpoint: '/user/query',
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(query),
+    body: query,
+    json: true,
+    error: 'Could not run query',
+    accessToken,
   });
-
-  if (!response.ok) {
-    throw new Error('Could not run query');
-  }
-
-  return await response.json();
 }
 
-export async function waitAsyncTask(task) {
+export async function waitAsyncTask(accessToken, task) {
   const delay = async (ms) => {
     return new Promise((resolve) => setTimeout(resolve, ms));
   };
@@ -121,7 +56,7 @@ export async function waitAsyncTask(task) {
   let taskStatus = task.status;
   while (![taskStatusEnum.success, taskStatusEnum.error].includes(taskStatus)) {
     await delay(1000);
-    task = await getTaskDetail(task.id);
+    task = await getTaskDetail(accessToken, task.id);
     taskStatus = task.status;
   }
 

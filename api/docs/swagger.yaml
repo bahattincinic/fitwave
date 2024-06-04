@@ -711,8 +711,7 @@ paths:
         "200":
           description: OK
           schema:
-            additionalProperties:
-              type: boolean
+            additionalProperties: true
             type: object
       summary: Check Application Setup completed
       tags:

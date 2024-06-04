@@ -1,82 +1,76 @@
 <template>
-  <div class="mt-4">
-    <Message v-if="!isSyncEligible" severity="error">
-      You need to fill config from first to be able to sync your Strava data.
-    </Message>
-
-    <Card v-else class="max-w-30rem">
-      <template #title>Strava Login</template>
+  <div class="container">
+    <Card class="max-w-30rem">
+      <template #title>
+        <div class="text-center">Login</div>
+      </template>
       <template #content>
-        <div>
-          <p class="mb-3">
-            To log in, please click the "Login with Strava" button below. Once
-            the login process is complete, Strava will redirect you back to our
-            application.
-          </p>
-        </div>
-        <Button
-          :disabled="loading"
-          severity="success"
-          label="Login with Strava"
-          icon="pi pi-user"
-          @click="redirectToStrava()"
-        />
+        <form @submit.prevent="onLogin">
+          <div class="field">
+            <label for="username" class="pr-2">Username:</label>
+            <InputText v-model="username" id="username" />
+          </div>
+          <div class="field">
+            <label for="client_secret" class="pr-2">Password:</label>
+            <Password v-model="password" id="password" />
+          </div>
+          <div class="text-center">
+            <Button
+              :disabled="loading || !username || !password"
+              label="Login"
+              type="submit"
+              icon="pi pi-save"
+            />
+          </div>
+        </form>
       </template>
     </Card>
   </div>
 </template>
 
 <script>
-import Button from 'primevue/button';
-import { onMounted, ref } from 'vue';
-import { getAccessToken, getAuthorizationURL } from '@/services/auth';
-import { useRoute, useRouter } from 'vue-router';
-import { useUserStore } from '@/store/user';
-import Message from 'primevue/message';
-import Card from 'primevue/card';
-import { getUserConfig } from '@/services/user';
 import { useHead } from '@unhead/vue';
+import InputText from 'primevue/inputtext';
+import Password from 'primevue/password';
+import Button from 'primevue/button';
+import Card from 'primevue/card';
+import { useUserStore } from '@/store/user';
+import { login } from '@/services/auth';
+import { getUserConfig } from '@/services/config';
 
 export default {
   name: 'LoginPage',
   components: {
+    InputText,
+    Password,
     Button,
-    Message,
     Card,
   },
   setup() {
     useHead({ title: 'Login' });
 
-    const loading = ref(false);
-    const user = useUserStore();
-    const url = ref('');
-    const config = ref({});
-    const { query } = useRoute();
-    const router = useRouter();
-
-    const login = async (code) => {
-      const resp = await getAccessToken(code);
-      user.login(resp.access_token, resp.athlete);
-      await router.push('/');
+    return {
+      user: useUserStore(),
     };
-
-    const fetchURL = async () => {
-      const resp = await getAuthorizationURL();
-      url.value = resp.authorization_url;
+  },
+  data() {
+    return {
+      username: '',
+      password: '',
+      loading: false,
     };
-
-    onMounted(async () => {
+  },
+  methods: {
+    async onLogin() {
+      this.loading = true;
       try {
-        loading.value = true;
-        const cfg = await getUserConfig();
-        config.value = cfg;
-
-        if (!!cfg.client_id && !!cfg.client_secret) {
-          await fetchURL();
-          if (query.code) {
-            await login(query.code);
-          }
-        }
+        const resp = await login({
+          username: this.username,
+          password: this.password,
+        });
+        const config = await getUserConfig(resp.access_token);
+        this.user.login(config, resp.access_token);
+        this.$router.push('/');
       } catch (error) {
         this.$toast.add({
           severity: 'error',
@@ -85,26 +79,18 @@ export default {
           life: 3000,
         });
       } finally {
-        loading.value = false;
+        this.loading = false;
       }
-    });
-
-    return {
-      loading,
-      url,
-      user,
-      config,
-    };
-  },
-  methods: {
-    redirectToStrava() {
-      window.location.href = this.url;
-    },
-  },
-  computed: {
-    isSyncEligible() {
-      return !!this.config.client_id && !!this.config.client_secret;
     },
   },
 };
 </script>
+
+<style scoped>
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 90vh;
+}
+</style>

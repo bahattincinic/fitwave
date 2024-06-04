@@ -329,9 +329,7 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "type": "object",
-                            "additionalProperties": {
-                                "type": "boolean"
-                            }
+                            "additionalProperties": true
                         }
                     }
                 }

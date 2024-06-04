@@ -65,7 +65,7 @@ func (a *API) updateConfig(c echo.Context) error {
 //	@Summary	Check Application Setup completed
 //	@Tags		config
 //	@Accept		json
-//	@Success	200	{object}	map[string]bool
+//	@Success	200	{object}	map[string]interface{}
 //	@Router		/api/config/setup [get]
 func (a *API) checkSetupCompleted(c echo.Context) error {
 	cfg, err := a.db.GetCurrentConfig()
@@ -73,8 +73,9 @@ func (a *API) checkSetupCompleted(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusInternalServerError, err)
 	}
 
-	return c.JSON(http.StatusOK, map[string]bool{
-		"status": cfg.SetupCompleted(),
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"completed":  cfg.SetupCompleted(),
+		"login_type": cfg.LoginType,
 	})
 }
 

@@ -1,24 +1,42 @@
 import { defineStore } from 'pinia';
 import Cookies from 'js-cookie';
+import { loginTypeEnum } from '@/services/auth';
+
+const cookieKey = 'app_accessToken';
 
 export const useUserStore = defineStore('user', {
   state: () => ({
     accessToken: '',
-    user: {},
+    config: {},
+    setupCompleted: false,
+    loginType: '',
   }),
   actions: {
     logout() {
-      this.user = {};
       this.accessToken = '';
-      Cookies.remove('accessToken');
+      this.config = {};
+      Cookies.remove(cookieKey);
     },
-    login(accessToken, user) {
-      this.setUser(accessToken, user);
-      Cookies.set('accessToken', accessToken);
-    },
-    setUser(accessToken, user) {
+    login(config, accessToken) {
       this.accessToken = accessToken;
-      this.user = user;
+      this.config = config;
+      Cookies.set(cookieKey, accessToken);
+    },
+    getAccessToken() {
+      return Cookies.get(cookieKey);
+    },
+    setSetupCompleted(loginType, status) {
+      this.setupCompleted = status;
+      this.loginType = loginType;
+    },
+    setConfig(config) {
+      this.config = config;
+    },
+    isAuthenticated() {
+      return this.accessToken !== '';
+    },
+    loginNeeded() {
+      return this.loginType === loginTypeEnum.protected;
     },
   },
 });

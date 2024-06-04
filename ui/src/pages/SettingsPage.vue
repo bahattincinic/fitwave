@@ -13,7 +13,7 @@
             <InputText v-model="clientSecret" id="client_secret" />
           </div>
           <Button
-            :disabled="loading"
+            :disabled="loading || !clientId || !clientSecret"
             label="Save"
             type="submit"
             icon="pi pi-save"
@@ -21,17 +21,13 @@
         </form>
       </TabPanel>
       <TabPanel header="Sync Data">
-        <Message v-if="!isSyncEligible" severity="error">
-          You need to fill config from first to be able to sync your Strava
-          data.
-        </Message>
-        <Message v-else-if="!accessToken" severity="info">
+        <Message v-if="!strava.accessToken" severity="info">
           You need to Login with Strava to be able to sync your data.
         </Message>
 
-        <div v-if="isSyncEligible">
+        <div>
           <Button
-            v-if="accessToken"
+            v-if="strava.accessToken"
             :disabled="loading"
             severity="success"
             label="Sync Data"
@@ -44,7 +40,7 @@
             severity="success"
             label="Login with Strava"
             icon="pi pi-user"
-            @click="$router.push('/app/login')"
+            @click="$router.push('/app/strava-login')"
           />
         </div>
       </TabPanel>
@@ -53,18 +49,14 @@
 </template>
 
 <script>
-import { mapState } from 'pinia';
-import {
-  getUserConfig,
-  saveUserConfig,
-  triggerSync,
-  waitAsyncTask,
-} from '@/services/user';
+import { triggerSync, waitAsyncTask } from '@/services/user';
+import { saveUserConfig } from '@/services/config';
 import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
 import TabView from 'primevue/tabview';
 import TabPanel from 'primevue/tabpanel';
 import Message from 'primevue/message';
+import { useStravaStore } from '@/store/strava';
 import { useUserStore } from '@/store/user';
 import { useHead } from '@unhead/vue';
 
@@ -80,48 +72,30 @@ export default {
   setup() {
     useHead({ title: 'Settings' });
 
-    const userStore = useUserStore();
-
     return {
-      userStore,
+      strava: useStravaStore(),
+      user: useUserStore(),
     };
   },
   data() {
     return {
-      clientId: '',
-      clientSecret: '',
+      clientId: this.user.config.client_id,
+      clientSecret: this.user.config.client_secret,
       loading: false,
     };
   },
-  computed: {
-    ...mapState(useUserStore, ['user', 'accessToken']),
-    isSyncEligible() {
-      return !!this.clientId && !!this.clientSecret;
-    },
-  },
-  mounted() {
-    this.getConfig();
-  },
   methods: {
-    async getConfig() {
-      this.loading = true;
-      try {
-        const config = await getUserConfig();
-        this.clientId = config.client_id;
-        this.clientSecret = config.client_secret;
-      } catch (error) {
-        this.onError(error);
-      } finally {
-        this.loading = false;
-      }
-    },
     async saveSettings() {
       try {
         this.loading = true;
-        await saveUserConfig({
+
+        const resp = await saveUserConfig(this.user.accessToken, {
           client_id: parseInt(this.clientId),
           client_secret: this.clientSecret,
         });
+
+        this.user.setConfig(resp);
+
         this.$toast.add({
           severity: 'success',
           summary: 'Success',
@@ -137,7 +111,10 @@ export default {
     async syncData() {
       try {
         this.loading = true;
-        await waitAsyncTask(await triggerSync(this.accessToken));
+        await waitAsyncTask(
+          this.user.accessToken,
+          await triggerSync(this.user.accessToken, this.strava.accessToken)
+        );
         this.$toast.add({
           severity: 'success',
           summary: 'Success',

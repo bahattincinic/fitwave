@@ -1,71 +1,39 @@
-import { getApiBaseURL } from './api';
+import { makeRequest } from './api';
 
-export async function fetchActivities(page) {
-  const endpoint = `${getApiBaseURL()}/activities?page=${page}`;
-
-  const response = await fetch(endpoint, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
+export async function fetchActivities(accessToken, page) {
+  return await makeRequest({
+    endpoint: `/activities?page=${page}`,
+    accessToken,
+    error: 'Could not fetch activities',
+    json: true,
   });
-
-  if (!response.ok) {
-    throw new Error('Could not fetch activities');
-  }
-
-  return await response.json();
 }
 
-export async function getActivity(id) {
-  const endpoint = `${getApiBaseURL()}/activities/${id}`;
-
-  const response = await fetch(endpoint, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
+export async function getActivity(accessToken, id) {
+  return await makeRequest({
+    endpoint: `/activities/${id}`,
+    accessToken,
+    error: 'Could not get activity',
+    json: true,
   });
-
-  if (!response.ok) {
-    throw new Error('Could not get activity');
-  }
-
-  return await response.json();
 }
 
-export async function getActivityGPX(id, accessToken) {
-  const endpoint = `${getApiBaseURL()}/strava/activities/${id}/gpx`;
-
-  const response = await fetch(endpoint, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-Strava-Authorization': accessToken,
-    },
+export async function getActivityGPX(id, stravaToken, accessToken) {
+  return await makeRequest({
+    endpoint: `/strava/activities/${id}/gpx`,
+    stravaToken,
+    accessToken,
+    error: 'Could not get activity',
+    blob: true,
   });
-
-  if (!response.ok) {
-    throw new Error('Could not get activity');
-  }
-
-  return await response.blob();
 }
 
-export async function getActivityLaps(id, accessToken) {
-  const endpoint = `${getApiBaseURL()}/strava/activities/${id}/laps`;
-
-  const response = await fetch(endpoint, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-Strava-Authorization': accessToken,
-    },
+export async function getActivityLaps(id, stravaToken, accessToken) {
+  return await makeRequest({
+    endpoint: `/strava/activities/${id}/laps`,
+    stravaToken,
+    accessToken,
+    error: 'Could not get activity laps',
+    json: true,
   });
-
-  if (!response.ok) {
-    throw new Error('Could not get activity');
-  }
-
-  return await response.json();
 }

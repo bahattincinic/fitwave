@@ -213,7 +213,7 @@ func (a *API) createComponent(c echo.Context) error {
 
 	type componentInput struct {
 		Name    string               `json:"name" validate:"required" err:"name is required"`
-		Type    models.ComponentType `json:"type" validate:"type" err:"name is required"`
+		Type    models.ComponentType `json:"type" validate:"required" err:"name is required"`
 		Configs interface{}          `json:"configs"`
 		Query   string               `json:"query" validate:"required" err:"query is required"`
 	}
