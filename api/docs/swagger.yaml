@@ -44,6 +44,7 @@ definitions:
     required:
     - name
     - query
+    - type
     type: object
   api.createDashboard.dashboardInput:
     properties:

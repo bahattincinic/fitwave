@@ -1311,7 +1311,8 @@ const docTemplate = `{
             "type": "object",
             "required": [
                 "name",
-                "query"
+                "query",
+                "type"
             ],
             "properties": {
                 "configs": {},
