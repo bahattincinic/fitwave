@@ -49,6 +49,6 @@ type Activity struct {
 	HasKudos             bool           `json:"has_kudos"`
 	AthleteID            uint           `json:"athlete_id"`
 	Athlete              Athlete        `gorm:"foreignkey:AthleteID" json:"athlete"`
-	GearID               string         `json:"gear_id"`
-	Gear                 Gear           `gorm:"foreignkey:GearID" json:"gear"`
+	GearID               *string        `json:"gear_id"`
+	Gear                 *Gear          `gorm:"foreignkey:GearID" json:"gear,omitempty"`
 }

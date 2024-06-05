@@ -90,7 +90,7 @@ func (im *Importer) updateActivities(tx *gorm.DB, activities []*client.ActivityS
 			return pkgerrors.Wrap(err, "Marshal")
 		}
 
-		rows = append(rows, models.Activity{
+		act := models.Activity{
 			Id:                   activity.Id,
 			ExternalId:           activity.ExternalId,
 			UploadId:             activity.UploadId,
@@ -120,7 +120,6 @@ func (im *Importer) updateActivities(tx *gorm.DB, activities []*client.ActivityS
 			Manual:               activity.Manual,
 			Private:              activity.Private,
 			Flagged:              activity.Flagged,
-			GearID:               activity.GearId,
 			AverageSpeed:         activity.AverageSpeed,
 			MaximumSpeed:         activity.MaximunSpeed,
 			AverageCadence:       activity.AverageCadence,
@@ -133,7 +132,13 @@ func (im *Importer) updateActivities(tx *gorm.DB, activities []*client.ActivityS
 			MaximumHeartRate:     activity.MaximumHeartrate,
 			Truncated:            activity.Truncated,
 			HasKudos:             activity.HasKudoed,
-		})
+		}
+
+		if activity.GearId != "" {
+			act.GearID = &activity.GearId
+		}
+
+		rows = append(rows, act)
 	}
 
 	return im.db.UpsertActivities(tx, rows)
