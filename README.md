@@ -117,3 +117,32 @@ To view the API Swagger documentation, please visit the following link:
 Updating Swagger
 
     make swaggen
+
+## How to Deploy the Project to Render.com (Free)
+
+### Create a PostgreSQL Database
+
+1. Go to the [Render Dashboard](https://dashboard.render.com/new/database).
+2. Follow the instructions to create a new PostgreSQL database.
+
+### Deploying the Web Service
+
+1. Go to the [Render Dashboard](https://dashboard.render.com/create?type=web).
+2. Select "Deploy an existing image from a registry".
+3. Enter the Docker image URL: `bahattincinic/fitwave`.
+
+### Add Environment Variables
+
+Add the following environment variables to your web service:
+
+```
+DATABASE_TYPE=postgres
+DATABASE_DSN=host=<host> user=<username> password=<password> dbname=<dbname> port=5432
+```
+
+### Configure Health Check Path
+
+In the Advanced section, set `/api/status` as the Health Check Path.
+
+This configuration will ensure that your service is correctly monitored and maintained by Render.com.
+
