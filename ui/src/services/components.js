@@ -14,6 +14,59 @@ export const componentTypes = [
   { name: 'Line Chart', code: componentTypeEnum.lineChart },
 ];
 
+export const dynamicQueryOptions = [
+  {
+    option: 'Today',
+    value: '{{.Today}}',
+    example: "start_date = '{{.Today}}'",
+  },
+  {
+    option: 'Yesterday',
+    value: '{{.Yesterday}}',
+    example: "start_date = '{{.Yesterday}}'",
+  },
+  {
+    option: 'This Week Start',
+    value: '{{.ThisWeekStart}}',
+    example: "start_date >= '{{.ThisWeekStart}}'",
+  },
+  {
+    option: 'This Week End',
+    value: '{{.ThisWeekEnd}}',
+    example: "start_date <= '{{.ThisWeekEnd}}'",
+  },
+  {
+    option: 'Last Week Start',
+    value: '{{.LastWeekStart}}',
+    example: "start_date >= '{{.LastWeekStart}}'",
+  },
+  {
+    option: 'Last Week End',
+    value: '{{.LastWeekEnd}}',
+    example: "start_date <= '{{.LastWeekEnd}}'",
+  },
+  {
+    option: 'This Month Start',
+    value: '{{.ThisMonthStart}}',
+    example: "start_date >= '{{.ThisMonthStart}}'",
+  },
+  {
+    option: 'This Month End',
+    value: '{{.ThisMonthEnd}}',
+    example: "start_date <= '{{.ThisMonthEnd}}'",
+  },
+  {
+    option: 'Last Month Start',
+    value: '{{.LastMonthStart}}',
+    example: "start_date >= '{{.LastMonthStart}}'",
+  },
+  {
+    option: 'Last Month End',
+    value: '{{.LastMonthEnd}}',
+    example: "start_date <= '{{.LastMonthEnd}}'",
+  },
+];
+
 export async function fetchComponents(accessToken, dashId) {
   return await makeRequest({
     endpoint: `/dashboards/${dashId}/components`,

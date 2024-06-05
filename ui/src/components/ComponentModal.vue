@@ -31,6 +31,23 @@
                   class="query-input"
                 />
               </div>
+
+              <div class="flex justify-content-end">
+                <span class="cursor-pointer pb-3" @click="toggleDynamicInput">
+                  Click to see Dynamic Query Parameters.
+                </span>
+              </div>
+              <div
+                class="flex align-items-center gap-3 mb-3"
+                v-if="showDynamicInput"
+              >
+                <DataTable :value="dynamicQueryOptions">
+                  <Column field="option" header="Option" />
+                  <Column field="value" header="Value" />
+                  <Column field="example" header="Example Usage" />
+                </DataTable>
+              </div>
+
               <div class="flex pt-4 justify-content-between">
                 <Button
                   :disabled="loading"
@@ -177,7 +194,13 @@ import Button from 'primevue/button';
 import Dropdown from 'primevue/dropdown';
 import Stepper from 'primevue/stepper';
 import StepperPanel from 'primevue/stepperpanel';
-import { componentTypes, componentTypeEnum } from '@/services/components';
+import DataTable from 'primevue/datatable';
+import Column from 'primevue/column';
+import {
+  componentTypes,
+  componentTypeEnum,
+  dynamicQueryOptions,
+} from '@/services/components';
 import TableComponent from '@/components/TableComponent';
 import PieChartComponent from '@/components/PieChartComponent';
 import BarChartComponent from '@/components/BarChartComponent';
@@ -216,12 +239,16 @@ export default {
     Dropdown,
     Stepper,
     StepperPanel,
+    DataTable,
+    Column,
   },
   data() {
     return {
       componentTypes,
       componentTypeEnum,
+      dynamicQueryOptions,
       queryResult: null,
+      showDynamicInput: false,
       form: this.getInitialForm(this.row),
     };
   },
@@ -335,6 +362,9 @@ export default {
         this.form.y = y;
         nextCallback();
       }
+    },
+    toggleDynamicInput() {
+      this.showDynamicInput = !this.showDynamicInput;
     },
     onError(err) {
       this.$toast.add({
