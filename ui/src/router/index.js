@@ -85,8 +85,7 @@ router.beforeEach(async (to, from, next) => {
 
   // Authentication Check
   const loginNeeded = userStore.loginNeeded();
-
-  if (!loginNeeded) {
+  if (userStore.setupCompleted && !loginNeeded) {
     const resp = await getUserConfig("");
     userStore.setConfig(resp);
   } else if (!userStore.isAuthenticated() && accessToken) {

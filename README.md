@@ -136,7 +136,7 @@ Updating Swagger
 Add the following environment variables to your web service:
 
 ```
-DATABASE_TYPE=postgres
+DATABASE_TYPE=postgresql
 DATABASE_DSN=host=<host> user=<username> password=<password> dbname=<dbname> port=5432
 ```
 

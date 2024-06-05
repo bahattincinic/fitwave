@@ -126,7 +126,9 @@ export default {
         });
 
         this.user.setConfig(resp);
-        this.user.setSetupCompleted(this.loginType, true);
+        this.user.setSetupCompleted(
+          this.loginType.code, true
+        );
 
         if (loginType === loginTypeEnum.anonymous) {
           this.$router.push('/');
