@@ -22,13 +22,10 @@
                 <InputText v-model="form.name" id="name" class="query-name" />
               </div>
               <div class="flex align-items-center gap-3 mb-3">
-                <label for="username" class="font-semibold w-6rem">Query</label>
-                <Textarea
-                  v-model="form.query"
-                  id="query"
-                  rows="5"
-                  cols="30"
-                  class="query-input"
+                <SQLEditor
+                  :code="form.query"
+                  height="200px"
+                  @change="(value) => (this.form.query = value)"
                 />
               </div>
 
@@ -189,7 +186,6 @@
 <script>
 import Dialog from 'primevue/dialog';
 import InputText from 'primevue/inputtext';
-import Textarea from 'primevue/textarea';
 import Button from 'primevue/button';
 import Dropdown from 'primevue/dropdown';
 import Stepper from 'primevue/stepper';
@@ -206,6 +202,7 @@ import PieChartComponent from '@/components/PieChartComponent';
 import BarChartComponent from '@/components/BarChartComponent';
 import LineChartComponent from '@/components/LineChartComponent';
 import { runQuery, waitAsyncTask } from '@/services/user';
+import SQLEditor from '@/components/SQLEditor';
 
 export default {
   name: 'ComponentModal',
@@ -230,7 +227,7 @@ export default {
   components: {
     Dialog,
     InputText,
-    Textarea,
+    SQLEditor,
     Button,
     TableComponent,
     PieChartComponent,

@@ -7,6 +7,8 @@ import ToastService from 'primevue/toastservice';
 import ConfirmationService from 'primevue/confirmationservice';
 import Tooltip from 'primevue/tooltip';
 import { createHead } from '@unhead/vue';
+import { install as VueMonacoEditorPlugin } from '@guolao/vue-monaco-editor';
+
 import 'primevue/resources/themes/saga-blue/theme.css';
 import 'primevue/resources/primevue.min.css';
 import 'primeicons/primeicons.css';
@@ -22,5 +24,6 @@ app.use(ToastService);
 app.use(ConfirmationService);
 app.use(createHead());
 app.directive('tooltip', Tooltip);
+app.use(VueMonacoEditorPlugin);
 
 app.mount('#app');

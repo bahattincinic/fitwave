@@ -9,6 +9,7 @@
     "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,vue,html,css,scss}\""
   },
   "dependencies": {
+    "@guolao/vue-monaco-editor": "^1.5.1",
     "@unhead/vue": "^1.9.11",
     "chart.js": "^4.4.3",
     "core-js": "^3.8.3",
