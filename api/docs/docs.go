@@ -992,6 +992,13 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
+                        "description": "Bearer \u003cAccess Token\u003e",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
                         "description": "Strava Access Token",
                         "name": "X-Strava-Authorization",
                         "in": "header",
@@ -1026,6 +1033,13 @@ const docTemplate = `{
                         "type": "string",
                         "description": "Strava Access Token",
                         "name": "X-Strava-Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Bearer \u003cAccess Token\u003e",
+                        "name": "Authorization",
                         "in": "header",
                         "required": true
                     }
@@ -1070,6 +1084,13 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "description": "Bearer \u003cAccess Token\u003e",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
                         "description": "Callback URL",
                         "name": "callback_url",
                         "in": "query",
@@ -1101,6 +1122,13 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "description": "Bearer \u003cAccess Token\u003e",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
                         "description": "Strava Access Token",
                         "name": "X-Strava-Authorization",
                         "in": "header",
@@ -1117,6 +1145,43 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/strava/schema": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "strava"
+                ],
+                "summary": "Get Strava Database Models",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/api.PaginatedResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        " count": {
+                                            "type": "integer"
+                                        },
+                                        "Results": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/database.Schema"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
         "/api/strava/sync": {
             "post": {
                 "consumes": [
@@ -1127,6 +1192,13 @@ const docTemplate = `{
                 ],
                 "summary": "Sync Strava data",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer \u003cAccess Token\u003e",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "type": "string",
                         "description": "Strava Access Token",
@@ -1155,6 +1227,13 @@ const docTemplate = `{
                 ],
                 "summary": "Get Strava Access Token from Auth Code",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer \u003cAccess Token\u003e",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "description": "Access Token Input",
                         "name": "auth",
@@ -1414,6 +1493,23 @@ const docTemplate = `{
             ],
             "properties": {
                 "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "database.Schema": {
+            "type": "object",
+            "properties": {
+                "db_name": {
+                    "type": "string"
+                },
+                "model": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "type": {
                     "type": "string"
                 }
             }

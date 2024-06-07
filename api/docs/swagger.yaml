@@ -106,6 +106,17 @@ definitions:
     required:
     - name
     type: object
+  database.Schema:
+    properties:
+      db_name:
+        type: string
+      model:
+        type: string
+      name:
+        type: string
+      type:
+        type: string
+    type: object
   models.Activity:
     properties:
       achievement_count:
@@ -1140,6 +1151,11 @@ paths:
         name: id
         required: true
         type: string
+      - description: Bearer <Access Token>
+        in: header
+        name: Authorization
+        required: true
+        type: string
       - description: Strava Access Token
         in: header
         name: X-Strava-Authorization
@@ -1166,6 +1182,11 @@ paths:
         name: X-Strava-Authorization
         required: true
         type: string
+      - description: Bearer <Access Token>
+        in: header
+        name: Authorization
+        required: true
+        type: string
       responses:
         "200":
           description: OK
@@ -1188,6 +1209,11 @@ paths:
       consumes:
       - application/json
       parameters:
+      - description: Bearer <Access Token>
+        in: header
+        name: Authorization
+        required: true
+        type: string
       - description: Callback URL
         in: query
         name: callback_url
@@ -1208,6 +1234,11 @@ paths:
       consumes:
       - application/json
       parameters:
+      - description: Bearer <Access Token>
+        in: header
+        name: Authorization
+        required: true
+        type: string
       - description: Strava Access Token
         in: header
         name: X-Strava-Authorization
@@ -1221,11 +1252,37 @@ paths:
       summary: Get Current Strava User Details
       tags:
       - strava
+  /api/strava/schema:
+    get:
+      consumes:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/api.PaginatedResponse'
+            - properties:
+                ' count':
+                  type: integer
+                Results:
+                  items:
+                    $ref: '#/definitions/database.Schema'
+                  type: array
+              type: object
+      summary: Get Strava Database Models
+      tags:
+      - strava
   /api/strava/sync:
     post:
       consumes:
       - application/json
       parameters:
+      - description: Bearer <Access Token>
+        in: header
+        name: Authorization
+        required: true
+        type: string
       - description: Strava Access Token
         in: header
         name: X-Strava-Authorization
@@ -1244,6 +1301,11 @@ paths:
       consumes:
       - application/json
       parameters:
+      - description: Bearer <Access Token>
+        in: header
+        name: Authorization
+        required: true
+        type: string
       - description: Access Token Input
         in: body
         name: auth

@@ -24,24 +24,51 @@
               <div class="flex align-items-center gap-3 mb-3">
                 <SQLEditor
                   :code="form.query"
+                  :dataSchema="dataSchema"
                   height="200px"
                   @change="(value) => (this.form.query = value)"
                 />
               </div>
 
               <div class="flex justify-content-end">
-                <span class="cursor-pointer pb-3" @click="toggleDynamicInput">
-                  Click to see Dynamic Query Parameters.
-                </span>
+                <Button
+                  icon="pi pi-receipt"
+                  class="mr-1"
+                  aria-label="Data Schema"
+                  :severity="detailSection === 'data' ? 'success' : 'secondary'"
+                  @click="toggleDetailSection('data')"
+                  v-tooltip.bottom="'Click to see Data Schema.'"
+                />
+                <Button
+                  icon="pi pi-question"
+                  aria-label="Dynamic Query Parameters"
+                  :severity="
+                    detailSection === 'dynamic' ? 'success' : 'secondary'
+                  "
+                  @click="toggleDetailSection('dynamic')"
+                  v-tooltip.bottom="'Click to see Dynamic Query Parameters.'"
+                />
               </div>
+
               <div
                 class="flex align-items-center gap-3 mb-3"
-                v-if="showDynamicInput"
+                v-if="detailSection === 'dynamic'"
               >
                 <DataTable :value="dynamicQueryOptions">
-                  <Column field="option" header="Option" />
-                  <Column field="value" header="Value" />
-                  <Column field="example" header="Example Usage" />
+                  <Column sortable field="option" header="Option" />
+                  <Column sortable field="value" header="Value" />
+                  <Column sortable field="example" header="Example Usage" />
+                </DataTable>
+              </div>
+
+              <div
+                class="flex align-items-center gap-3 mb-3"
+                v-if="detailSection === 'data'"
+              >
+                <DataTable :value="dataSchema">
+                  <Column sortable field="table_name" header="Table Name" />
+                  <Column sortable field="field_db_name" header="Field name" />
+                  <Column sortable field="type" header="Type" />
                 </DataTable>
               </div>
 
@@ -211,6 +238,10 @@ export default {
       type: Object,
       default: () => {},
     },
+    dataSchema: {
+      type: Array,
+      default: () => [],
+    },
     loading: {
       type: Boolean,
       default: false,
@@ -245,7 +276,7 @@ export default {
       componentTypeEnum,
       dynamicQueryOptions,
       queryResult: null,
-      showDynamicInput: false,
+      detailSection: '',
       form: this.getInitialForm(this.row),
     };
   },
@@ -360,8 +391,8 @@ export default {
         nextCallback();
       }
     },
-    toggleDynamicInput() {
-      this.showDynamicInput = !this.showDynamicInput;
+    toggleDetailSection(section) {
+      this.detailSection = section === this.detailSection ? '' : section;
     },
     onError(err) {
       this.$toast.add({

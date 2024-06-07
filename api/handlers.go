@@ -38,6 +38,7 @@ func (a *API) setupHandlers() {
 		str.GET("/me", a.getStravaMe, requireStravaAuth)
 		str.POST("/token", a.getStravaAccessToken)
 		str.GET("/authorization-url", a.getStravaAuthorizationURL)
+		str.GET("/schema", a.getStravaModels)
 	}
 
 	{

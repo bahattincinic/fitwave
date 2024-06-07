@@ -15,8 +15,9 @@ import (
 //	@Summary	Get Strava Access Token from Auth Code
 //	@Tags		strava
 //	@Accept		json
-//	@Param		auth	body		api.getStravaAccessToken.tokenRequestInput	true	"Access Token Input"
-//	@Success	200		{object}	strava.AuthorizationResponse
+//	@Param		Authorization	header		string										true	"Bearer <Access Token>"
+//	@Param		auth			body		api.getStravaAccessToken.tokenRequestInput	true	"Access Token Input"
+//	@Success	200				{object}	strava.AuthorizationResponse
 //	@Router		/api/strava/token [post]
 func (a *API) getStravaAccessToken(c echo.Context) error {
 	type tokenRequestInput struct {
@@ -46,6 +47,7 @@ func (a *API) getStravaAccessToken(c echo.Context) error {
 //	@Summary	Get Authorization URL for Strava Login
 //	@Tags		strava
 //	@Accept		json
+//	@Param		Authorization	header		string	true	"Bearer <Access Token>"
 //	@Param		callback_url	query		string	true	"Callback URL"
 //	@Success	200				{object}	map[string]string
 //	@Router		/api/strava/authorization-url [get]
@@ -72,6 +74,7 @@ func (a *API) getStravaAuthorizationURL(c echo.Context) error {
 //	@Summary	Get Current Strava User Details
 //	@Tags		strava
 //	@Accept		json
+//	@Param		Authorization			header		string	true	"Bearer <Access Token>"
 //	@Param		X-Strava-Authorization	header		string	true	"Strava Access Token"
 //	@Success	200						{object}	strava.User
 //	@Router		/api/strava/me [get]
@@ -85,6 +88,7 @@ func (a *API) getStravaMe(c echo.Context) error {
 //	@Summary	Sync Strava data
 //	@Tags		strava
 //	@Accept		json
+//	@Param		Authorization			header		string	true	"Bearer <Access Token>"
 //	@Param		X-Strava-Authorization	header		string	true	"Strava Access Token"
 //	@Success	200						{object}	queue.TaskResult
 //	@Router		/api/strava/sync [post]
@@ -107,6 +111,7 @@ func (a *API) syncData(c echo.Context) error {
 //	@Tags		strava
 //	@Accept		json
 //	@Param		id						path	string	true	"Activity ID"
+//	@Param		Authorization			header	string	true	"Bearer <Access Token>"
 //	@Param		X-Strava-Authorization	header	string	true	"Strava Access Token"
 //	@Success	200
 //	@Router		/api/strava/activities/{id}/gpx [get]
@@ -137,6 +142,7 @@ func (a *API) exportActivityGPS(c echo.Context) error {
 //	@Accept		json
 //	@Param		id						path		string	true	"Activity ID"
 //	@Param		X-Strava-Authorization	header		string	true	"Strava Access Token"
+//	@Param		Authorization			header		string	true	"Bearer <Access Token>"
 //	@Success	200						{object}	PaginatedResponse{Results=[]strava.LapEffortSummary, count=int}
 //	@Router		/api/strava/activities/{id}/laps [get]
 func (a *API) getActivityLaps(c echo.Context) error {
@@ -151,5 +157,25 @@ func (a *API) getActivityLaps(c echo.Context) error {
 	return c.JSON(http.StatusOK, PaginatedResponse{
 		Results: laps,
 		Count:   int64(len(laps)),
+	})
+}
+
+// getStravaModels godoc
+//
+//	@Summary	Get Strava Database Models
+//	@Tags		strava
+//	@Accept		json
+//	@Success	200	{object}	PaginatedResponse{Results=[]database.Schema, count=int}
+//	@Router		/api/strava/schema [get]
+func (a *API) getStravaModels(c echo.Context) error {
+	schema, err := a.db.GetModelsSchema()
+
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err)
+	}
+
+	return c.JSON(http.StatusOK, PaginatedResponse{
+		Results: schema,
+		Count:   int64(len(schema)),
 	})
 }

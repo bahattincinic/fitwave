@@ -47,6 +47,7 @@
       :visible="modal.showComponent"
       :loading="modal.loading"
       :row="modal.form"
+      :data-schema="dataSchema"
       :access-token="user.accessToken"
       @save="onSaveComponent"
       @close="closeModal"
@@ -62,7 +63,7 @@ import {
   deleteDashboard,
   updateDashboard,
 } from '@/services/dashboars';
-import { waitAsyncTask } from '@/services/user';
+import { getStravaDataSchema, waitAsyncTask } from '@/services/user';
 import {
   fetchComponents,
   createComponent,
@@ -104,6 +105,7 @@ export default {
       changeLayout: false,
       dashboard: {},
       components: [],
+      dataSchema: [],
       modal: {
         showUpdate: false,
         showComponent: false,
@@ -159,6 +161,9 @@ export default {
 
         const resp = await fetchComponents(this.user.accessToken, dashId);
         this.components = resp.results;
+
+        const dataResp = await getStravaDataSchema(this.user.accessToken);
+        this.dataSchema = dataResp.results;
       } catch (error) {
         this.$router.push('/');
       } finally {

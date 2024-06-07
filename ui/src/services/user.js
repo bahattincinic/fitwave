@@ -66,3 +66,12 @@ export async function waitAsyncTask(accessToken, task) {
 
   return task;
 }
+
+export async function getStravaDataSchema(accessToken) {
+  return await makeRequest({
+    endpoint: '/strava/schema',
+    json: true,
+    error: 'Could not fetch schema',
+    accessToken,
+  });
+}
