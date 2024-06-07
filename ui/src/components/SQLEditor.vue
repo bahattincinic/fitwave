@@ -83,6 +83,7 @@ export default {
               [/\bselect\b/i, 'keyword'],
               [/\bfrom\b/i, 'keyword'],
               [/\bwhere\b/i, 'keyword'],
+              [/\blimit\b/i, 'keyword'],
               [/\border by\b/i, 'keyword'],
               [/\bgroup by\b/i, 'keyword'],
             ],

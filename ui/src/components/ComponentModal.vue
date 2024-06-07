@@ -32,6 +32,14 @@
 
               <div class="flex justify-content-end">
                 <Button
+                  icon="pi pi-code"
+                  class="mr-1"
+                  aria-label="Format SQL"
+                  severity="secondary"
+                  @click="formatSQL"
+                  v-tooltip.bottom="'Click to format SQL.'"
+                />
+                <Button
                   icon="pi pi-receipt"
                   class="mr-1"
                   aria-label="Data Schema"
@@ -230,6 +238,8 @@ import BarChartComponent from '@/components/BarChartComponent';
 import LineChartComponent from '@/components/LineChartComponent';
 import { runQuery, waitAsyncTask } from '@/services/user';
 import SQLEditor from '@/components/SQLEditor';
+import prettier from 'prettier/standalone';
+import sqlPlugin from 'prettier-plugin-sql';
 
 export default {
   name: 'ComponentModal',
@@ -393,6 +403,13 @@ export default {
     },
     toggleDetailSection(section) {
       this.detailSection = section === this.detailSection ? '' : section;
+    },
+    async formatSQL() {
+      this.form.query = await prettier.format(this.form.query, {
+        parser: 'sql',
+        plugins: [sqlPlugin],
+        keywordCase: 'upper',
+      });
     },
     onError(err) {
       this.$toast.add({
