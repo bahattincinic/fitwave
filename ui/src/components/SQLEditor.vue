@@ -81,9 +81,16 @@ export default {
           tokenizer: {
             root: [
               [/\bselect\b/i, 'keyword'],
+              [/\band\b/i, 'keyword'],
+              [/\bor\b/i, 'keyword'],
               [/\bfrom\b/i, 'keyword'],
               [/\bwhere\b/i, 'keyword'],
               [/\blimit\b/i, 'keyword'],
+              [/\blike\b/i, 'keyword'],
+              [/\bis not null\b/i, 'keyword'],
+              [/\bis not\b/i, 'keyword'],
+              [/\binner join\b/i, 'keyword'],
+              [/\bleft join\b/i, 'keyword'],
               [/\border by\b/i, 'keyword'],
               [/\bgroup by\b/i, 'keyword'],
             ],
