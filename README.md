@@ -32,7 +32,7 @@ You can download the release binary for your system from the [releases page](htt
 
 ### Docker image
 
-To pull the Docker image:
+To pull the [Docker image](https://hub.docker.com/r/bahattincinic/fitwave):
 
 ```bash
 # Pull the latest image
@@ -129,7 +129,7 @@ Updating Swagger
 
 1. Go to the [Render Dashboard](https://dashboard.render.com/create?type=web).
 2. Select "Deploy an existing image from a registry".
-3. Enter the Docker image URL: `bahattincinic/fitwave`.
+3. Enter the Docker image URL: [bahattincinic/fitwave](https://hub.docker.com/r/bahattincinic/fitwave).
 
 ### Add Environment Variables
 
@@ -138,6 +138,7 @@ Add the following environment variables to your web service:
 ```
 DATABASE_TYPE=postgresql
 DATABASE_DSN=host=<host> user=<username> password=<password> dbname=<dbname> port=5432
+API_SECRET_KEY=<Your Secret Key>
 ```
 
 ### Configure Health Check Path
