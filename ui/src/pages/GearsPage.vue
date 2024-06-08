@@ -15,10 +15,11 @@
       selectionMode="single"
       @rowSelect="onRowSelect"
     >
-      <Column field="id" header="ID"></Column>
-      <Column field="name" header="Name"></Column>
-      <Column :field="formatDistance" header="Distance"></Column>
-      <Column :field="athleteName" header="Athlete"></Column>
+      <Column sortable field="id" header="ID"></Column>
+      <Column sortable field="name" header="Name"></Column>
+      <Column sortable field="type" header="Type"></Column>
+      <Column sortable :field="formatDistance" header="Distance"></Column>
+      <Column sortable :field="athleteName" header="Athlete"></Column>
       <template #empty> No records found </template>
     </DataTable>
 

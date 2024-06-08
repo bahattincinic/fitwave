@@ -7,8 +7,8 @@ type Gear struct {
 	Distance    float64 `json:"distance"`
 	BrandName   string  `json:"brand_name"`
 	ModelName   string  `json:"model_name"`
-	FrameType   string  `json:"frame_type"`
+	Type        string  `json:"type"`
 	Description string  `json:"description"`
 	AthleteID   int64
-	Athlete     Athlete `gorm:"foreignkey:AthleteID" json:"athlete"`
+	Athlete     *Athlete `gorm:"foreignkey:AthleteID" json:"athlete"`
 }

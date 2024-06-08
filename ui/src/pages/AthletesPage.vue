@@ -16,10 +16,10 @@
       @rowSelect="onRowSelect"
     >
       <Column field="id" header="ID"></Column>
-      <Column field="firstname" header="First Name"></Column>
-      <Column field="lastname" header="Last Name"></Column>
-      <Column field="country" header="Country"></Column>
-      <Column field="city" header="City"></Column>
+      <Column sortable field="firstname" header="First Name"></Column>
+      <Column sortable field="lastname" header="Last Name"></Column>
+      <Column sortable field="country" header="Country"></Column>
+      <Column sortable field="city" header="City"></Column>
       <template #empty> No records found </template>
     </DataTable>
 

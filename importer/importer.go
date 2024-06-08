@@ -3,6 +3,7 @@ package importer
 import (
 	"context"
 	"encoding/json"
+	"strings"
 
 	"github.com/bahattincinic/fitwave/config"
 	"github.com/bahattincinic/fitwave/database"
@@ -36,6 +37,14 @@ func (im *Importer) updateGears(tx *gorm.DB, gears []client.GearDetailed, user *
 	var rows []models.Gear
 
 	for _, gear := range gears {
+		frameType := gear.FrameType.String()
+
+		// There is a bug in the Strava API that incorrectly returns all gear as bicycles.
+		// We can identify running shoes by checking if the gear ID starts with "g".
+		if strings.HasPrefix(gear.Id, "g") {
+			frameType = "Shoes"
+		}
+
 		rows = append(rows, models.Gear{
 			Id:          gear.Id,
 			Name:        gear.Name,
@@ -43,7 +52,7 @@ func (im *Importer) updateGears(tx *gorm.DB, gears []client.GearDetailed, user *
 			Distance:    gear.Distance,
 			BrandName:   gear.BrandName,
 			ModelName:   gear.ModelName,
-			FrameType:   gear.FrameType.String(),
+			Type:        frameType,
 			Description: gear.Description,
 			AthleteID:   user.Athlete.Id,
 		})
