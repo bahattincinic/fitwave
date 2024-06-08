@@ -12,6 +12,7 @@ import (
 	pkgerrors "github.com/pkg/errors"
 	client "github.com/strava/go.strava"
 	"go.uber.org/zap"
+	"gorm.io/datatypes"
 	"gorm.io/gorm"
 )
 
@@ -94,7 +95,13 @@ func (im *Importer) updateActivities(tx *gorm.DB, activities []*client.ActivityS
 	var rows []models.Activity
 
 	for _, activity := range activities {
-		actMap, err := json.Marshal(activity.Map)
+		actMap, err := json.Marshal(map[string]interface{}{
+			"id":                       activity.Map.Id,
+			"polyline":                 activity.Map.Polyline,
+			"polyline_decoded":         activity.Map.Polyline.Decode(),
+			"summary_polyline_decoded": activity.Map.SummaryPolyline.Decode(),
+			"summary_polyline":         activity.Map.SummaryPolyline,
+		})
 		if err != nil {
 			return pkgerrors.Wrap(err, "Marshal")
 		}
@@ -113,8 +120,8 @@ func (im *Importer) updateActivities(tx *gorm.DB, activities []*client.ActivityS
 			StartDate:            activity.StartDate,
 			StartDateLocal:       activity.StartDateLocal,
 			TimeZone:             activity.TimeZone,
-			StartLocation:        activity.StartLocation.String(),
-			EndLocation:          activity.EndLocation.String(),
+			StartLocation:        datatypes.JSON(activity.StartLocation.String()),
+			EndLocation:          datatypes.JSON(activity.EndLocation.String()),
 			City:                 activity.City,
 			State:                activity.State,
 			Country:              activity.Country,

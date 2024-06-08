@@ -8,6 +8,21 @@ import (
 	pkgerrors "github.com/pkg/errors"
 )
 
+// compileQuery compiles a SQL query template with predefined date parameters.
+// It supports placeholders for various date ranges like today, yesterday,
+// this week, last week, this month, and last month.
+//
+// The supported placeholders in the query template are:
+// - {{.Today}}: The current date in "YYYY-MM-DD" format
+// - {{.Yesterday}}: The date of the previous day
+// - {{.ThisWeekStart}}: The start date of the current week (Monday)
+// - {{.ThisWeekEnd}}: The end date of the current week (Sunday)
+// - {{.LastWeekStart}}: The start date of the previous week (Monday)
+// - {{.LastWeekEnd}}: The end date of the previous week (Sunday)
+// - {{.ThisMonthStart}}: The first day of the current month
+// - {{.ThisMonthEnd}}: The last day of the current month
+// - {{.LastMonthStart}}: The first day of the previous month
+// - {{.LastMonthEnd}}: The last day of the previous month
 func (d *Database) compileQuery(query string) (string, error) {
 	tmpl, err := template.New("query").Parse(query)
 	if err != nil {
@@ -48,6 +63,11 @@ func (d *Database) compileQuery(query string) (string, error) {
 	return builder.String(), nil
 }
 
+// RunQuery runs a SQL query after compiling it with date placeholders.
+// It executes the query and returns the results as a slice of maps, where
+// each map represents a row with column names as keys and column values as values.
+// Parameters:
+// - query: The SQL query template containing placeholders.
 func (d *Database) RunQuery(query string) ([]map[string]interface{}, error) {
 	compiledQuery, err := d.compileQuery(query)
 	if err != nil {

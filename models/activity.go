@@ -19,8 +19,8 @@ type Activity struct {
 	StartDate            time.Time      `json:"start_date"`
 	StartDateLocal       time.Time      `json:"start_date_local"`
 	TimeZone             string         `json:"time_zone"`
-	StartLocation        string         `json:"start_lat_lng"`
-	EndLocation          string         `json:"end_lat_lng"`
+	StartLocation        datatypes.JSON `json:"start_lat_lng"`
+	EndLocation          datatypes.JSON `json:"end_lat_lng"`
 	City                 string         `json:"location_city"`
 	State                string         `json:"location_state"`
 	Country              string         `json:"location_country"`
