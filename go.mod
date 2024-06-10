@@ -4,6 +4,7 @@ go 1.19
 
 require (
 	github.com/caarlos0/env/v10 v10.0.0
+	github.com/go-gormigrate/gormigrate/v2 v2.1.2
 	github.com/go-playground/validator v9.31.0+incompatible
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/google/uuid v1.6.0
@@ -20,7 +21,7 @@ require (
 	gorm.io/driver/mysql v1.4.7
 	gorm.io/driver/postgres v1.5.0
 	gorm.io/driver/sqlite v1.4.4
-	gorm.io/gorm v1.24.7-0.20230306060331-85eaf9eeda11
+	gorm.io/gorm v1.25.8
 )
 
 require (

@@ -1500,13 +1500,10 @@ const docTemplate = `{
         "database.Schema": {
             "type": "object",
             "properties": {
-                "db_name": {
+                "field_db_name": {
                     "type": "string"
                 },
-                "model": {
-                    "type": "string"
-                },
-                "name": {
+                "table_name": {
                     "type": "string"
                 },
                 "type": {
@@ -1560,7 +1557,10 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "end_lat_lng": {
-                    "type": "string"
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
                 },
                 "external_id": {
                     "type": "string"
@@ -1629,7 +1629,10 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "start_lat_lng": {
-                    "type": "string"
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
                 },
                 "time_zone": {
                     "type": "string"
@@ -1816,9 +1819,6 @@ const docTemplate = `{
                 "distance": {
                     "type": "number"
                 },
-                "frame_type": {
-                    "type": "string"
-                },
                 "id": {
                     "type": "string"
                 },
@@ -1830,6 +1830,9 @@ const docTemplate = `{
                 },
                 "primary": {
                     "type": "boolean"
+                },
+                "type": {
+                    "type": "string"
                 }
             }
         },

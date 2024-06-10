@@ -108,11 +108,9 @@ definitions:
     type: object
   database.Schema:
     properties:
-      db_name:
+      field_db_name:
         type: string
-      model:
-        type: string
-      name:
+      table_name:
         type: string
       type:
         type: string
@@ -148,7 +146,9 @@ definitions:
       elapsed_time:
         type: integer
       end_lat_lng:
-        type: string
+        items:
+          type: integer
+        type: array
       external_id:
         type: string
       flagged:
@@ -194,7 +194,9 @@ definitions:
       start_date_local:
         type: string
       start_lat_lng:
-        type: string
+        items:
+          type: integer
+        type: array
       time_zone:
         type: string
       total_elevation_gain:
@@ -323,8 +325,6 @@ definitions:
         type: string
       distance:
         type: number
-      frame_type:
-        type: string
       id:
         type: string
       model_name:
@@ -333,6 +333,8 @@ definitions:
         type: string
       primary:
         type: boolean
+      type:
+        type: string
     type: object
   models.LoginType:
     enum:

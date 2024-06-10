@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/bahattincinic/fitwave/config"
-	"github.com/bahattincinic/fitwave/models"
+	"github.com/bahattincinic/fitwave/database/migrations"
 	pkgerrors "github.com/pkg/errors"
 	"go.uber.org/zap"
 	"gorm.io/driver/mysql"
@@ -19,6 +19,7 @@ type Database struct {
 	db  *gorm.DB
 	cfg *config.Config
 	log *zap.Logger
+	mig *migrations.Migration
 }
 
 func NewDatabase(ctx context.Context, log *zap.Logger, cfg *config.Config) (*Database, error) {
@@ -39,11 +40,14 @@ func NewDatabase(ctx context.Context, log *zap.Logger, cfg *config.Config) (*Dat
 		return nil, pkgerrors.Wrap(err, "Open")
 	}
 
+	mig := migrations.NewMigration(db)
+
 	d := &Database{
 		db:  db,
 		ctx: ctx,
 		log: log,
 		cfg: cfg,
+		mig: mig,
 	}
 
 	if cfg.Database.AutoMigrate {
@@ -56,15 +60,7 @@ func NewDatabase(ctx context.Context, log *zap.Logger, cfg *config.Config) (*Dat
 }
 
 func (d *Database) Migrate() error {
-	m := []interface{}{
-		&models.Activity{},
-		&models.Athlete{},
-		&models.Gear{},
-		&models.Config{},
-		&models.Dashboard{},
-		&models.Component{},
-	}
-	return d.db.AutoMigrate(m...)
+	return d.mig.Migrate()
 }
 
 func (d *Database) BeginTransaction() *gorm.DB {
